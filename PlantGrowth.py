@@ -16,6 +16,7 @@ NumSpacesY = 10
 
 PlantID = 1
 NumPlants = 20
+NumSlimes = 2
 
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
@@ -33,6 +34,20 @@ class Plant:
     y = 0
     level = 1
     health = 10
+
+class Slime:
+    """
+    Class to keep track of a plant's location, level, and health.
+    """
+    x = 0
+    y = 0
+    level = 1
+    health = 5
+    attack = 5
+    xp = 0
+
+# Global list
+plantlist = [Plant() for i in range(NumPlants)]
 
 def makeMatrix():
     # Setup an empty matrix of the correct size
@@ -115,9 +130,9 @@ class MyGame(arcade.Window):
 def main():
     MapArray = makeMatrix()
     plantPlants(MapArray)
-    plantlist = [Plant() for i in range(NumPlants)]
     MyGame()
     arcade.run()
 
 if __name__ == "__main__":
     main()
+
