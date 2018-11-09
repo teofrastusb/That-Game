@@ -8,6 +8,7 @@ This program will attempt to set the plants to grow.
 import arcade
 import random
 import os
+import time
 
 # Manually set constants
 NumSpacesX = 30
@@ -19,6 +20,10 @@ NumPlants = 20
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
 
+x = 0
+y = 0
+turn = 0
+
 # Setup classes for needed objects
 class Plant:
     """
@@ -28,39 +33,37 @@ class Plant:
     y = 0
     level = 1
     health = 10
+
+def makeMatrix():
+    # Setup an empty matrix of the correct size
+    MapArray = []
+
+    for i in range(NumSpacesX):
+        MapArray.append([0]*NumSpacesY)
         
-plantlist = [Plant() for i in range(NumPlants)]
+    return MapArray
 
-# Setup an empty matrix of the correct size
-MapArray = []
-
-for i in range(NumSpacesX):
-    MapArray.append([0]*NumSpacesY)
-
-# Set a given number of points in the matix to be plants spots
-PlantCount = 0
-while PlantCount < NumPlants:
-    randX = random.randint(0,NumSpacesX/2-1)
-    randY = random.randint(0,NumSpacesY-1)
+def plantPlants(MapArray):
+    # Set a given number of points in the matix to be plants spots
+    PlantCount = 0
+    while PlantCount < NumPlants:
+        randX = random.randint(0,NumSpacesX/2-1)
+        randY = random.randint(0,NumSpacesY-1)
     
-    #print(randX,randY)
+        #print(randX,randY)
     
-    if MapArray[randX][randY] == 0:
+        if MapArray[randX][randY] == 0:
         
-        plantlist[PlantCount].x = randX
-        plantlist[PlantCount].y = randY
+            plantlist[PlantCount].x = randX
+            plantlist[PlantCount].y = randY
         
-        plantlist[PlantCount+1].x = NumSpacesX-randX
-        plantlist[PlantCount+1].y = NumSpacesY-randY
+            plantlist[PlantCount+1].x = NumSpacesX-randX
+            plantlist[PlantCount+1].y = NumSpacesY-randY
         
-        PlantCount = PlantCount+2
+            PlantCount = PlantCount+2
 
-        MapArray[randX][randY] = PlantID
-        MapArray[NumSpacesX-1-randX][NumSpacesY-1-randY] = PlantID 
-
-x = 0
-y = 0
-turn = 0
+            MapArray[randX][randY] = PlantID
+            MapArray[NumSpacesX-1-randX][NumSpacesY-1-randY] = PlantID 
 
 class MyGame(arcade.Window):
     """ Main application class. """
@@ -104,13 +107,17 @@ class MyGame(arcade.Window):
             if UpgradeChance > plantlist[i].level:
                 plantlist[i].level += 1
                 print(plantlist[i].level)
+                
+        time.sleep(0.1)
 
 
 
 def main():
+    MapArray = makeMatrix()
+    plantPlants(MapArray)
+    plantlist = [Plant() for i in range(NumPlants)]
     MyGame()
     arcade.run()
 
 if __name__ == "__main__":
     main()
-
