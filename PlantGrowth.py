@@ -86,8 +86,8 @@ def plantPlants():
             
 def placeSlimes():
     # Set a given number of points in the matix to be plants spots
-    slimecount = 0
-    while slimecount < numSlimes:
+    slimeCount = 0
+    while slimeCount < numSlimes:
         randX = random.randint(0,numSpacesX/2-1)
         randY = random.randint(0,numSpacesY-1)
     
@@ -95,13 +95,14 @@ def placeSlimes():
     
         if mapMatrix[randX][randY] == 0:
         
-            slimelist[slimecount].x = randX
-            slimelist[slimecount].y = randY
+            slimelist[slimeCount].x = randX
+            slimelist[slimeCount].y = randY
         
-            slimelist[slimecount+1].x = numSpacesX-randX
-            slimelist[slimecount+1].y = numSpacesY-randY
+            slimelist[slimeCount+1].x = numSpacesX-randX
+            slimelist[slimeCount+1].y = numSpacesY-randY
         
-            slimeCount = slimecount+2
+            slimeCount +=2
+            print(numSlimes,slimeCount)
 
             mapMatrix[randX][randY] = slimeID
             mapMatrix[numSpacesX-1-randX][numSpacesY-1-randY] = slimeID
@@ -135,7 +136,7 @@ class MyGame(arcade.Window):
         for i in range(numSlimes):
             x = (slimelist[i].x+1)*StepX
             y = (slimelist[i].y+1)*StepY
-            radius = (SCREEN_HEIGHT//numSpacesY)//2
+            radius = (SCREEN_HEIGHT//numSpacesY)//3
             arcade.draw_circle_filled(x, y, radius, arcade.color.BLUE)
 
         # Put the text on the screen.
@@ -161,8 +162,11 @@ class MyGame(arcade.Window):
 
 def main():
     makeMatrix()
+    print(1)
     plantPlants()
+    print(2)
     placeSlimes()
+    print(3)
     MyGame()
     arcade.run()
 
