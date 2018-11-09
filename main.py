@@ -10,6 +10,9 @@ import random
 import os
 import time
 
+from plant import Plant
+from slime import Slime
+
 # Manually set constants
 numSpacesX = 30
 numSpacesY = 10
@@ -27,41 +30,21 @@ y = 0
 turn = 0
 
 mapMatrix = []
-# Setup classes for needed objects
-class Plant:
-    """
-    Class to keep track of a plant's location, level, and health.
-    """
-    x = 0
-    y = 0
-    level = 1
-    health = 10
 
-class Slime:
-    """
-    Class to keep track of a plant's location, level, and health.
-    """
-    x = 0
-    y = 0
-    level = 1
-    health = 5
-    attack = 5
-    xp = 0
-
-# Global list
 plantlist = [Plant() for i in range(numPlants)]
 slimelist = [Slime() for i in range(numSlimes)]
 
 def makeMatrix():
     # Setup an empty matrix of the correct size
+    print("Making matrix")
 
     for i in range(numSpacesX):
         mapMatrix.append([0]*numSpacesY)
-        
-
 
 def plantPlants():
     # Set a given number of points in the matix to be plants spots
+    print("Planting plants")
+
     PlantCount = 0
     while PlantCount < numPlants:
         randX = random.randint(0,numSpacesX/2-1)
@@ -82,10 +65,10 @@ def plantPlants():
             mapMatrix[randX][randY] = plantID
             mapMatrix[numSpacesX-1-randX][numSpacesY-1-randY] = plantID
 
-                
-            
 def placeSlimes():
     # Set a given number of points in the matix to be plants spots
+    print("Placing slimes")
+
     slimeCount = 0
     while slimeCount < numSlimes:
         randX = random.randint(0,numSpacesX/2-1)
@@ -94,7 +77,6 @@ def placeSlimes():
         #print(randX,randY)
     
         if mapMatrix[randX][randY] == 0:
-        
             slimelist[slimeCount].x = randX
             slimelist[slimeCount].y = randY
         
@@ -158,15 +140,10 @@ class MyGame(arcade.Window):
                 
         time.sleep(0.1)
 
-
-
 def main():
     makeMatrix()
-    print(1)
     plantPlants()
-    print(2)
     placeSlimes()
-    print(3)
     MyGame()
     arcade.run()
 
