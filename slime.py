@@ -8,3 +8,6 @@ class Slime:
     health = 5
     attack = 5
     xp = 0
+    speed = 1
+
+
