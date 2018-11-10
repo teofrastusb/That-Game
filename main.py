@@ -4,14 +4,20 @@
 This program will attempt to set the plants to grow.
 """
 
-# Import as needed
+# Import libraries
 import arcade
 import random
 import os
 import time
 
+# Import classes
 from plant import Plant
 from slime import Slime
+from tet import Tet
+
+# Import control functions
+
+
 
 # Manually set constants
 numSpacesX = 30
@@ -123,21 +129,50 @@ class MyGame(arcade.Window):
 
         # Put the text on the screen.
         output = "turn: {}".format(turn)
-        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+        arcade.draw_text(output, 10, 20, arcade.color.BLACK, 14)
 
     def update(self, delta_time):
         """ Movement and game logic """
         UpgradeChance = 0
         
+        import tet
+
+        tet.Tet.tet
+
+        # Turn counter
         global turn
         turn += 1
         
+        # Grow the plants
         for i in range(numPlants):
             UpgradeChance = random.randint(0,20)//1
             if UpgradeChance > plantlist[i].level:
-                plantlist[i].level += 1
-                print(plantlist[i].level)
-                
+                UpgradeChance = random.randint(0,20)//1
+                if UpgradeChance > plantlist[i].level:
+                    plantlist[i].level += 1
+        
+        # Call external function for slimes
+        for i in range(numSlimes):
+            print(slimelist[i].x,slimelist[i].y)
+
+            moveList = ["left", "right","up","down"]
+
+            command = random.randint(0,3)
+            command = moveList[command]
+
+            print(command)
+
+            if command == "up":
+                slimelist[i].y +=1
+            if command == "down":
+                slimelist[i].y -=1
+            if command == "right":
+                slimelist[i].x +=1
+            if command == "left":
+                slimelist[i].x -=1
+
+
+        # Delay to slow game down        
         time.sleep(0.1)
 
 def main():
