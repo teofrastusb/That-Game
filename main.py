@@ -95,7 +95,7 @@ def placeSlimes():
             mapMatrix[randX][randY] = slimeID
             mapMatrix[numSpacesX-1-randX][numSpacesY-1-randY] = slimeID
 
-class MyGame(arcade.Window):
+class MyGame(arcade.Window,Tet):
     """ Main application class. """
 
     def __init__(self):
@@ -134,10 +134,6 @@ class MyGame(arcade.Window):
     def update(self, delta_time):
         """ Movement and game logic """
         UpgradeChance = 0
-        
-        import tet
-
-        tet.Tet.tet
 
         # Turn counter
         global turn
@@ -153,24 +149,20 @@ class MyGame(arcade.Window):
         
         # Call external function for slimes
         for i in range(numSlimes):
-            print(slimelist[i].x,slimelist[i].y)
 
-            moveList = ["left", "right","up","down"]
-
-            command = random.randint(0,3)
-            command = moveList[command]
+            command = MyGame.playerCommand(1)
 
             print(command)
-
-            if command == "up":
+            
+            # Evaluate and exicute command
+            if command == "up" and slimelist[i].y < numSpacesY:
                 slimelist[i].y +=1
-            if command == "down":
+            if command == "down" and slimelist[i].y > 0:
                 slimelist[i].y -=1
-            if command == "right":
+            if command == "right" and slimelist[i].x < numSpacesX:
                 slimelist[i].x +=1
-            if command == "left":
+            if command == "left" and slimelist[i].x >0:
                 slimelist[i].x -=1
-
 
         # Delay to slow game down        
         time.sleep(0.1)
