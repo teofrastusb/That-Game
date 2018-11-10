@@ -1,14 +1,11 @@
 #!/usr/bin/env python
-# This was my attempt to get an external code to control the slimes
-class Tet():
+#This will passback movement directons to the slimes
+class Tet():  
 
-    def tet():
+    def playerCommand(self):
         # Setup an empty matrix of the correct size
-        print("tet function")
-        #return "Left"
-"""
-if __name__ == '__main__':
-    # test1.py executed as script
-    # do something
-    tet()
-"""
+        moveList = ["left", "right","up","down"]
+        import random 
+        command = random.randint(0,3)
+        command = moveList[command]
+        return command
