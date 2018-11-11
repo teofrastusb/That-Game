@@ -130,9 +130,15 @@ class MyGame(arcade.Window):
 
         # handle collisions
         # TODO: include slimes
-        hit_list = arcade.check_for_collision_with_list(self.plant_list[0], self.plant_list)
-        for thing in hit_list:
-            thing.level_up()
+        for plant in self.plant_list:
+            # TODO: I think this should be all_sprites_list once we add in slimes to it
+            # level up plant for everything it hits that isn't a plant
+            hits = arcade.check_for_collision_with_list(plant, slimeList1)
+            hits = hits + arcade.check_for_collision_with_list(plant, slimeList2)
+            for hit in hits:
+                if not isinstance(hit, Plant):
+                    plant.level_up()
+
         UpgradeChance = 0
 
         # Turn counter
