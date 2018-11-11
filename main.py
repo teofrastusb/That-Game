@@ -37,7 +37,7 @@ slimeList2 = arcade.SpriteList()
 
 """
 plantList = [Plant() for i in range(numPlants)]
-slimelist = [Slime() for i in range(numSlimes1)]
+slimeList = [Slime() for i in range(numSlimes1)]
 """
 
 def makeMatrix(width, height):
@@ -105,7 +105,7 @@ def placeSlimes(id, num_one, num_two, sprite_scaling, num_x, num_y):
             slime = arcade.Sprite("slime.png", sprite_scaling)
             slime.x = num_x-randX
             slime.y = num_y-randY
-            slimelist2.append(slime)
+            slimeList2.append(slime)
         
             slimeCount +=2
 
@@ -140,26 +140,26 @@ class MyGame(arcade.Window):
 
         # Draw plants
         for i in range(self.conf['plants'].getint('num_total')):
-            plantlist[i].center_x = (plantlist[i].x+1)*StepX
-            plantlist[i].center_y = (plantlist[i].y+1)*StepY
-            radius = (self.height//self.num_y)//4 * plantlist[i].level/10
-            arcade.draw_circle_filled(plantlist[i].center_x, plantlist[i].center_y, radius, arcade.color.GREEN)
-            plantlist[i].draw()
+            plantList[i].center_x = (plantList[i].x+1)*StepX
+            plantList[i].center_y = (plantList[i].y+1)*StepY
+            radius = (self.height//self.num_y)//4 * plantList[i].level/10
+            arcade.draw_circle_filled(plantList[i].center_x, plantList[i].center_y, radius, arcade.color.GREEN)
+            plantList[i].draw()
 
         # Draw slimes    
         for i in range(self.conf['slimes'].getint('num_one')):
-            slimelist1[i].center_x = (slimelist1[i].x+1)*StepX
-            slimelist1[i].center_y = (slimelist1[i].y+1)*StepY
+            slimeList1[i].center_x = (slimeList1[i].x+1)*StepX
+            slimeList1[i].center_y = (slimeList1[i].y+1)*StepY
             radius = (self.height//self.num_y)//3
-            arcade.draw_circle_filled(slimelist1[i].center_x, slimelist1[i].center_y, radius, arcade.color.BLUE)
-            slimelist1[i].draw()
+            arcade.draw_circle_filled(slimeList1[i].center_x, slimeList1[i].center_y, radius, arcade.color.BLUE)
+            slimeList1[i].draw()
 
         for i in range(self.conf['slimes'].getint('num_two')):
-            slimelist2[i].center_x = (slimelist2[i].x+1)*StepX
-            slimelist2[i].center_y = (slimelist2[i].y+1)*StepY
+            slimeList2[i].center_x = (slimeList2[i].x+1)*StepX
+            slimeList2[i].center_y = (slimeList2[i].y+1)*StepY
             radius = (self.height//self.num_y)//3
-            arcade.draw_circle_filled(slimelist2[i].center_x, slimelist2[i].center_y, radius, arcade.color.RED)
-            slimelist2[i].draw()
+            arcade.draw_circle_filled(slimeList2[i].center_x, slimeList2[i].center_y, radius, arcade.color.RED)
+            slimeList2[i].draw()
 
         # Put the text on the screen.
         output = "turn: {}".format(turn)
@@ -182,7 +182,7 @@ class MyGame(arcade.Window):
                     plantList[i].level += 1
         
         # Call external function for player 1 slimes
-        for i in range(self.conf['slimes']['num_total']):
+        for i in range(self.conf['slimes'].getint('num_one')):
             
             command = Player1.playerCommand(1)
             
@@ -220,7 +220,7 @@ class MyGame(arcade.Window):
                     slimeList1[i].x +=1
 
         # Call external function for player 2 slimes
-        for i in range(self.conf['slimes']['num_two']):
+        for i in range(self.conf['slimes'].getint('num_two')):
             
             command = Player2.playerCommand(1)
 
