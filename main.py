@@ -12,6 +12,7 @@ import configparser
 # Import classes
 from models.plant import Plant
 from models.slime import Slime
+from models.map import Map
 
 # Import control functions
 from tet import Tet
@@ -26,44 +27,32 @@ class Player2(Tet):
 x = 0
 y = 0
 
-mapMatrix = []
 slimeList1 = arcade.SpriteList()
 slimeList2 = arcade.SpriteList()
 
-def makeMatrix(width, height):
-    # Setup an empty matrix of the correct size
-    print("Making matrix")
-
-    for i in range(width):
-        mapMatrix.append([0]*height)
-
-def placeSlimes(id, num_one, num_two, sprite_scaling, rows, columns):
+def placeSlimes(id, num_one, num_two, sprite_scaling, map):
     # Set a given number of points in the matix to be plants spots
     print("Placing slimes")
 
     slimeCount = 0
     while slimeCount < (num_one + num_two):
-        randX = random.randint(0,rows/2-1)
-        randY = random.randint(0,columns-1)
-    
-        #print(randX,randY)
-    
-        if mapMatrix[randX][randY] == 0:
-
+        randX = random.randint(0, map.row_count() / 2 - 1)
+        randY = random.randint(0, map.column_count() - 1)
+        if map.get_matrix()[randX][randY] == 0:
             slime = arcade.Sprite("images/slime.png", sprite_scaling)
             slime.x = randX
             slime.y = randY
             slimeList1.append(slime)
 
             slime = arcade.Sprite("images/slime.png", sprite_scaling)
-            slime.x = rows-randX
-            slime.y = columns-randY
+            slime.x = map.row_count() - randX
+            slime.y = map.column_count() - randY
             slimeList2.append(slime)
         
             slimeCount +=2
 
-            mapMatrix[randX][randY] = id
-            mapMatrix[rows-1-randX][columns-1-randY] = id
+            map.get_matrix()[randX][randY] = id
+            map.get_matrix()[map.row_count() - 1 - randX][map.column_count() - 1 - randY] = id
 
 class MyGame(arcade.Window):
     """ Main application class. """
@@ -75,11 +64,10 @@ class MyGame(arcade.Window):
         # config
         self.width = config['screen'].getint('width')
         self.height = config['screen'].getint('height')
-        self.rows = config['screen'].getint('rows')
-        self.columns = config['screen'].getint('columns')
         self.conf = config
 
         # initial game state
+        self.map = Map(config)
         self.plant_list = arcade.SpriteList()
         self.all_sprites_list = arcade.SpriteList()
         self.turn = 0
@@ -88,9 +76,15 @@ class MyGame(arcade.Window):
 
     def setup(self):
         """ Initialize game state """
-         # Create the plants
+        # place slimes
+        placeSlimes(self.conf['slimes']['id'],
+                self.conf['slimes'].getint('num_one'),
+                self.conf['slimes'].getint('num_two'),
+                self.conf['slimes'].getfloat('sprite_scaling'),
+                self.map)
+        # Create the plants
         for i in range(10):
-            plant = Plant(i, self.conf)
+            plant = Plant(i, self.conf, self.map)
             self.all_sprites_list.append(plant)
             self.plant_list.append(plant)
 
@@ -101,21 +95,18 @@ class MyGame(arcade.Window):
         arcade.start_render()
         self.all_sprites_list.draw()
 
-        StepX = self.width // (self.rows + 2)
-        StepY = self.height // (self.columns + 2)
-
         # Draw slimes    
         for i in range(self.conf['slimes'].getint('num_one')):
-            slimeList1[i].center_x = (slimeList1[i].x+1)*StepX
-            slimeList1[i].center_y = (slimeList1[i].y+1)*StepY
-            radius = (self.height//self.columns)//3
+            slimeList1[i].center_x = (slimeList1[i].x+1) * self.map.step_x()
+            slimeList1[i].center_y = (slimeList1[i].y+1) * self.map.step_y()
+            radius = (self.height//self.map.column_count())//3
             arcade.draw_circle_filled(slimeList1[i].center_x, slimeList1[i].center_y, radius, arcade.color.BLUE)
             slimeList1[i].draw()
 
         for i in range(self.conf['slimes'].getint('num_two')):
-            slimeList2[i].center_x = (slimeList2[i].x+1)*StepX
-            slimeList2[i].center_y = (slimeList2[i].y+1)*StepY
-            radius = (self.height//self.columns)//3
+            slimeList2[i].center_x = (slimeList2[i].x+1) * self.map.step_x()
+            slimeList2[i].center_y = (slimeList2[i].y+1) * self.map.step_y()
+            radius = (self.height//self.map.column_count())//3
             arcade.draw_circle_filled(slimeList2[i].center_x, slimeList2[i].center_y, radius, arcade.color.RED)
             slimeList2[i].draw()
 
@@ -150,11 +141,11 @@ class MyGame(arcade.Window):
             command = Player1.playerCommand(1)
             
             # Evaluate and exicute command
-            if command == "up" and slimeList1[i].y < self.columns:
+            if command == "up" and slimeList1[i].y < self.map.column_count():
                 slimeList1[i].y +=1
             if command == "down" and slimeList1[i].y > 0:
                 slimeList1[i].y -=1
-            if command == "right" and slimeList1[i].x < self.rows:
+            if command == "right" and slimeList1[i].x < self.map.row_count():
                 slimeList1[i].x +=1
             if command == "left" and slimeList1[i].x >0:
                 slimeList1[i].x -=1
@@ -185,11 +176,11 @@ class MyGame(arcade.Window):
             command = Player2.playerCommand(1)
 
             # Evaluate and exicute command
-            if command == "up" and slimeList2[i].y < self.columns:
+            if command == "up" and slimeList2[i].y < self.map.column_count():
                 slimeList2[i].y +=1
             if command == "down" and slimeList2[i].y > 0:
                 slimeList2[i].y -=1
-            if command == "right" and slimeList2[i].x < self.rows:
+            if command == "right" and slimeList2[i].x < self.map.row_count():
                 slimeList2[i].x +=1
             if command == "left" and slimeList2[i].x >0:
                 slimeList2[i].x -=1
@@ -220,13 +211,6 @@ class MyGame(arcade.Window):
 def main():
     config = configparser.ConfigParser()
     config.read('resources/config.ini')
-    makeMatrix(config['screen'].getint('rows'), config['screen'].getint('rows'))
-    placeSlimes(config['slimes']['id'],
-                config['slimes'].getint('num_one'),
-                config['slimes'].getint('num_two'),
-                config['slimes'].getfloat('sprite_scaling'),
-                config['screen'].getint('rows'),
-                config['screen'].getint('columns'))
     window = MyGame(config)
     window.setup()
     arcade.run()
