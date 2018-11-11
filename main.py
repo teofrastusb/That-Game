@@ -84,7 +84,17 @@ class MyGame(arcade.Window):
                 self.map)
         # Create the plants
         for i in range(10):
+            rand_x = random.randint(1, self.map.row_count() / 2)
+            rand_y = random.randint(1, self.map.column_count())
+            # left half
             plant = Plant(i, self.conf, self.map)
+            plant.set_coord(rand_x, rand_y)
+            self.all_sprites_list.append(plant)
+            self.plant_list.append(plant)
+
+            # mirrored right half
+            plant = Plant(i, self.conf, self.map)
+            plant.set_coord(self.map.row_count() - rand_x, rand_y)
             self.all_sprites_list.append(plant)
             self.plant_list.append(plant)
 
@@ -97,15 +107,15 @@ class MyGame(arcade.Window):
 
         # Draw slimes    
         for i in range(self.conf['slimes'].getint('num_one')):
-            slimeList1[i].center_x = (slimeList1[i].x+1) * self.map.step_x()
-            slimeList1[i].center_y = (slimeList1[i].y+1) * self.map.step_y()
+            slimeList1[i].center_x = self.map.center_x(slimeList1[i].x)
+            slimeList1[i].center_y = self.map.center_x(slimeList1[i].y)
             radius = (self.height//self.map.column_count())//3
             arcade.draw_circle_filled(slimeList1[i].center_x, slimeList1[i].center_y, radius, arcade.color.BLUE)
             slimeList1[i].draw()
 
         for i in range(self.conf['slimes'].getint('num_two')):
-            slimeList2[i].center_x = (slimeList2[i].x+1) * self.map.step_x()
-            slimeList2[i].center_y = (slimeList2[i].y+1) * self.map.step_y()
+            slimeList2[i].center_x = self.map.center_x(slimeList2[i].x)
+            slimeList2[i].center_y = self.map.center_x(slimeList2[i].y)
             radius = (self.height//self.map.column_count())//3
             arcade.draw_circle_filled(slimeList2[i].center_x, slimeList2[i].center_y, radius, arcade.color.RED)
             slimeList2[i].draw()
