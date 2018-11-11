@@ -30,7 +30,7 @@ SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 600
 
 SPRITE_SCALING_PLANT = 0.2
-SPRITE_SCALING_SLIME = 0.2
+SPRITE_SCALING_SLIME = 0.15
 
 numSpacesX = 30
 numSpacesY = 15
@@ -52,12 +52,12 @@ turn = 0
 
 mapMatrix = []
 
-plantlist = arcade.SpriteList()
-slimelist1 = arcade.SpriteList()
-slimelist2 = arcade.SpriteList()
+plantList = arcade.SpriteList()
+slimeList1 = arcade.SpriteList()
+slimeList2 = arcade.SpriteList()
 
 """
-plantlist = [Plant() for i in range(numPlants)]
+plantList = [Plant() for i in range(numPlants)]
 slimelist = [Slime() for i in range(numSlimes1)]
 """
 
@@ -81,24 +81,24 @@ def plantPlants():
     
         if mapMatrix[randX][randY] == 0:
 
-            plant = arcade.Sprite("plant.jpg", SPRITE_SCALING_PLANT)
+            plant = arcade.Sprite("plant.png", SPRITE_SCALING_PLANT)
         
             plant.x = randX
             plant.y = randY
             plant.level = 1
             plant.health = 10
 
-            plantlist.append(plant)
+            plantList.append(plant)
 
 
-            plant = arcade.Sprite("plant.jpg", SPRITE_SCALING_PLANT)
+            plant = arcade.Sprite("plant.png", SPRITE_SCALING_PLANT)
         
             plant.x = numSpacesX-randX
             plant.y = numSpacesY-randY
             plant.level = 1
             plant.health = 10
 
-            plantlist.append(plant)
+            plantList.append(plant)
         
             plantCount = plantCount+2
 
@@ -118,15 +118,15 @@ def placeSlimes():
     
         if mapMatrix[randX][randY] == 0:
 
-            slime = arcade.Sprite("slime.jpg", SPRITE_SCALING_SLIME)
+            slime = arcade.Sprite("slime.png", SPRITE_SCALING_SLIME)
             slime.x = randX
             slime.y = randY
-            slimelist1.append(slime)
+            slimeList1.append(slime)
 
-            slime = arcade.Sprite("slime.jpg", SPRITE_SCALING_SLIME)
+            slime = arcade.Sprite("slime.png", SPRITE_SCALING_SLIME)
             slime.x = numSpacesX-randX
             slime.y = numSpacesY-randY
-            slimelist2.append(slime)
+            slimeList2.append(slime)
         
             slimeCount +=2
 
@@ -154,26 +154,26 @@ class MyGame(arcade.Window):
         
         # Draw plants
         for i in range(numPlants):
-            plantlist[i].center_x = (plantlist[i].x+1)*StepX
-            plantlist[i].center_y = (plantlist[i].y+1)*StepY
-            plantlist[i].draw()
-            radius = (SCREEN_HEIGHT//numSpacesY)//4 * plantlist[i].level/10
-            arcade.draw_circle_filled(plantlist[i].center_x, plantlist[i].center_y, radius, arcade.color.GREEN)
+            plantList[i].center_x = (plantList[i].x+1)*StepX
+            plantList[i].center_y = (plantList[i].y+1)*StepY
+            radius = (SCREEN_HEIGHT//numSpacesY)//4 * plantList[i].level/10
+            arcade.draw_circle_filled(plantList[i].center_x, plantList[i].center_y, radius, arcade.color.GREEN)
+            plantList[i].draw()
 
         # Draw slimes    
         for i in range(numSlimes1):
-            slimelist1[i].center_x = (slimelist1[i].x+1)*StepX
-            slimelist1[i].center_y = (slimelist1[i].y+1)*StepY
+            slimeList1[i].center_x = (slimeList1[i].x+1)*StepX
+            slimeList1[i].center_y = (slimeList1[i].y+1)*StepY
             radius = (SCREEN_HEIGHT//numSpacesY)//3
-            arcade.draw_circle_filled(slimelist1[i].center_x, slimelist1[i].center_y, radius, arcade.color.BLUE)
-            slimelist1[i].draw()
+            arcade.draw_circle_filled(slimeList1[i].center_x, slimeList1[i].center_y, radius, arcade.color.BLUE)
+            slimeList1[i].draw()
 
         for i in range(numSlimes2):
-            slimelist2[i].center_x = (slimelist2[i].x+1)*StepX
-            slimelist2[i].center_y = (slimelist2[i].y+1)*StepY
+            slimeList2[i].center_x = (slimeList2[i].x+1)*StepX
+            slimeList2[i].center_y = (slimeList2[i].y+1)*StepY
             radius = (SCREEN_HEIGHT//numSpacesY)//3
-            arcade.draw_circle_filled(slimelist2[i].center_x, slimelist2[i].center_y, radius, arcade.color.RED)
-            slimelist2[i].draw()
+            arcade.draw_circle_filled(slimeList2[i].center_x, slimeList2[i].center_y, radius, arcade.color.RED)
+            slimeList2[i].draw()
 
         # Put the text on the screen.
         output = "turn: {}".format(turn)
@@ -190,10 +190,10 @@ class MyGame(arcade.Window):
         # Grow the plants
         for i in range(numPlants):
             UpgradeChance = random.randint(0,20)//1
-            if UpgradeChance > plantlist[i].level:
+            if UpgradeChance > plantList[i].level:
                 UpgradeChance = random.randint(0,20)//1
-                if UpgradeChance > plantlist[i].level:
-                    plantlist[i].level += 1
+                if UpgradeChance > plantList[i].level:
+                    plantList[i].level += 1
         
         # Call external function for player 1 slimes
         for i in range(numSlimes1):
@@ -201,37 +201,37 @@ class MyGame(arcade.Window):
             command = Player1.playerCommand(1)
             
             # Evaluate and exicute command
-            if command == "up" and slimelist1[i].y < numSpacesY:
-                slimelist1[i].y +=1
-            if command == "down" and slimelist1[i].y > 0:
-                slimelist1[i].y -=1
-            if command == "right" and slimelist1[i].x < numSpacesX:
-                slimelist1[i].x +=1
-            if command == "left" and slimelist1[i].x >0:
-                slimelist1[i].x -=1
+            if command == "up" and slimeList1[i].y < numSpacesY:
+                slimeList1[i].y +=1
+            if command == "down" and slimeList1[i].y > 0:
+                slimeList1[i].y -=1
+            if command == "right" and slimeList1[i].x < numSpacesX:
+                slimeList1[i].x +=1
+            if command == "left" and slimeList1[i].x >0:
+                slimeList1[i].x -=1
             
             # Check for collisions
             collision = 0
-            for j in range(len(plantlist)):
-                if slimelist1[i].x == plantlist[j].x and slimelist1[i].y == plantlist[j].y:
+            for j in range(len(plantList)):
+                if slimeList1[i].x == plantList[j].x and slimeList1[i].y == plantList[j].y:
                     collision = 1
-            for j in range(len(slimelist1)):
-                if slimelist1[i].x == slimelist1[j].x and slimelist1[i].y == slimelist1[j].y and not i == j:
+            for j in range(len(slimeList1)):
+                if slimeList1[i].x == slimeList1[j].x and slimeList1[i].y == slimeList1[j].y and not i == j:
                     collision = 1
-            for j in range(len(slimelist2)):
-                if slimelist1[i].x == slimelist2[j].x and slimelist1[i].y == slimelist2[j].y:
+            for j in range(len(slimeList2)):
+                if slimeList1[i].x == slimeList2[j].x and slimeList1[i].y == slimeList2[j].y:
                     collision = 1
 
             # If there is a collision revert motion
             if collision:
                 if command == "up" :
-                    slimelist1[i].y -=1
+                    slimeList1[i].y -=1
                 if command == "down":
-                    slimelist1[i].y +=1
+                    slimeList1[i].y +=1
                 if command == "right":
-                    slimelist1[i].x -=1
+                    slimeList1[i].x -=1
                 if command == "left":
-                    slimelist1[i].x +=1
+                    slimeList1[i].x +=1
 
         # Call external function for player 2 slimes
         for i in range(numSlimes2):
@@ -239,37 +239,37 @@ class MyGame(arcade.Window):
             command = Player2.playerCommand(1)
             
             # Evaluate and exicute command
-            if command == "up" and slimelist2[i].y < numSpacesY:
-                slimelist2[i].y +=1
-            if command == "down" and slimelist2[i].y > 0:
-                slimelist2[i].y -=1
-            if command == "right" and slimelist2[i].x < numSpacesX:
-                slimelist2[i].x +=1
-            if command == "left" and slimelist2[i].x >0:
-                slimelist2[i].x -=1
+            if command == "up" and slimeList2[i].y < numSpacesY:
+                slimeList2[i].y +=1
+            if command == "down" and slimeList2[i].y > 0:
+                slimeList2[i].y -=1
+            if command == "right" and slimeList2[i].x < numSpacesX:
+                slimeList2[i].x +=1
+            if command == "left" and slimeList2[i].x >0:
+                slimeList2[i].x -=1
 
             # Check for collisions
             collision = 0
-            for j in range(len(plantlist)):
-                if slimelist2[i].x == plantlist[j].x and slimelist2[i].y == plantlist[j].y:
+            for j in range(len(plantList)):
+                if slimeList2[i].x == plantList[j].x and slimeList2[i].y == plantList[j].y:
                     collision = 1
-            for j in range(len(slimelist1)):
-                if slimelist2[i].x == slimelist1[j].x and slimelist2[i].y == slimelist2[j].y and not i == j:
+            for j in range(len(slimeList1)):
+                if slimeList2[i].x == slimeList1[j].x and slimeList2[i].y == slimeList2[j].y and not i == j:
                     collision = 1
-            for j in range(len(slimelist2)):
-                if slimelist2[i].x == slimelist1[j].x and slimelist2[i].y == slimelist1[j].y:
+            for j in range(len(slimeList2)):
+                if slimeList2[i].x == slimeList1[j].x and slimeList2[i].y == slimeList1[j].y:
                     collision = 1
 
             # If there is a collision revert motion
             if collision:
                 if command == "up" :
-                    slimelist2[i].y -=1
+                    slimeList2[i].y -=1
                 if command == "down":
-                    slimelist2[i].y +=1
+                    slimeList2[i].y +=1
                 if command == "right":
-                    slimelist2[i].x -=1
+                    slimeList2[i].x -=1
                 if command == "left":
-                    slimelist2[i].x +=1
+                    slimeList2[i].x +=1
 
         # Delay to slow game down        
         time.sleep(0.1)
