@@ -8,17 +8,16 @@ class Plant(arcade.Sprite):
         self.id = id
         self.level = 1.0
         self.map = map
-        # start at random valid location
-        rand_x = random.randint(1, map.row_count() / 2)
-        rand_y = random.randint(1, map.column_count())
-        self.set_position(rand_x * map.step_x(), rand_y * map.step_y())
 
     def update(self):
         # nothin to do...yet
         pass
 
-    def set_map(self, map):
-        self.map = map
+    def set_coord(self, x, y):
+        self.x = x
+        self.y = y
+        # display
+        self.set_position(self.map.center_x(x), self.map.center_y(y))
 
     def level_up(self):
         print("plant", self.id, "leveled up!")

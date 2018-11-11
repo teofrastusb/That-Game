@@ -8,6 +8,8 @@ class Map():
         self.columns = config['screen'].getint('columns')
         self.matrix = [[0]*config['screen'].getint('columns') for i in range(config['screen'].getint('rows'))]
         self.margin = 2
+        self.step_x = self.width // (self.rows + self.margin)
+        self.step_y = self.height // (self.columns + self.margin)
 
     def get_matrix(self):
       return self.matrix
@@ -18,8 +20,11 @@ class Map():
     def column_count(self):
       return self.columns
 
-    def step_x(self):
-      return self.width // (self.rows + self.margin)
+    def center_x(self, x):
+      return (x + 1) * self.step_x
     
-    def step_y(self):
-      return self.height // (self.columns + self.margin)
+    def center_y(self, y):
+      return (y + 1) * self.step_y
+
+    def cell_empty(self, x, y):
+      return self.matrix[x][y] == 0

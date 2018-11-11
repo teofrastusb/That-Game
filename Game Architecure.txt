@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Slime Mind
 
 Each slime has the following:
@@ -30,4 +31,38 @@ Each slime has the following:
 		Merge
 			Merge - slime's merge_ready value is set to true, then checks for any adjacent slimes with merge_ready set to true, 
 				if one is found then this slime xp is set to rounddown(1.5*(sum of both slimes xp)) and the adjacent slime 
+=======
+Slime Mind
+
+Each slime has the following:
+	Attributes
+		column - The x location on the map matrix
+		row - The y location on the map matrix
+		center_x - The x location on the render screen
+		center_y - The y location on the render screen
+		health - A maximum value based on level, When health = 0 kill off the slime
+		attack - A set value based on level, upon success the targets health is reduced by attack value, 
+			 this slime will be healed by a small aboutn still based on attack, 1 xp will be earned
+		xp - Will be used to calculate level using an exponential equaiton (possible level = roundup(xp^2 - 2*xp + 1))
+		level - a number from 1 to 10 that is used to dictate the slimes attributes and end game value
+		merge_ready - a boolean for ready to merge, is set to false at the beginning of its turn
+	Commands
+		Move
+			Left
+			Right
+			Up
+			Down
+		Bite
+			Bite - Check the spaces surrounding the slime for an enemy or plant. The first one found will be attacked
+			Bite.Up - Check the square in the designated direction, enemy slime or plant in that direction will be attacked
+			Bite.Down - Check the square in the designated direction, enemy slime or plant in that direction will be attacked
+			Bite.Left - Check the square in the designated direction, enemy slime or plant in that direction will be attacked
+			Bite.Right - Check the square in the designated direction, enemy slime or plant in that direction will be attacked
+		Split
+			Split - (available at level 5) reduce slime to xp equal to rounddown(previousxp/2.2) and another slime is created in 
+				a random adjacent empty square, there is possible a chance for the extra slime to fail in being formed
+		Merge
+			Merge - slime's merge_ready value is set to true, then checks for any adjacent slimes with merge_ready set to true, 
+				if one is found then this slime xp is set to rounddown(1.5*(sum of both slimes xp)) and the adjacent slime 
+>>>>>>> 2fa30fa9851f8dc7485446a6fd6d4c8e7c3d1485
 				is killed
