@@ -13,16 +13,11 @@ import configparser
 from models.plant import Plant
 from models.slime import Slime
 from models.map import Map
+from models.commands import Commands
 
-# Import control functions
-from tet import Tet
-class Player1(Tet): 
-    def printPlayer(self):
-        print("Player1")
-
-class Player2(Tet):
-    def printPlayer(self):
-        print("Player2")
+# Import player's AIs
+from player_one import PlayerOne
+from player_two import PlayerTwo
 
 x = 0
 y = 0
@@ -71,6 +66,8 @@ class MyGame(arcade.Window):
         self.plant_list = arcade.SpriteList()
         self.all_sprites_list = arcade.SpriteList()
         self.turn = 0
+        self.player_one = PlayerOne()
+        self.player_two = PlayerTwo()
 
         arcade.set_background_color(arcade.color.ALMOND)
 
@@ -147,17 +144,16 @@ class MyGame(arcade.Window):
         
         # Call external function for player 1 slimes
         for i in range(self.conf['slimes'].getint('num_one')):
-            
-            command = Player1.playerCommand(1)
+            command = self.player_one.command_slime(self.map, {})
             
             # Evaluate and exicute command
-            if command == "up" and slimeList1[i].y < self.map.column_count():
+            if command is Commands.UP and slimeList1[i].y < self.map.column_count():
                 slimeList1[i].y +=1
-            if command == "down" and slimeList1[i].y > 0:
+            elif command is Commands.DOWN and slimeList1[i].y > 0:
                 slimeList1[i].y -=1
-            if command == "right" and slimeList1[i].x < self.map.row_count():
+            elif command is Commands.RIGHT and slimeList1[i].x < self.map.row_count():
                 slimeList1[i].x +=1
-            if command == "left" and slimeList1[i].x >0:
+            elif command is Commands.LEFT and slimeList1[i].x >0:
                 slimeList1[i].x -=1
             
             # Check for collisions
@@ -171,28 +167,28 @@ class MyGame(arcade.Window):
 
             # If there is a collision revert motion
             if collision:
-                if command == "up" :
+                if command is Commands.UP :
                     slimeList1[i].y -=1
-                if command == "down":
+                if command is Commands.DOWN:
                     slimeList1[i].y +=1
-                if command == "right":
+                if command is Commands.RIGHT:
                     slimeList1[i].x -=1
-                if command == "left":
+                if command is Commands.LEFT:
                     slimeList1[i].x +=1
 
         # Call external function for player 2 slimes
         for i in range(self.conf['slimes'].getint('num_two')):
             
-            command = Player2.playerCommand(1)
+            command = self.player_two.command_slime(self.map, {})
 
             # Evaluate and exicute command
-            if command == "up" and slimeList2[i].y < self.map.column_count():
+            if command is Commands.UP and slimeList2[i].y < self.map.column_count():
                 slimeList2[i].y +=1
-            if command == "down" and slimeList2[i].y > 0:
+            if command is Commands.DOWN and slimeList2[i].y > 0:
                 slimeList2[i].y -=1
-            if command == "right" and slimeList2[i].x < self.map.row_count():
+            if command is Commands.RIGHT and slimeList2[i].x < self.map.row_count():
                 slimeList2[i].x +=1
-            if command == "left" and slimeList2[i].x >0:
+            if command is Commands.LEFT and slimeList2[i].x >0:
                 slimeList2[i].x -=1
 
             # Check for collisions
@@ -206,13 +202,13 @@ class MyGame(arcade.Window):
 
             # If there is a collision revert motion
             if collision:
-                if command == "up" :
+                if command is Commands.UP :
                     slimeList2[i].y -=1
-                if command == "down":
+                if command is Commands.DOWN:
                     slimeList2[i].y +=1
-                if command == "right":
+                if command is Commands.RIGHT:
                     slimeList2[i].x -=1
-                if command == "left":
+                if command is Commands.LEFT:
                     slimeList2[i].x +=1
 
         # Delay to slow game down        
