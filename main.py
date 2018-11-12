@@ -8,6 +8,7 @@ import random
 import os
 import time
 import configparser
+import copy
 
 # Import classes
 from models.plant import Plant
@@ -22,33 +23,6 @@ from player_two import Player as PlayerTwo
 x = 0
 y = 0
 
-slimeList1 = arcade.SpriteList()
-slimeList2 = arcade.SpriteList()
-
-def placeSlimes(id, num_one, num_two, sprite_scaling, map):
-    # Set a given number of points in the matix to be plants spots
-    print("Placing slimes")
-
-    slimeCount = 0
-    while slimeCount < (num_one + num_two):
-        randX = random.randint(0, map.row_count() / 2 - 1)
-        randY = random.randint(0, map.column_count() - 1)
-        if map.get_matrix()[randX][randY] == 0:
-            slime = arcade.Sprite("images/slime.png", sprite_scaling)
-            slime.x = randX
-            slime.y = randY
-            slimeList1.append(slime)
-
-            slime = arcade.Sprite("images/slime.png", sprite_scaling)
-            slime.x = map.row_count() - randX
-            slime.y = map.column_count() - randY
-            slimeList2.append(slime)
-        
-            slimeCount +=2
-
-            map.get_matrix()[randX][randY] = id
-            map.get_matrix()[map.row_count() - 1 - randX][map.column_count() - 1 - randY] = id
-
 class MyGame(arcade.Window):
     """ Main application class. """
 
@@ -59,11 +33,14 @@ class MyGame(arcade.Window):
         # config
         self.width = config['screen'].getint('width')
         self.height = config['screen'].getint('height')
+        self.num_slimes = config['slimes'].getint('num_total')
         self.conf = config
 
         # initial game state
         self.map = Map(config)
         self.plant_list = arcade.SpriteList()
+        self.slimes_one = arcade.SpriteList()
+        self.slimes_two = arcade.SpriteList()
         self.all_sprites_list = arcade.SpriteList()
         self.turn = 0
         self.player_one = PlayerOne()
@@ -71,39 +48,59 @@ class MyGame(arcade.Window):
 
         arcade.set_background_color(arcade.color.ALMOND)
 
-    # Evaluate and exicute command
-    def movement(self,command,slime,column_count, row_count):
-        if command is Commands.UP and slime.y < self.map.column_count():
-            slime.y +=1
-        elif command is Commands.DOWN and slime.y > 0:
-            slime.y -=1
-        elif command is Commands.RIGHT and slime.x < self.map.row_count():
-            slime.x +=1
-        elif command is Commands.LEFT and slime.x >0:
-            slime.x -=1
-        return slime
+    def place_slimes(self):
+        print("Placing slimes")
 
-    # If there is a collision revert motion
-    def revertMovement(self,command,collision,slime):
-        if collision:
-            if command is Commands.UP :
-                slime.y -=1
-            elif command is Commands.DOWN:
-                slime.y +=1
-            elif command is Commands.RIGHT:
-                slime.x -=1
-            elif command is Commands.LEFT:
-                slime.x +=1
-        return slime
+        slimes = 0
+        while slimes < self.num_slimes:
+            randX = random.randint(1, self.map.row_count() / 2)
+            randY = random.randint(1, self.map.column_count())
+            if self.map.get_matrix()[randX][randY] == 0:
+                # player one
+                slime = Slime('fake_id', self.conf, self.map)
+                slime.set_coord(randX, randY)
+                self.slimes_one.append(slime)
+                self.all_sprites_list.append(slime)
+
+                # player two
+                slime = Slime('fake_id', self.conf, self.map)
+                slime.set_coord(self.map.row_count() - randX, self.map.column_count() - randY)
+                self.slimes_two.append(slime)
+                self.all_sprites_list.append(slime)
+
+                slimes += 2
+
+    def move(self, command, x, y):
+        if command is Commands.UP and y < self.map.column_count():
+            y += 1
+        elif command is Commands.DOWN and y > 0:
+            y -= 1
+        elif command is Commands.RIGHT and x < self.map.row_count():
+            x += 1
+        elif command is Commands.LEFT and x > 0:
+            x -= 1
+        return (x, y)
+
+    def execute_round(self, slime, player):
+        # copy the slime and map so the player can't modify them
+        copied_slime = copy.deepcopy(slime)
+        copied_map = copy.deepcopy(self.map)
+
+        command = player.command_slime(copied_map, copied_slime)
+
+        # Attempt to move the slime
+        original_x, original_y = slime.x, slime.y
+        x, y = self.move(command, slime.x, slime.y)
+        slime.set_coord(x, y)
+        
+        # If there is a collision revert move
+        hits = arcade.check_for_collision_with_list(slime, self.all_sprites_list)
+        if len(hits) > 0:
+            slime.set_coord(original_x, original_y)
 
     def setup(self):
         """ Initialize game state """
-        # place slimes
-        placeSlimes(self.conf['slimes']['id'],
-                self.conf['slimes'].getint('num_one'),
-                self.conf['slimes'].getint('num_two'),
-                self.conf['slimes'].getfloat('sprite_scaling'),
-                self.map)
+        self.place_slimes()
         # Create the plants
         for i in range(self.conf['plants'].getint('num_total')//2):
             rand_x = random.randint(1, self.map.row_count() / 2)
@@ -127,21 +124,6 @@ class MyGame(arcade.Window):
         arcade.start_render()
         self.all_sprites_list.draw()
 
-        # Draw slimes    
-        for i in range(self.conf['slimes'].getint('num_one')):
-            slimeList1[i].center_x = self.map.center_x(slimeList1[i].x)
-            slimeList1[i].center_y = self.map.center_x(slimeList1[i].y)
-            radius = (self.height//self.map.column_count())//3
-            arcade.draw_circle_filled(slimeList1[i].center_x, slimeList1[i].center_y, radius, arcade.color.BLUE)
-            slimeList1[i].draw()
-
-        for i in range(self.conf['slimes'].getint('num_two')):
-            slimeList2[i].center_x = self.map.center_x(slimeList2[i].x)
-            slimeList2[i].center_y = self.map.center_x(slimeList2[i].y)
-            radius = (self.height//self.map.column_count())//3
-            arcade.draw_circle_filled(slimeList2[i].center_x, slimeList2[i].center_y, radius, arcade.color.RED)
-            slimeList2[i].draw()
-
         # Put the text on the screen.
         output = "turn: {}".format(self.turn)
         arcade.draw_text(output, 10, 20, arcade.color.BLACK, 14)
@@ -155,47 +137,12 @@ class MyGame(arcade.Window):
         self.turn += 1
         
         # Call external function for player 1 slimes
-        for i in range(self.conf['slimes'].getint('num_one')):
-            command = self.player_one.command_slime(self.map, {})
-            
-            # Attempt to move the slime
-            slimeList1[i].x=self.movement(command,slimeList1[i],self.map.column_count(),self.map.row_count()).x
-            slimeList1[i].y=self.movement(command,slimeList1[i],self.map.column_count(),self.map.row_count()).y
-            
-            # Check for collisions
-            collision = 0
-            for j in range(len(slimeList1)):
-                if slimeList1[i].x == slimeList1[j].x and slimeList1[i].y == slimeList1[j].y and not i == j:
-                    collision = 1
-            for j in range(len(slimeList2)):
-                if slimeList1[i].x == slimeList2[j].x and slimeList1[i].y == slimeList2[j].y:
-                    collision = 1
-            
-            # If there is a collision revert motion
-            slimeList1[i].x=self.revertMovement(command,collision,slimeList1[i]).x
-            slimeList1[i].y=self.revertMovement(command,collision,slimeList1[i]).y
+        for slime in self.slimes_one:
+            self.execute_round(slime, self.player_one)
 
         # Call external function for player 2 slimes
-        for i in range(self.conf['slimes'].getint('num_two')):
-            
-            command = self.player_two.command_slime(self.map, {})
-
-            # Attempt to move the slime
-            slimeList2[i].x=self.movement(command,slimeList2[i],self.map.column_count(),self.map.row_count()).x
-            slimeList2[i].y=self.movement(command,slimeList2[i],self.map.column_count(),self.map.row_count()).y
-
-            # Check for collisions
-            collision = 0
-            for j in range(len(slimeList1)):
-                if slimeList2[i].x == slimeList1[j].x and slimeList2[i].y == slimeList2[j].y and not i == j:
-                    collision = 1
-            for j in range(len(slimeList2)):
-                if slimeList2[i].x == slimeList1[j].x and slimeList2[i].y == slimeList1[j].y:
-                    collision = 1
-
-            # If there is a collision revert motion
-            slimeList2[i].x=self.revertMovement(command,collision,slimeList2[i]).x
-            slimeList2[i].y=self.revertMovement(command,collision,slimeList2[i]).y
+        for slime in self.slimes_two:
+            self.execute_round(slime, self.player_two)
 
         # Delay to slow game down        
         time.sleep(0.1)
