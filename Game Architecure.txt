@@ -46,3 +46,22 @@ Each plant has the following:
 			decreasing chance at higher levels, every time a plant levels up half of its max health is returned to it
 		seed_ready - available at level 20, every turn the plant checks if it is level 20, if it is it has a small chance to drop a 
 			     level 1 plant in a random empty adjacent square
+
+Gameplay
+	Plants
+		Every turn each plant has a chance to grow to the next level, and all level 20 plants have a chance to seed a new plant in 
+		an empty adjacent location
+	Slimes
+		Every turn each slime will move according to its player AI. Then the map will be updated acording to its commands. Then the 
+		next slime in the list will make its move until all slimes have gone.
+	Mechanics
+		Every turn the map is generated with the current location of all objects on the map, then a slime is slected and passed the 
+		map, the slime makes a command based on the player AI, then the map is updated again, this continues until all slimes have 
+		moved, then the map is rendered, then the turn ends
+
+		This process continues for 1000 turns then the map is used to calculate the score for each player and a report on the game 
+		is generated that outlines the scores of each player, number of slimes, max level slime, number of slimes killed, and number 
+		of merges
+
+		Alternetly we could make the game run fully and then save a list or sereis of lists into a new file to allow it to be 
+		replayed, this way a large number of games could be run back to back.
