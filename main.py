@@ -154,11 +154,7 @@ class MyGame(arcade.Window):
         # Grow plants
         for plant in self.plant_list:
             # Chance to level up plant that gets smaller at higher levels
-            UpgradeChance = random.randint(0,20)
-            if UpgradeChance > plant.level:
-                UpgradeChance = random.randint(0,20)
-                if UpgradeChance > plant.level:
-                    Plant.level_up(plant)
+            Plant.level_up(plant)
 
         # Turn counter
         self.turn += 1
