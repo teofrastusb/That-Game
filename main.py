@@ -132,8 +132,8 @@ class MyGame(arcade.Window):
         self.all_sprites_list.draw()
 
         # Draw a grid based on map.py center_x and center_y functions
-        for row in range(2):
-            for column in range(2):
+        for row in range(15):
+            for column in range(30):
                 # Figure out what color to draw the box
                 color = arcade.color.ALMOND
 
