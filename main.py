@@ -107,11 +107,13 @@ class MyGame(arcade.Window):
         original_x, original_y = slime.x, slime.y
         x, y = self.move(command, slime.x, slime.y)
         slime.set_coord(x, y)
+        self.map.clear_cell(original_x, original_y)
         
         # If there is a collision revert move
         hits = arcade.check_for_collision_with_list(slime, self.all_sprites_list)
         if len(hits) > 0:
             slime.set_coord(original_x, original_y)
+            self.map.clear_cell(x, y)
 
     def setup(self):
         """ Initialize game state """
