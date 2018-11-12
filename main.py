@@ -15,9 +15,9 @@ from models.slime import Slime
 from models.map import Map
 from models.commands import Commands
 
-# Import player's AIs
-from player_one import PlayerOne
-from player_two import PlayerTwo
+# Import player's AIs, it would be great if we could make the program pick the player files to import from but hand enetering for now is fine.
+from player_one import Player as PlayerOne
+from player_two import Player as PlayerTwo
 
 x = 0
 y = 0

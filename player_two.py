@@ -1,6 +1,7 @@
 from models.player_base import PlayerBase
 
-class PlayerTwo(PlayerBase):
+# All codes could use the same class name
+class Player(PlayerBase):
     # example player AI
     def command_slime(self, map, slime):
         # just do default
