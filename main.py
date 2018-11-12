@@ -20,9 +20,6 @@ from models.commands import Commands
 from player_one import Player as PlayerOne
 from player_two import Player as PlayerTwo
 
-x = 0
-y = 0
-
 class MyGame(arcade.Window):
     """ Main application class. """
 
@@ -53,9 +50,9 @@ class MyGame(arcade.Window):
 
         slimes = 0
         while slimes < self.num_slimes:
-            randX = random.randint(1, self.map.row_count() / 2)
-            randY = random.randint(1, self.map.column_count())
-            if self.map.get_matrix()[randX][randY] == 0:
+            randX = random.randint(1, self.map.row_count() / 2 - 1)
+            randY = random.randint(1, self.map.column_count() - 1)
+            if self.map.cell_empty(randX, randY):
                 # player one
                 slime = Slime('fake_id', self.conf, self.map)
                 slime.set_coord(randX, randY)
@@ -71,40 +68,38 @@ class MyGame(arcade.Window):
                 slimes += 2
 
     def move(self, command, x, y):
-        if command is Commands.UP and y < self.map.column_count():
+        print('going to move:', x, y)
+        if command is Commands.UP and y < self.map.column_count() - 1:
             y += 1
         elif command is Commands.DOWN and y > 0:
             y -= 1
-        elif command is Commands.RIGHT and x < self.map.row_count():
+        elif command is Commands.RIGHT and x < self.map.row_count() - 1:
             x += 1
         elif command is Commands.LEFT and x > 0:
             x -= 1
         return (x, y)
 
     def execute_round(self, slime, player):
-        # copy the slime and map so the player can't modify them
-        copied_slime = copy.deepcopy(slime)
-        copied_map = copy.deepcopy(self.map)
-
-        command = player.command_slime(copied_map, copied_slime)
-
+        command = player.command_slime(self.map, slime)
         # Attempt to move the slime
         original_x, original_y = slime.x, slime.y
         x, y = self.move(command, slime.x, slime.y)
         slime.set_coord(x, y)
+        self.map.clear_cell(original_x, original_y)
         
         # If there is a collision revert move
         hits = arcade.check_for_collision_with_list(slime, self.all_sprites_list)
         if len(hits) > 0:
             slime.set_coord(original_x, original_y)
+            self.map.clear_cell(x, y)
 
     def setup(self):
         """ Initialize game state """
         self.place_slimes()
         # Create the plants
         for i in range(self.conf['plants'].getint('num_total')//2):
-            rand_x = random.randint(1, self.map.row_count() / 2)
-            rand_y = random.randint(1, self.map.column_count())
+            rand_x = random.randint(1, self.map.row_count() / 2 - 1)
+            rand_y = random.randint(1, self.map.column_count() - 1)
             # left half
             plant = Plant(i, self.conf, self.map)
             plant.set_coord(rand_x, rand_y)
