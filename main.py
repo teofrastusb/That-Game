@@ -133,6 +133,8 @@ class MyGame(arcade.Window):
         # allow all sprites to handle their own update
         self.all_sprites_list.update()
 
+        # Add sprite manager, and map manager
+
         # Turn counter
         self.turn += 1
         
@@ -140,9 +142,13 @@ class MyGame(arcade.Window):
         for slime in self.slimes_one:
             self.execute_round(slime, self.player_one)
 
+            # Add sprite manager, and map manager
+
         # Call external function for player 2 slimes
         for slime in self.slimes_two:
             self.execute_round(slime, self.player_two)
+
+            # Add sprite manager, and map manager
 
         # Delay to slow game down        
         time.sleep(0.1)
