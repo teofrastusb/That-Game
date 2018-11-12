@@ -83,6 +83,19 @@ class MyGame(arcade.Window):
             slime.x -=1
         return slime
 
+    # If there is a collision revert motion
+    def revertMovement(self,command,collision,slime):
+        if collision:
+            if command is Commands.UP :
+                slime.y -=1
+            elif command is Commands.DOWN:
+                slime.y +=1
+            elif command is Commands.RIGHT:
+                slime.x -=1
+            elif command is Commands.LEFT:
+                slime.x +=1
+        return slime
+
     def setup(self):
         """ Initialize game state """
         # place slimes
@@ -158,6 +171,7 @@ class MyGame(arcade.Window):
         for i in range(self.conf['slimes'].getint('num_one')):
             command = self.player_one.command_slime(self.map, {})
             
+            # Attempt to move the slime
             slimeList1[i].x=MyGame.movement(self,command,slimeList1[i],self.map.column_count(),self.map.row_count()).x
             slimeList1[i].y=MyGame.movement(self,command,slimeList1[i],self.map.column_count(),self.map.row_count()).y
             
@@ -169,23 +183,17 @@ class MyGame(arcade.Window):
             for j in range(len(slimeList2)):
                 if slimeList1[i].x == slimeList2[j].x and slimeList1[i].y == slimeList2[j].y:
                     collision = 1
-
+            
             # If there is a collision revert motion
-            if collision:
-                if command is Commands.UP :
-                    slimeList1[i].y -=1
-                if command is Commands.DOWN:
-                    slimeList1[i].y +=1
-                if command is Commands.RIGHT:
-                    slimeList1[i].x -=1
-                if command is Commands.LEFT:
-                    slimeList1[i].x +=1
+            slimeList1[i].x = MyGame.revertMovement(self,command,collision,slimeList1[i]).x
+            slimeList1[i].y = MyGame.revertMovement(self,command,collision,slimeList1[i]).y
 
         # Call external function for player 2 slimes
         for i in range(self.conf['slimes'].getint('num_two')):
             
             command = self.player_two.command_slime(self.map, {})
 
+            # Attempt to move the slime
             slimeList2[i].x=MyGame.movement(self,command,slimeList2[i],self.map.column_count(),self.map.row_count()).x
             slimeList2[i].y=MyGame.movement(self,command,slimeList2[i],self.map.column_count(),self.map.row_count()).y
 
@@ -199,15 +207,8 @@ class MyGame(arcade.Window):
                     collision = 1
 
             # If there is a collision revert motion
-            if collision:
-                if command is Commands.UP :
-                    slimeList2[i].y -=1
-                if command is Commands.DOWN:
-                    slimeList2[i].y +=1
-                if command is Commands.RIGHT:
-                    slimeList2[i].x -=1
-                if command is Commands.LEFT:
-                    slimeList2[i].x +=1
+            slimeList2[i].x = MyGame.revertMovement(self,command,collision,slimeList2[i]).x
+            slimeList2[i].y = MyGame.revertMovement(self,command,collision,slimeList2[i]).y
 
         # Delay to slow game down        
         time.sleep(0.1)
