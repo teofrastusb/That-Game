@@ -8,8 +8,8 @@ class Map():
         self.columns = config['screen'].getint('columns')
         self.matrix = [[0] * config['screen'].getint('columns') for i in range(config['screen'].getint('rows'))]
         self.margin = 2
-        self.step_x = self.width // (self.rows + self.margin)
-        self.step_y = self.height // (self.columns + self.margin)
+        self.step_x = self.width // (self.rows)
+        self.step_y = self.height // (self.columns)
 
     def get_matrix(self):
       return self.matrix
@@ -21,10 +21,10 @@ class Map():
       return self.columns
 
     def center_x(self, x):
-      return (x + 1) * self.step_x
+      return (x + 1/2) * self.step_x
     
     def center_y(self, y):
-      return (y + 1) * self.step_y
+      return (y + 1/2) * self.step_y
 
     def cell_empty(self, x, y):
       return self.matrix[x][y] == 0

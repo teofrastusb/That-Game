@@ -52,8 +52,8 @@ class MyGame(arcade.Window):
 
         slimes = 0
         while slimes < self.num_slimes:
-            randX = random.randint(1, self.map.row_count() / 2 - 1)
-            randY = random.randint(1, self.map.column_count() - 1)
+            randX = random.randint(1, self.map.row_count() / 2 -1)
+            randY = random.randint(1, self.map.column_count() -1)
             if self.map.get_matrix()[randX][randY] == 0:
                 # player one
                 slime = Slime('fake_id', self.conf, self.map)
@@ -135,14 +135,13 @@ class MyGame(arcade.Window):
                 color = arcade.color.ALMOND
 
                 # Do the math to figure out where the box is
-                x_box = (1200/30) * (column) + (1200/30)//2
-                y_box = (600/15)* (row) + (1200/30)//2
+                x_box = (1200/30) * (column) + (1200/30)/2
+                y_box = (600/15)* (row) + (600.0/15)/2
 
                 # Draw the box
-                arcade.draw_rectangle_filled(x_box, y_box, self.map.step_x-5, self.map.step_y-5, color)
+                arcade.draw_rectangle_filled(x_box, y_box, 1200/30-4, 600/15-4, color)
 
-
-                #arcade.draw_rectangle_filled((600/15)/2, (1200/30)/2, self.map.step_x-5, self.map.step_y-5, color)
+        self.all_sprites_list.draw()
 
         # Put the text on the screen.
         output = "turn: {}".format(self.turn)
