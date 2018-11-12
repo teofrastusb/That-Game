@@ -7,8 +7,7 @@ class Plant(arcade.Sprite):
                          config['plants'].getfloat('sprite_scaling'))
         self.id = id
         self.level = 1
-        self.map = map 
-        # Why cant I put these next two lines into the init method instead of the super init method 
+        self.map = map
         self.max_hp = config['plants'].getint('max_hp')
         self.hp = self.max_hp
         self.max_level = config['plants'].getint('max_level')
@@ -22,6 +21,7 @@ class Plant(arcade.Sprite):
     def set_coord(self, x, y):
         self.x = x
         self.y = y
+        self.map.update_cell(self, x, y)
         # display
         self.set_position(self.map.center_x(x), self.map.center_y(y))
 
