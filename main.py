@@ -151,18 +151,14 @@ class MyGame(arcade.Window):
         # allow all sprites to handle their own update
         self.all_sprites_list.update()
 
-        # handle collisions
-        # TODO: include slimes
+        # Grow plants
         for plant in self.plant_list:
-            # TODO: I think this should be all_sprites_list once we add in slimes to it
-            # level up plant for everything it hits that isn't a plant or on a chance basis?
-            hits = arcade.check_for_collision_with_list(plant, slimeList1)
-            hits = hits + arcade.check_for_collision_with_list(plant, slimeList2)
-            for hit in hits:
-                if not isinstance(hit, Plant):
-                    plant.level_up()
-
-        UpgradeChance = 0
+            # Chance to level up plant that gets smaller at higher levels
+            UpgradeChance = random.randint(0,20)
+            if UpgradeChance > plant.level:
+                UpgradeChance = random.randint(0,20)
+                if UpgradeChance > plant.level:
+                    plant.level += 1
 
         # Turn counter
         self.turn += 1
@@ -172,8 +168,8 @@ class MyGame(arcade.Window):
             command = self.player_one.command_slime(self.map, {})
             
             # Attempt to move the slime
-            slimeList1[i].x=MyGame.movement(self,command,slimeList1[i],self.map.column_count(),self.map.row_count()).x
-            slimeList1[i].y=MyGame.movement(self,command,slimeList1[i],self.map.column_count(),self.map.row_count()).y
+            slimeList1[i].x=self.movement(command,slimeList1[i],self.map.column_count(),self.map.row_count()).x
+            slimeList1[i].y=self.movement(command,slimeList1[i],self.map.column_count(),self.map.row_count()).y
             
             # Check for collisions
             collision = 0
@@ -185,8 +181,8 @@ class MyGame(arcade.Window):
                     collision = 1
             
             # If there is a collision revert motion
-            slimeList1[i].x = MyGame.revertMovement(self,command,collision,slimeList1[i]).x
-            slimeList1[i].y = MyGame.revertMovement(self,command,collision,slimeList1[i]).y
+            slimeList1[i].x=(MyGame.revertMovement(self,command,collision,slimeList1[i])).x
+            slimeList1[i].y=(MyGame.revertMovement(self,command,collision,slimeList1[i])).y
 
         # Call external function for player 2 slimes
         for i in range(self.conf['slimes'].getint('num_two')):
@@ -206,9 +202,11 @@ class MyGame(arcade.Window):
                 if slimeList2[i].x == slimeList1[j].x and slimeList2[i].y == slimeList1[j].y:
                     collision = 1
 
+                    collision = 1
+
             # If there is a collision revert motion
-            slimeList2[i].x = MyGame.revertMovement(self,command,collision,slimeList2[i]).x
-            slimeList2[i].y = MyGame.revertMovement(self,command,collision,slimeList2[i]).y
+            slimeList2[i].x=MyGame.revertMovement(self,command,collision,slimeList2[i]).x
+            slimeList2[i].y=MyGame.revertMovement(self,command,collision,slimeList2[i]).y
 
         # Delay to slow game down        
         time.sleep(0.1)
