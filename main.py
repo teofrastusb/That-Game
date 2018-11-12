@@ -158,7 +158,7 @@ class MyGame(arcade.Window):
             if UpgradeChance > plant.level:
                 UpgradeChance = random.randint(0,20)
                 if UpgradeChance > plant.level:
-                    plant.level += 1
+                    Plant.level_up(plant)
 
         # Turn counter
         self.turn += 1
@@ -181,8 +181,8 @@ class MyGame(arcade.Window):
                     collision = 1
             
             # If there is a collision revert motion
-            slimeList1[i].x=(self.revertMovement(command,collision,slimeList1[i])).x
-            slimeList1[i].y=(self.revertMovement(command,collision,slimeList1[i])).y
+            slimeList1[i].x=self.revertMovement(command,collision,slimeList1[i]).x
+            slimeList1[i].y=self.revertMovement(command,collision,slimeList1[i]).y
 
         # Call external function for player 2 slimes
         for i in range(self.conf['slimes'].getint('num_two')):
@@ -200,8 +200,6 @@ class MyGame(arcade.Window):
                     collision = 1
             for j in range(len(slimeList2)):
                 if slimeList2[i].x == slimeList1[j].x and slimeList2[i].y == slimeList1[j].y:
-                    collision = 1
-
                     collision = 1
 
             # If there is a collision revert motion
