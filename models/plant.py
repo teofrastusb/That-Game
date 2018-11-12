@@ -12,10 +12,12 @@ class Plant(arcade.Sprite):
         self.max_hp = config['plants'].getint('max_hp')
         self.hp = self.max_hp
         self.max_level = config['plants'].getint('max_level')
+        self.ready_to_seed = 0
 
     def update(self):
-        # nothin to do...yet
-        pass
+        # Level up the plants and check to see if the plants are ready to seed
+        self.level_up()
+        self.seed_check()
 
     def set_coord(self, x, y):
         self.x = x
@@ -39,8 +41,6 @@ class Plant(arcade.Sprite):
         if do_level_up:
             self.level += 1
 
-            print("plant", self.id, "leveled up to",self.level,"!")
-
             # Change max hp on level up
             self.max_hp += self.max_hp//2
 
@@ -49,8 +49,10 @@ class Plant(arcade.Sprite):
             if self.hp >= self.max_hp:
                 self.hp = self.max_hp
 
-    def seed(self):
+    def seed_check(self):
         # Check if the plant is level 20
-        pass
+        if self.level == self.max_level:
+            self.ready_to_seed = 1
+            print("plant",self.id,"is ready to seed ;)")
 
 

@@ -151,11 +151,6 @@ class MyGame(arcade.Window):
         # allow all sprites to handle their own update
         self.all_sprites_list.update()
 
-        # Grow plants
-        for plant in self.plant_list:
-            # Chance to level up plant that gets smaller at higher levels
-            Plant.level_up(plant)
-
         # Turn counter
         self.turn += 1
         
