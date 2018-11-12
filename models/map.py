@@ -27,7 +27,6 @@ class Map():
       return (y + 1) * self.step_y
 
     def cell_empty(self, x, y):
-      self.matrix[x][y]
       return self.matrix[x][y] == 0
     
     def update_cell(self, gamepiece, x, y):
