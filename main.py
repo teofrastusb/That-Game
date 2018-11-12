@@ -138,8 +138,8 @@ class MyGame(arcade.Window):
                 color = arcade.color.ALMOND
 
                 # Do the math to figure out where the box is
-                x_box = (1200/30)/2 * (column+1) 
-                y_box = (600/15)/2 * (row+1) 
+                x_box = (1200/30) * (column) + (1200/30)//2
+                y_box = (600/15)* (row) + (1200/30)//2
 
                 # Draw the box
                 arcade.draw_rectangle_filled(x_box, y_box, self.map.step_x-5, self.map.step_y-5, color)
