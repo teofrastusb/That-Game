@@ -46,7 +46,7 @@ class MyGame(arcade.Window):
         self.player_one = PlayerOne()
         self.player_two = PlayerTwo()
 
-        arcade.set_background_color(arcade.color.ALMOND)
+        arcade.set_background_color(arcade.color.BLACK)
 
     def place_slimes(self):
         print("Placing slimes")
@@ -69,6 +69,26 @@ class MyGame(arcade.Window):
                 self.all_sprites_list.append(slime)
 
                 slimes += 2
+
+    def place_plants(self):
+        print("Placing plants")
+        # Create the plants
+        for i in range(self.conf['plants'].getint('num_total')//2):
+            rand_x = random.randint(1, self.map.row_count() / 2)
+            rand_y = random.randint(1, self.map.column_count())
+            # left half
+            plant = Plant(i, self.conf, self.map)
+            plant.set_coord(rand_x, rand_y)
+            self.all_sprites_list.append(plant)
+            self.plant_list.append(plant)
+
+            # mirrored across x and y axis for right half
+            plant = Plant(i, self.conf, self.map)
+            plant.set_coord(self.map.row_count() - rand_x,self.map.column_count() - rand_y)
+            self.all_sprites_list.append(plant)
+            self.plant_list.append(plant)
+
+
 
     def move(self, command, x, y):
         if command is Commands.UP and y < self.map.column_count():
@@ -101,21 +121,8 @@ class MyGame(arcade.Window):
     def setup(self):
         """ Initialize game state """
         self.place_slimes()
-        # Create the plants
-        for i in range(self.conf['plants'].getint('num_total')//2):
-            rand_x = random.randint(1, self.map.row_count() / 2)
-            rand_y = random.randint(1, self.map.column_count())
-            # left half
-            plant = Plant(i, self.conf, self.map)
-            plant.set_coord(rand_x, rand_y)
-            self.all_sprites_list.append(plant)
-            self.plant_list.append(plant)
-
-            # mirrored across x and y axis for right half
-            plant = Plant(i, self.conf, self.map)
-            plant.set_coord(self.map.row_count() - rand_x,self.map.column_count() - rand_y)
-            self.all_sprites_list.append(plant)
-            self.plant_list.append(plant)
+        self.place_plants()
+        
 
     def on_draw(self):
         """
@@ -123,6 +130,22 @@ class MyGame(arcade.Window):
         """
         arcade.start_render()
         self.all_sprites_list.draw()
+
+        # Draw a grid based on map.py center_x and center_y functions
+        for row in range(2):
+            for column in range(2):
+                # Figure out what color to draw the box
+                color = arcade.color.ALMOND
+
+                # Do the math to figure out where the box is
+                x_box = (1200/30)/2 * (column+1) 
+                y_box = (600/15)/2 * (row+1) 
+
+                # Draw the box
+                arcade.draw_rectangle_filled(x_box, y_box, self.map.step_x-5, self.map.step_y-5, color)
+
+
+                #arcade.draw_rectangle_filled((600/15)/2, (1200/30)/2, self.map.step_x-5, self.map.step_y-5, color)
 
         # Put the text on the screen.
         output = "turn: {}".format(self.turn)
@@ -151,7 +174,7 @@ class MyGame(arcade.Window):
             # Add sprite manager, and map manager
 
         # Delay to slow game down        
-        time.sleep(0.1)
+        time.sleep(0.01)
 
 def main():
     config = configparser.ConfigParser()
