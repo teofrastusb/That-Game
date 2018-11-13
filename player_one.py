@@ -6,4 +6,4 @@ class Player(PlayerBase):
     # example player AI
     def command_slime(self, map, slime):
         # reaaaaal dumb AI
-        return Commands.LEFT
+        return Commands.RIGHT

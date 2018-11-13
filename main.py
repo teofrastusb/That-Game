@@ -14,6 +14,7 @@ from models.plant import Plant
 from models.slime import Slime
 from models.map import Map
 from models.commands import Commands
+from models.sprite_man import Sprite_man
 
 # Import player's AIs, it would be great if we could make the program pick the player files to import from but hand enetering for now is fine.
 from player_one import Player as PlayerOne
@@ -40,6 +41,7 @@ class MyGame(arcade.Window):
         self.plant_list = arcade.SpriteList()
         self.slimes_one = arcade.SpriteList()
         self.slimes_two = arcade.SpriteList()
+        self.sprite_man = Sprite_man(self.plant_list,self.slimes_one,self.slimes_two)
         self.all_sprites_list = arcade.SpriteList()
         self.turn = 0
         self.player_one = PlayerOne()
@@ -126,7 +128,6 @@ class MyGame(arcade.Window):
         Render the screen.
         """
         arcade.start_render()
-        self.all_sprites_list.draw()
 
         # Draw a grid based on map.py center_x and center_y functions
         for row in range(self.map.columns):
@@ -143,31 +144,37 @@ class MyGame(arcade.Window):
 
         self.all_sprites_list.draw()
 
+
         # Put the text on the screen.
         output = "turn: {}".format(self.turn)
         arcade.draw_text(output, 10, 20, arcade.color.BLACK, 14)
 
     def update(self, delta_time):
         """ Movement and game logic """
+        # Turn counter
+        self.turn += 1
+        
         # allow all sprites to handle their own update
         self.all_sprites_list.update()
 
         # Add sprite manager
+        self.sprite_man.check_for_dead()
 
-        # Turn counter
-        self.turn += 1
+        
         
         # Call external function for player 1 slimes
         for slime in self.slimes_one:
             self.execute_round(slime, self.player_one)
 
             # Add sprite manager
+            self.sprite_man.check_for_dead()
 
         # Call external function for player 2 slimes
         for slime in self.slimes_two:
             self.execute_round(slime, self.player_two)
 
             # Add sprite manager
+            self.sprite_man.check_for_dead()
 
         # Delay to slow game down        
         time.sleep(0.1)

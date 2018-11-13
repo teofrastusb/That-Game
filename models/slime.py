@@ -11,6 +11,7 @@ class Slime(arcade.Sprite):
         self.xp = 0
         self.current_hp = config['slimes'].getint('max_hp')
         self.max_hp = config['slimes'].getint('max_hp')
+        self.attack = config['slimes'].getint('attack')
 
     def update(self):
         # nothin to do...yet

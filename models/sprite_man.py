@@ -1,11 +1,10 @@
 import arcade
 
 class Sprite_man():
-    def __init__(self, id, config, map):
-
-        self.id = id
-        self.map = map
-
+    def __init__(self, plant_list, slimes_one, slimes_two):
+        self.plant_list = plant_list
+        self.slimes_one = slimes_one
+        self.slimes_two = slimes_two
 
     def update(self):
         # nothin to do...yet
@@ -16,10 +15,18 @@ class Sprite_man():
         self.kill_list = []
 
         for plant in self.plant_list:
-            if plant.hp == 0
+            if plant.current_hp == 0:
                 self.kill_list.append(plant)
-                
-        self.plant_list = arcade.SpriteList()
-        self.slimes_one = arcade.SpriteList()
-        self.slimes_two = arcade.SpriteList()
-        self.all_sprites_list = arcade.SpriteList()
+
+        for slime in self.slimes_one:
+            if slime.current_hp == 0:
+                self.kill_list.append(slime)
+
+        for slime in self.slimes_two:
+            if slime.current_hp == 0:
+                self.kill_list.append(slime)
+
+        """
+        for gamepiece in self.kill_list:
+            self.kill(gamepiece)
+        """
