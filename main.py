@@ -73,8 +73,8 @@ class MyGame(arcade.Window):
         print("Placing plants")
         # Create the plants
         for i in range(self.conf['plants'].getint('num_total')//2):
-            rand_x = random.randint(1, self.map.row_count() / 2 - 1)
-            rand_y = random.randint(1, self.map.column_count() - 1)
+            rand_x = random.randint(0, self.map.row_count() / 2 -1)
+            rand_y = random.randint(0, self.map.column_count()-1 )
             # left half
             plant = Plant(i, self.conf, self.map)
             plant.set_coord(rand_x, rand_y)
@@ -83,7 +83,7 @@ class MyGame(arcade.Window):
 
             # mirrored across x and y axis for right half
             plant = Plant(i, self.conf, self.map)
-            plant.set_coord(self.map.row_count() - rand_x,self.map.column_count() - rand_y)
+            plant.set_coord((self.map.row_count()-1) - rand_x,(self.map.column_count()-1) - rand_y)
             self.all_sprites_list.append(plant)
             self.plant_list.append(plant)
 
@@ -129,17 +129,17 @@ class MyGame(arcade.Window):
         self.all_sprites_list.draw()
 
         # Draw a grid based on map.py center_x and center_y functions
-        for row in range(15):
-            for column in range(30):
+        for row in range(self.map.columns):
+            for column in range(self.map.rows):
                 # Figure out what color to draw the box
                 color = arcade.color.ALMOND
 
                 # Do the math to figure out where the box is
-                x_box = (1200/30) * (column) + (1200/30)/2
-                y_box = (600/15)* (row) + (600.0/15)/2
+                x_box = (self.map.width/self.map.rows) * (column) + (self.map.width/self.map.rows)/2
+                y_box = (self.map.height/self.map.columns)* (row) + (self.map.height/self.map.columns)/2
 
                 # Draw the box
-                arcade.draw_rectangle_filled(x_box, y_box, 1200/30-4, 600/15-4, color)
+                arcade.draw_rectangle_filled(x_box, y_box, self.map.width/self.map.rows-2, self.map.height/self.map.columns-2, color)
 
         self.all_sprites_list.draw()
 
@@ -152,7 +152,7 @@ class MyGame(arcade.Window):
         # allow all sprites to handle their own update
         self.all_sprites_list.update()
 
-        # Add sprite manager, and map manager
+        # Add sprite manager
 
         # Turn counter
         self.turn += 1
@@ -161,16 +161,16 @@ class MyGame(arcade.Window):
         for slime in self.slimes_one:
             self.execute_round(slime, self.player_one)
 
-            # Add sprite manager, and map manager
+            # Add sprite manager
 
         # Call external function for player 2 slimes
         for slime in self.slimes_two:
             self.execute_round(slime, self.player_two)
 
-            # Add sprite manager, and map manager
+            # Add sprite manager
 
         # Delay to slow game down        
-        time.sleep(0.01)
+        time.sleep(0.1)
 
 def main():
     config = configparser.ConfigParser()

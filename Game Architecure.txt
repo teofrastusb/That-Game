@@ -9,8 +9,8 @@ Each slime has the following:
 		center_y - The y location on the render screen
 		max_health - A maximum value based on level
 		current_health - When health = 0 kill off the slime
-		attack - A set value based on level, upon success the targets health is reduced by attack value, 
-			 this slime will be healed by a small aboutn still based on attack, 1 xp will be earned
+		attack - A set value based on level, upon success the targets health is reduced by attack value, this slime will be healed 
+			 by a small about if the target was a plant still based on attack, 1 xp will be earned
 		xp - Will be used to calculate level using an exponential equaiton (possible level = roundup(xp^2 - 2*xp + 1))
 		level - a number from 1 to 10 that is used to dictate the slimes attributes and end game value
 		merge_ready - a boolean for ready to merge, is set to false at the beginning of its turn
