@@ -105,17 +105,28 @@ class MyGame(arcade.Window):
     def execute_round(self, slime, player):
         command = player.command_slime(self.map, slime)
 
-        # Attempt to move the slime
-        original_x, original_y = slime.x, slime.y
-        x, y = self.move(command, slime.x, slime.y)
-        slime.set_coord(x, y)
-        self.map.clear_cell(original_x, original_y)
-        
-        # If there is a collision revert move
-        hits = arcade.check_for_collision_with_list(slime, self.all_sprites_list)
-        if len(hits) > 0:
-            slime.set_coord(original_x, original_y)
-            self.map.clear_cell(x, y)
+        # Check for move commands
+        if command is Commands.UP or Commands.DOWN or Commands.LEFT or Commands.RIGHT:
+            # Attempt to move the slime
+            original_x, original_y = slime.x, slime.y
+            x, y = self.move(command, slime.x, slime.y)
+            slime.set_coord(x, y)
+            self.map.clear_cell(original_x, original_y)
+            
+            # If there is a collision revert move
+            hits = arcade.check_for_collision_with_list(slime, self.all_sprites_list)
+            if len(hits) > 0:
+                slime.set_coord(original_x, original_y)
+                self.map.clear_cell(x, y)
+
+        # Check for bite commands
+        if command is Commands.BITE or Commands.BITEUP or Commands.BITEDOWN or Commands.BITELEFT or Commands.BITERIGHT:
+            # TODO Attempt to bite things
+            pass
+
+        # TODO Check for split command
+
+        # TODO Check for merge command
 
     def setup(self):
         """ Initialize game state """
@@ -160,7 +171,6 @@ class MyGame(arcade.Window):
         # Add sprite manager
         self.sprite_man.check_for_dead()
 
-        
         
         # Call external function for player 1 slimes
         for slime in self.slimes_one:

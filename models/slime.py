@@ -18,7 +18,7 @@ class Slime(arcade.Sprite):
         self.attack_increment = self.attack
 
     def update(self):
-        # nothin to do...yet
+        # Check level, then ...
         self.level_up()
 
     def set_coord(self, x, y):
