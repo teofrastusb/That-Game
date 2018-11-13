@@ -11,6 +11,7 @@ class Plant(arcade.Sprite):
         self.max_hp = config['plants'].getint('max_hp')
         self.current_hp = self.max_hp
         self.max_level = config['plants'].getint('max_level')
+        self.hp_increment = self.max_level
         self.ready_to_seed = 0
 
     def update(self):
@@ -42,7 +43,7 @@ class Plant(arcade.Sprite):
             self.level += 1
 
             # Change max hp on level up
-            self.max_hp += self.max_hp//2
+            self.max_hp += self.hp_increment
 
             # Add hp on level up
             self.current_hp += self.max_hp//2
