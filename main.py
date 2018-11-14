@@ -20,9 +20,6 @@ from models.sprite_man import Sprite_man
 from player_one import Player as PlayerOne
 from player_two import Player as PlayerTwo
 
-x = 0
-y = 0
-
 class MyGame(arcade.Window):
     """ Main application class. """
 
@@ -60,14 +57,12 @@ class MyGame(arcade.Window):
                 # player one
                 slime = Slime('fake_id', self.conf, self.map)
                 slime.set_coord(randX, randY)
-                self.player = 1
                 self.slimes_one.append(slime)
                 self.all_sprites_list.append(slime)
 
                 # player two
                 slime = Slime('fake_id', self.conf, self.map)
                 slime.set_coord(self.map.column_count() - randX, self.map.row_count() - randY)
-                self.player = 2
                 self.slimes_two.append(slime)
                 self.all_sprites_list.append(slime)
 
@@ -139,7 +134,7 @@ class MyGame(arcade.Window):
         #print('Slime for player',slime.player,' has command',command)
 
         # Check for move commands
-        if command is Commands.UP or command is Commands.DOWN or command is Commands.LEFT or command is Commands.RIGHT:
+        if command.is_move():
             # print('move loop')
             # Attempt to move the slime
             original_x, original_y = slime.x, slime.y
@@ -154,8 +149,7 @@ class MyGame(arcade.Window):
                 self.map.clear_cell(x, y)
 
         # Check for bite commands
-        if (command == Commands.BITE or command is Commands.BITEUP or command is Commands.BITEDOWN or 
-            command is Commands.BITELEFT or command is Commands.BITERIGHT):
+        if (command.is_bite()):
             #print("bite_thing")
             # Attempt to bite things
             self.bite_thing(command, slime.x, slime.y, slime.player, slime.attack)
@@ -168,14 +162,8 @@ class MyGame(arcade.Window):
         """ Initialize game state """
         self.place_slimes()
         self.place_plants()
-        
 
-    def on_draw(self):
-        """
-        Render the screen.
-        """
-        arcade.start_render()
-
+    def draw_grid(self):
         # Draw a grid based on map.py center_x and center_y functions
         for row in range(self.map.rows):
             for column in range(self.map.columns):
@@ -189,8 +177,13 @@ class MyGame(arcade.Window):
                 # Draw the box
                 arcade.draw_rectangle_filled(x_box, y_box, self.map.width/self.map.columns-2, self.map.height/self.map.rows-2, color)
 
+    def on_draw(self):
+        """
+        Render the screen.
+        """
+        arcade.start_render()
+        self.draw_grid()
         self.all_sprites_list.draw()
-
 
         # Put the text on the screen.
         output = "turn: {}".format(self.turn)
