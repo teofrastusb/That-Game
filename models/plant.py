@@ -54,6 +54,6 @@ class Plant(arcade.Sprite):
         # Check if the plant is level 20
         if self.level == self.max_level:
             self.ready_to_seed = 1
-            print("plant",self.id,"is ready to seed ;)")
+            #print("plant",self.id,"is ready to seed ;)")
 
 

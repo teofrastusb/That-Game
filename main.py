@@ -60,12 +60,14 @@ class MyGame(arcade.Window):
                 # player one
                 slime = Slime('fake_id', self.conf, self.map)
                 slime.set_coord(randX, randY)
+                self.player = 1
                 self.slimes_one.append(slime)
                 self.all_sprites_list.append(slime)
 
                 # player two
                 slime = Slime('fake_id', self.conf, self.map)
                 slime.set_coord(self.map.row_count() - randX, self.map.column_count() - randY)
+                self.player = 2
                 self.slimes_two.append(slime)
                 self.all_sprites_list.append(slime)
 
@@ -102,11 +104,41 @@ class MyGame(arcade.Window):
             x -= 1
         return (x, y)
 
+    def bite_thing(self, command, x, y,player,attack):
+        # Check for bite commands
+        if command is (Commands.BITE or Commands.BITEUP):
+            # Attempt to bite things above the slime location
+            self.damage_thing(x,y+1,player,attack)
+        elif command is (Commands.BITE or Commands.BITEDOWN):
+            # Attempt to bite things below the slime location
+            self.damage_thing(x,y-1,player,attack)
+        elif command is (Commands.BITE or Commands.BITELEFT):
+            # Attempt to bite things to the left of the slime location
+            self.damage_thing(x-1,y,player,attack)
+        elif command is (Commands.BITE or Commands.BITERIGHT):
+            # Attempt to bite things to the right of the slime location
+            self.damage_thing(x+1,y,player,attack)
+
+    def damage_thing(self,x,y,player,attack):
+        # Make sure target is in map range
+        if x is 0 or x is self.map.column_count() or y is 0 or y is self.map.row_count():
+            return
+        target = self.map.matrix[x][y]
+        # Check if target is a plant or slime
+        print("damage_thing")
+        if target != 0:
+            print("damage_thing if 1")
+            if not hasattr(target, 'player') or target.player == player:
+                print("damage_thing if 2")
+                target.current_hp -= attack
+
     def execute_round(self, slime, player):
         command = player.command_slime(self.map, slime)
+        print('Slime for player',slime.player,' has command',command)
 
         # Check for move commands
-        if command is Commands.UP or Commands.DOWN or Commands.LEFT or Commands.RIGHT:
+        if command is Commands.UP or command is Commands.DOWN or command is Commands.LEFT or command is Commands.RIGHT:
+            # print('move loop')
             # Attempt to move the slime
             original_x, original_y = slime.x, slime.y
             x, y = self.move(command, slime.x, slime.y)
@@ -120,9 +152,11 @@ class MyGame(arcade.Window):
                 self.map.clear_cell(x, y)
 
         # Check for bite commands
-        if command is Commands.BITE or Commands.BITEUP or Commands.BITEDOWN or Commands.BITELEFT or Commands.BITERIGHT:
-            # TODO Attempt to bite things
-            pass
+        if (command == Commands.BITE or command is Commands.BITEUP or command is Commands.BITEDOWN or 
+            command is Commands.BITELEFT or command is Commands.BITERIGHT):
+            print("bite_thing")
+            # Attempt to bite things
+            self.bite_thing(command, slime.x, slime.y, slime.player, slime.attack)
 
         # TODO Check for split command
 
@@ -187,7 +221,7 @@ class MyGame(arcade.Window):
             self.sprite_man.check_for_dead()
 
         # Delay to slow game down        
-        time.sleep(0.1)
+        time.sleep(1)
 
 def main():
     config = configparser.ConfigParser()
