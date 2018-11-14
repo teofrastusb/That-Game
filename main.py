@@ -54,8 +54,8 @@ class MyGame(arcade.Window):
 
         slimes = 0
         while slimes < self.num_slimes:
-            randX = random.randint(1, self.map.row_count() / 2 -1)
-            randY = random.randint(1, self.map.column_count() -1)
+            randX = random.randint(1, self.map.column_count() / 2 -1)
+            randY = random.randint(1, self.map.row_count() -1)
             if self.map.get_matrix()[randX][randY] == 0:
                 # player one
                 slime = Slime('fake_id', self.conf, self.map)
@@ -66,7 +66,7 @@ class MyGame(arcade.Window):
 
                 # player two
                 slime = Slime('fake_id', self.conf, self.map)
-                slime.set_coord(self.map.row_count() - randX, self.map.column_count() - randY)
+                slime.set_coord(self.map.column_count() - randX, self.map.row_count() - randY)
                 self.player = 2
                 self.slimes_two.append(slime)
                 self.all_sprites_list.append(slime)
@@ -77,8 +77,8 @@ class MyGame(arcade.Window):
         print("Placing plants")
         # Create the plants
         for i in range(self.conf['plants'].getint('num_total')//2):
-            rand_x = random.randint(0, self.map.row_count() / 2 -1)
-            rand_y = random.randint(0, self.map.column_count()-1 )
+            rand_x = random.randint(0, self.map.column_count() / 2 -1)
+            rand_y = random.randint(0, self.map.row_count()-1 )
             # left half
             plant = Plant(i, self.conf, self.map)
             plant.set_coord(rand_x, rand_y)
@@ -87,18 +87,19 @@ class MyGame(arcade.Window):
 
             # mirrored across x and y axis for right half
             plant = Plant(i, self.conf, self.map)
-            plant.set_coord((self.map.row_count()-1) - rand_x,(self.map.column_count()-1) - rand_y)
+            print((self.map.column_count()-1) - rand_x,(self.map.row_count()-1) - rand_y)
+            plant.set_coord((self.map.column_count()-1) - rand_x,(self.map.row_count()-1) - rand_y)
             self.all_sprites_list.append(plant)
             self.plant_list.append(plant)
 
 
 
     def move(self, command, x, y):
-        if command is Commands.UP and y < self.map.column_count() - 1:
+        if command is Commands.UP and y < self.map.row_count() - 1:
             y += 1
         elif command is Commands.DOWN and y > 0:
             y -= 1
-        elif command is Commands.RIGHT and x < self.map.row_count() - 1:
+        elif command is Commands.RIGHT and x < self.map.column_count() - 1:
             x += 1
         elif command is Commands.LEFT and x > 0:
             x -= 1
@@ -121,10 +122,9 @@ class MyGame(arcade.Window):
 
     def damage_thing(self,x,y,player,attack):
         # Make sure target is in map range
-        if x is 0 or x is self.map.column_count() or y is 0 or y is self.map.row_count():
+        if x is -1 or x is self.map.column_count() or y is -1 or y is self.map.row_count():
             return
 
-        print("x,y",x,y)
         target = self.map.matrix[x][y]
         # Check if target is a plant or slime
         print("damage_thing current target",target)
@@ -177,17 +177,17 @@ class MyGame(arcade.Window):
         arcade.start_render()
 
         # Draw a grid based on map.py center_x and center_y functions
-        for row in range(self.map.columns):
-            for column in range(self.map.rows):
+        for row in range(self.map.rows):
+            for column in range(self.map.columns):
                 # Figure out what color to draw the box
                 color = arcade.color.ALMOND
 
                 # Do the math to figure out where the box is
-                x_box = (self.map.width/self.map.rows) * (column) + (self.map.width/self.map.rows)/2
-                y_box = (self.map.height/self.map.columns)* (row) + (self.map.height/self.map.columns)/2
+                x_box = (self.map.width/self.map.columns) * (column) + (self.map.width/self.map.columns)/2
+                y_box = (self.map.height/self.map.rows)* (row) + (self.map.height/self.map.rows)/2
 
                 # Draw the box
-                arcade.draw_rectangle_filled(x_box, y_box, self.map.width/self.map.rows-2, self.map.height/self.map.columns-2, color)
+                arcade.draw_rectangle_filled(x_box, y_box, self.map.width/self.map.columns-2, self.map.height/self.map.rows-2, color)
 
         self.all_sprites_list.draw()
 

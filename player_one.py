@@ -15,7 +15,7 @@ class Player(PlayerBase):
             self.move_command = Commands.RIGHT
             self.bite_command = Commands.BITERIGHT
 
-        elif slime.x == map.columns*2-1:
+        elif slime.x == map.columns-1:
             self.direction = -1
             self.move_command = Commands.LEFT
             self.bite_command = Commands.BITELEFT

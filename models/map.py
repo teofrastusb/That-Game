@@ -6,10 +6,11 @@ class Map():
         self.height = config['screen'].getint('height') 
         self.rows = config['screen'].getint('rows')
         self.columns = config['screen'].getint('columns')
-        self.matrix = [[0] * config['screen'].getint('columns') for i in range(config['screen'].getint('rows'))]
+        # This setup creates a matrix with [x][y] coordinates even though it looks backwards
+        self.matrix = [[0] * config['screen'].getint('rows') for i in range(config['screen'].getint('columns'))]
         self.margin = 2
-        self.step_x = self.width // (self.rows)
-        self.step_y = self.height // (self.columns)
+        self.step_x = self.width // (self.columns)
+        self.step_y = self.height // (self.rows)
 
     def get_matrix(self):
       return self.matrix
