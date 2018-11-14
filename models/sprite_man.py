@@ -10,23 +10,24 @@ class Sprite_man():
         # nothin to do...yet
         pass
 
-    def check_for_dead(self):
-        # Bring out your dead!
+    def check_for_dead(self,mapthing):
+        print('Bring out your dead!')
         self.kill_list = []
 
         for plant in self.plant_list:
-            if plant.current_hp == 0:
+            if plant.current_hp <= 0:
                 self.kill_list.append(plant)
 
         for slime in self.slimes_one:
-            if slime.current_hp == 0:
+            if slime.current_hp <= 0:
                 self.kill_list.append(slime)
 
         for slime in self.slimes_two:
-            if slime.current_hp == 0:
+            if slime.current_hp <= 0:
                 self.kill_list.append(slime)
 
-        """
+
         for gamepiece in self.kill_list:
-            self.kill(gamepiece)
-        """
+            arcade.sprite.Sprite.kill(gamepiece) 
+            mapthing.clear_cell(gamepiece.x,gamepiece.y)
+
