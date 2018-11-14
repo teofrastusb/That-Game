@@ -21,6 +21,7 @@ from models.sprite_man import Sprite_man
 from player_one import Player as PlayerOne
 from player_two import Player as PlayerTwo
 
+# log debug message for decorated methods
 def trace(function):
     def wrapper(*args, **kwargs):
         logging.getLogger().debug("method: %s args: %s ", function.__name__, str(args))
@@ -32,7 +33,7 @@ def trace(function):
 class MyGame(arcade.Window):
     """ Main application class. """
 
-    def __init__(self, config, logger):
+    def __init__(self, config):
         super().__init__(config['screen'].getint('width'),
                          config['screen'].getint('height'),
                          "SlimeMind")
@@ -41,7 +42,6 @@ class MyGame(arcade.Window):
         self.height = config['screen'].getint('height')
         self.num_slimes = config['slimes'].getint('num_total')
         self.conf = config
-        self.logger = logger
 
         # initial game state
         self.map = Map(config)
@@ -202,7 +202,6 @@ class MyGame(arcade.Window):
         # Add sprite manager
         self.sprite_man.check_for_dead(self.map)
 
-        
         # Call external function for player 1 slimes
         for slime in self.slimes_one:
             self.execute_round(slime, self.player_one)
@@ -229,7 +228,7 @@ def main():
     handler = logging.StreamHandler()
     logger.addHandler(handler)
 
-    window = MyGame(config, logger)
+    window = MyGame(config)
     window.setup()
     arcade.run()
 
