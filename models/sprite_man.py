@@ -11,7 +11,7 @@ class Sprite_man():
         pass
 
     def check_for_dead(self,mapthing):
-        print('Bring out your dead!')
+        #print('Bring out your dead!')
         self.kill_list = []
 
         for plant in self.plant_list:

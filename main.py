@@ -87,37 +87,19 @@ class MyGame(arcade.Window):
             self.all_sprites_list.append(plant)
             self.plant_list.append(plant)
 
-
-
     def move(self, command, x, y):
-        if command is Commands.UP and y < self.map.row_count() - 1:
-            y += 1
-        elif command is Commands.DOWN and y > 0:
-            y -= 1
-        elif command is Commands.RIGHT and x < self.map.column_count() - 1:
-            x += 1
-        elif command is Commands.LEFT and x > 0:
-            x -= 1
+        (x_prime, y_prime) = command.update_coord(x, y)
+        if self.map.valid_coord(x_prime, y_prime):
+            return (x_prime, y_prime)
         return (x, y)
 
-    def bite_thing(self, command, x, y,player,attack):
-        # Check for bite commands
-        if command is Commands.BITEUP:
-            # Attempt to bite things above the slime location
-            self.damage_thing(x,y+1,player,attack)
-        elif command is Commands.BITEDOWN:
-            # Attempt to bite things below the slime location
-            self.damage_thing(x,y-1,player,attack)
-        elif command is Commands.BITELEFT:
-            # Attempt to bite things to the left of the slime location
-            self.damage_thing(x-1,y,player,attack)
-        elif command is Commands.BITERIGHT:
-            # Attempt to bite things to the right of the slime location
-            self.damage_thing(x+1,y,player,attack)
+    def bite_thing(self, command, x, y, player, attack):
+        (x, y) = command.update_coord(x, y)
+        self.damage_thing(x, y, player, attack)
 
-    def damage_thing(self,x,y,player,attack):
+    def damage_thing(self, x, y, player, attack):
         # Make sure target is in map range
-        if x is -1 or x is self.map.column_count() or y is -1 or y is self.map.row_count():
+        if not self.map.valid_coord(x, y):
             return
 
         target = self.map.matrix[x][y]
@@ -131,6 +113,9 @@ class MyGame(arcade.Window):
 
     def execute_round(self, slime, player):
         command = player.command_slime(self.map, slime)
+        # allow player to take no action
+        if command is None:
+            return
         #print('Slime for player',slime.player,' has command',command)
 
         # Check for move commands
