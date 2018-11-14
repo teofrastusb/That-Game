@@ -8,7 +8,8 @@ import random
 import os
 import time
 import configparser
-
+import logging
+import inspect
 # Import classes
 from models.plant import Plant
 from models.slime import Slime
@@ -20,10 +21,18 @@ from models.sprite_man import Sprite_man
 from player_one import Player as PlayerOne
 from player_two import Player as PlayerTwo
 
+def trace(function):
+    def wrapper(*args, **kwargs):
+        logging.getLogger().debug("method: %s args: %s ", function.__name__, str(args))
+        ret = function(*args, **kwargs)
+        logging.getLogger().debug("exiting: %s", function.__name__)
+        return ret
+    return wrapper
+
 class MyGame(arcade.Window):
     """ Main application class. """
 
-    def __init__(self, config):
+    def __init__(self, config, logger):
         super().__init__(config['screen'].getint('width'),
                          config['screen'].getint('height'),
                          "SlimeMind")
@@ -32,6 +41,7 @@ class MyGame(arcade.Window):
         self.height = config['screen'].getint('height')
         self.num_slimes = config['slimes'].getint('num_total')
         self.conf = config
+        self.logger = logger
 
         # initial game state
         self.map = Map(config)
@@ -46,9 +56,8 @@ class MyGame(arcade.Window):
 
         arcade.set_background_color(arcade.color.BLACK)
 
+    @trace
     def place_slimes(self):
-        print("Placing slimes")
-
         slimes = 0
         while slimes < self.num_slimes:
             randX = random.randint(1, self.map.column_count() / 2 -1)
@@ -68,8 +77,8 @@ class MyGame(arcade.Window):
 
                 slimes += 2
 
+    @trace
     def place_plants(self):
-        print("Placing plants")
         # Create the plants
         for i in range(self.conf['plants'].getint('num_total')//2):
             rand_x = random.randint(0, self.map.column_count() / 2 -1)
@@ -87,16 +96,19 @@ class MyGame(arcade.Window):
             self.all_sprites_list.append(plant)
             self.plant_list.append(plant)
 
+    @trace
     def move(self, command, x, y):
         (x_prime, y_prime) = command.update_coord(x, y)
         if self.map.valid_coord(x_prime, y_prime):
             return (x_prime, y_prime)
         return (x, y)
 
+    @trace
     def bite_thing(self, command, x, y, player, attack):
         (x, y) = command.update_coord(x, y)
         self.damage_thing(x, y, player, attack)
 
+    @trace
     def damage_thing(self, x, y, player, attack):
         # Make sure target is in map range
         if not self.map.valid_coord(x, y):
@@ -111,6 +123,7 @@ class MyGame(arcade.Window):
                 target.current_hp -= attack
                 print("target health set to ",target.current_hp)
 
+    @trace
     def execute_round(self, slime, player):
         command = player.command_slime(self.map, slime)
         # allow player to take no action
@@ -143,11 +156,13 @@ class MyGame(arcade.Window):
 
         # TODO Check for merge command
 
+    @trace
     def setup(self):
         """ Initialize game state """
         self.place_slimes()
         self.place_plants()
 
+    @trace
     def draw_grid(self):
         # Draw a grid based on map.py center_x and center_y functions
         for row in range(self.map.rows):
@@ -162,6 +177,7 @@ class MyGame(arcade.Window):
                 # Draw the box
                 arcade.draw_rectangle_filled(x_box, y_box, self.map.width/self.map.columns-2, self.map.height/self.map.rows-2, color)
 
+    @trace
     def on_draw(self):
         """
         Render the screen.
@@ -174,6 +190,7 @@ class MyGame(arcade.Window):
         output = "turn: {}".format(self.turn)
         arcade.draw_text(output, 10, 20, arcade.color.BLACK, 14)
 
+    @trace
     def update(self, delta_time):
         """ Movement and game logic """
         # Turn counter
@@ -206,7 +223,13 @@ class MyGame(arcade.Window):
 def main():
     config = configparser.ConfigParser()
     config.read('resources/config.ini')
-    window = MyGame(config)
+
+    logger = logging.getLogger()
+    logger.setLevel(config['logging']['level'])
+    handler = logging.StreamHandler()
+    logger.addHandler(handler)
+
+    window = MyGame(config, logger)
     window.setup()
     arcade.run()
 
