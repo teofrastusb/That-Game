@@ -73,7 +73,7 @@ class MyGame(arcade.Window):
         while slimes < self.num_slimes:
             randX = random.randint(1, self.map.column_count() / 2 -1)
             randY = random.randint(1, self.map.row_count() -1)
-            if self.map.cell_empty(randX, randY):
+            if self.map.is_cell_empty(randX, randY):
                 # player one
                 self.place_slime(randX, randY, 1)
                 # player two
@@ -112,7 +112,9 @@ class MyGame(arcade.Window):
         target = self.map.matrix[x][y]
         # Check if target is a plant or slime
         if target != 0:
+            print('plant health', target.current_hp)
             target.current_hp -= attack
+            print('plant health', target.current_hp)
             return 1
 
     @trace

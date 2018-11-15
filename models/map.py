@@ -39,18 +39,18 @@ class Map():
     def center_y(self, y):
       return (y + 1/2) * self.step_y
 
-    def cell_empty(self, x, y):
+    def is_cell_empty(self, x, y):
       return self.matrix[x][y] == 0
 
     def adjacent_empty_cells(self, x, y):
       cells = self._adjacent_cells(x, y)
-      return [(x, y) for x, y in cells if self.valid_coord(x, y) and self.cell_empty(x, y)]
+      return [(x, y) for x, y in cells if self.valid_coord(x, y) and self.is_cell_empty(x, y)]
 
     def valid_coord(self, x, y):
       return ((0 <= x < self.columns) and (0 <= y < self.rows))
 
     def update_cell(self, gamepiece, x, y):
-      if self.cell_empty(x, y):
+      if self.is_cell_empty(x, y):
         self.matrix[x][y] = gamepiece
 
     def clear_cell(self, x, y):

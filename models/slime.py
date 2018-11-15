@@ -37,7 +37,7 @@ class Slime(arcade.Sprite):
         starting_level = self.level
 
         # Update level based on xp
-        self.level = int((-0.001*self.xp+0.185)*self.xp+1.9)
+        self.level = self.xp
 
         # Check if the slime level is at or above maximum
         if self.level >= self.max_level:
