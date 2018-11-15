@@ -129,7 +129,8 @@ class MyGame(arcade.Window):
     @trace
     def split(self, slime):
         """ split slime into random empty adjacent cell """
-        empty_adjacent_cells = [(x, y) for x, y in self.map.adjacent_cells(slime.x, slime.y) if self.map.valid_coord(x, y) and self.map.cell_empty(x, y)]
+        empty_adjacent_cells = self.map.adjacent_empty_cells(slime.x, slime.y)
+
         # can't split if there are no available cells
         if len(empty_adjacent_cells) == 0:
             return
