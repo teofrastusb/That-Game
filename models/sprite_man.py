@@ -40,7 +40,7 @@ class Sprite_man():
 
     def spread_seeds(self):
         for plant in self.plant_list:
-            if plant.seed:
+            if plant.can_seed():
                 empty_adjacent_cells = self.map.adjacent_empty_cells(plant.x, plant.y)
 
                 # can't seed if there are no available cells
@@ -49,4 +49,4 @@ class Sprite_man():
 
                 x, y = random.choice(empty_adjacent_cells)
                 self.place_plant(x, y)
-                plant.seed = False
+                plant.reset_level()
