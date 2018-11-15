@@ -1,7 +1,7 @@
 import arcade
 
 class Slime(arcade.Sprite):
-    def __init__(self, id, config, map):
+    def __init__(self, id, config, map, player):
         super().__init__(config['slimes']['filename'],
                          config['slimes'].getfloat('sprite_scaling'))
         self.id = id
@@ -10,7 +10,7 @@ class Slime(arcade.Sprite):
         self.map = map
         self.level = 1
         self.xp = 1
-        self.player = 0
+        self.player = player
         self.max_level = config['slimes'].getint('max_level')
         self.current_hp = config['slimes'].getint('max_hp')
         self.max_hp = config['slimes'].getint('max_hp')
@@ -28,6 +28,9 @@ class Slime(arcade.Sprite):
         self.map.update_cell(self, x, y)
         # display
         self.set_position(self.map.center_x(x), self.map.center_y(y))
+
+    def split(self):
+        self.xp = self.xp // 2.2
 
     def level_up(self):
         # Save current level

@@ -9,7 +9,8 @@ import os
 import time
 import configparser
 import logging
-import inspect
+import uuid
+
 # Import classes
 from models.plant import Plant
 from models.slime import Slime
@@ -56,25 +57,28 @@ class MyGame(arcade.Window):
 
         arcade.set_background_color(arcade.color.BLACK)
 
+
+    @trace 
+    def place_slime(self, x, y, player):
+        slime = Slime(uuid.uuid4(), self.conf, self.map, player)
+        slime.set_coord(x, y)
+        if player == 1:
+            self.slimes_one.append(slime)
+        else:
+            self.slimes_two.append(slime)
+        self.all_sprites_list.append(slime)
+
     @trace
     def place_slimes(self):
         slimes = 0
         while slimes < self.num_slimes:
             randX = random.randint(1, self.map.column_count() / 2 -1)
             randY = random.randint(1, self.map.row_count() -1)
-            if self.map.get_matrix()[randX][randY] == 0:
+            if self.map.cell_empty(randX, randY):
                 # player one
-                slime = Slime('fake_id', self.conf, self.map)
-                slime.set_coord(randX, randY)
-                self.slimes_one.append(slime)
-                self.all_sprites_list.append(slime)
-
+                self.place_slime(randX, randY, 1)
                 # player two
-                slime = Slime('fake_id', self.conf, self.map)
-                slime.set_coord(self.map.column_count() - randX, self.map.row_count() - randY)
-                self.slimes_two.append(slime)
-                self.all_sprites_list.append(slime)
-
+                self.place_slime(self.map.column_count() - randX, self.map.row_count() - randY, 2)
                 slimes += 2
 
     @trace
@@ -124,16 +128,31 @@ class MyGame(arcade.Window):
                 print("target health set to ",target.current_hp)
 
     @trace
+    def split(self, slime):
+        """ split slime into random empty adjacent cell """
+        empty_adjacent_cells = [(x, y) for x, y in self.map.adjacent_cells(slime.x, slime.y) if self.map.valid_coord(x, y) and self.map.cell_empty(x, y)]
+        # can't split if there are no available cells
+        if len(empty_adjacent_cells) == 0:
+            return
+
+        x, y = random.choice(empty_adjacent_cells)
+        slime.split()
+
+        if slime.player == 1:
+            self.place_slime(x, y, 1)
+        else:
+            self.place_slime(x, y, 2)
+        self.all_sprites_list.append(slime)
+
+    @trace
     def execute_round(self, slime, player):
         command = player.command_slime(self.map, slime)
         # allow player to take no action
         if command is None:
             return
-        #print('Slime for player',slime.player,' has command',command)
 
         # Check for move commands
         if command.is_move():
-            # print('move loop')
             # Attempt to move the slime
             original_x, original_y = slime.x, slime.y
             x, y = self.move(command, slime.x, slime.y)
@@ -148,11 +167,12 @@ class MyGame(arcade.Window):
 
         # Check for bite commands
         if (command.is_bite()):
-            #print("bite_thing")
             # Attempt to bite things
             self.bite_thing(command, slime.x, slime.y, slime.player, slime.attack)
 
         # TODO Check for split command
+        if (command is Commands.SPLIT):
+            self.split(slime)
 
         # TODO Check for merge command
 
@@ -217,7 +237,7 @@ class MyGame(arcade.Window):
             self.sprite_man.check_for_dead(self.map)
 
         # Delay to slow game down        
-        time.sleep(0.1)
+        time.sleep(self.conf['misc'].getfloat('sleep'))
 
 def main():
     config = configparser.ConfigParser()
