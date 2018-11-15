@@ -103,22 +103,22 @@ class MyGame(arcade.Window):
             x -= 1
         return (x, y)
 
-    def bite_thing(self, command, x, y,player,attack):
+    def bite_thing(self, command, x, y,attack):
         # Check for bite commands
         if command is Commands.BITEUP:
             # Attempt to bite things above the slime location
-            self.damage_thing(x,y+1,player,attack)
+            self.damage_thing(x,y+1,attack)
         elif command is Commands.BITEDOWN:
             # Attempt to bite things below the slime location
-            self.damage_thing(x,y-1,player,attack)
+            self.damage_thing(x,y-1,attack)
         elif command is Commands.BITELEFT:
             # Attempt to bite things to the left of the slime location
-            self.damage_thing(x-1,y,player,attack)
+            self.damage_thing(x-1,y,attack)
         elif command is Commands.BITERIGHT:
             # Attempt to bite things to the right of the slime location
-            self.damage_thing(x+1,y,player,attack)
+            self.damage_thing(x+1,y,attack)
 
-    def damage_thing(self,x,y,player,attack):
+    def damage_thing(self,x,y,attack):
         # Make sure target is in map range
         if x is -1 or x is self.map.column_count() or y is -1 or y is self.map.row_count():
             return
@@ -127,14 +127,13 @@ class MyGame(arcade.Window):
         # Check if target is a plant or slime
         print("damage_thing current target",target)
         if target != 0:
-            if not hasattr(target, 'player') or target.player == player:
-                print("damage_thing 2")
-                target.current_hp -= attack
-                print("target health set to ",target.current_hp)
+            print("damage_thing 2")
+            target.current_hp -= attack
+            print("target health set to ",target.current_hp)
 
     def execute_round(self, slime, player):
         command = player.command_slime(self.map, slime)
-        #print('Slime for player',slime.player,' has command',command)
+        #print('Slime has command',command)
 
         # Check for move commands
         if command is Commands.UP or command is Commands.DOWN or command is Commands.LEFT or command is Commands.RIGHT:
@@ -156,7 +155,7 @@ class MyGame(arcade.Window):
             command is Commands.BITELEFT or command is Commands.BITERIGHT):
             #print("bite_thing")
             # Attempt to bite things
-            self.bite_thing(command, slime.x, slime.y, slime.player, slime.attack)
+            self.bite_thing(command, slime.x, slime.y, slime.attack)
 
         # TODO Check for split command
 
@@ -202,22 +201,23 @@ class MyGame(arcade.Window):
         # allow all sprites to handle their own update
         self.all_sprites_list.update()
 
-        # Add sprite manager
+        # Sprite manager check for dead, spread seeds
         self.sprite_man.check_for_dead(self.map)
+        self.sprite_man.spread_seeds(self.map,self.all_sprites_list,self.conf)
 
         
         # Call external function for player 1 slimes
         for slime in self.slimes_one:
             self.execute_round(slime, self.player_one)
 
-            # Add sprite manager
+            # Sprite manager check for dead
             self.sprite_man.check_for_dead(self.map)
 
         # Call external function for player 2 slimes
         for slime in self.slimes_two:
             self.execute_round(slime, self.player_two)
 
-            # Add sprite manager
+            # Sprite manager check for dead
             self.sprite_man.check_for_dead(self.map)
 
         # Delay to slow game down        

@@ -1,4 +1,6 @@
 import arcade
+import random
+from models.plant import Plant
 
 class Sprite_man():
     def __init__(self, plant_list, slimes_one, slimes_two):
@@ -31,3 +33,35 @@ class Sprite_man():
             arcade.sprite.Sprite.kill(gamepiece) 
             mapthing.clear_cell(gamepiece.x,gamepiece.y)
 
+    def spread_seeds(self,mapthing,all_sprites_list,conf):
+        #print('In spread seeds')
+        for planter in self.plant_list:
+            if planter.ready_to_seed:
+
+                can_plant = False
+                options = [0,1,2,3]
+                for option in options:
+                    if option == 0:
+                        dx = 1
+                        dy = 0
+                    elif option == 1:
+                        dx = -1
+                        dy = 0
+                    elif option == 2:
+                        dx = 0
+                        dy = 1
+                    else:
+                        dx = 0
+                        dy = -1
+                    if not(planter.x+dx is -1 or planter.x+dx is mapthing.column_count() or 
+                        planter.y+dy is -1 or planter.y+dy is mapthing.row_count()):
+                        if mapthing.matrix[planter.x+dx][planter.y+dy] == 0:
+                            can_plant = True
+                            break
+
+                if can_plant:
+                    print('In can plant')
+                    plant = Plant('this is from can_plant', conf, mapthing)
+                    plant.set_coord(planter.x+dx,planter.y+dy)
+                    all_sprites_list.append(plant)
+                    self.plant_list.append(plant)
