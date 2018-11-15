@@ -30,6 +30,9 @@ class Map():
     def cell_empty(self, x, y):
       return self.matrix[x][y] == 0
     
+    def valid_coord(self, x, y):
+      return ((0 <= x < self.columns) and (0 <= y < self.rows))
+
     def update_cell(self, gamepiece, x, y):
       if self.cell_empty(x, y):
         self.matrix[x][y] = gamepiece
