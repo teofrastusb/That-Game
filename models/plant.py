@@ -27,9 +27,9 @@ class Plant(arcade.Sprite):
         # Check if the plant levels up
         do_level_up = 0
 
-        level_up_chance = random.randint(0,self.max_level*10)
+        level_up_chance = random.randint(0,self.max_level)
         if level_up_chance > self.level:
-            level_up_chance = random.randint(0,self.max_level*10)
+            level_up_chance = random.randint(0,self.max_level)
             if level_up_chance > self.level:
                 level_up_chance = random.randint(0,self.max_level*2)
                 if level_up_chance > self.level:

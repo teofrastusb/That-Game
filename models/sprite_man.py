@@ -65,3 +65,4 @@ class Sprite_man():
                     plant.set_coord(planter.x+dx,planter.y+dy)
                     all_sprites_list.append(plant)
                     self.plant_list.append(plant)
+                    planter.ready_to_seed = False    
