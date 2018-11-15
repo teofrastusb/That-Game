@@ -29,7 +29,19 @@ class Map():
 
     def cell_empty(self, x, y):
       return self.matrix[x][y] == 0
-    
+
+    def adjacent_cells(self, x, y):
+      return [
+        (x - 1, y),
+        (x, y -1),
+        (x - 1, y - 1),
+        (x + 1, y),
+        (x, y + 1),
+        (x + 1, y + 1),
+        (x - 1, y + 1),
+        (x + 1, y - 1)
+      ]
+
     def valid_coord(self, x, y):
       return ((0 <= x < self.columns) and (0 <= y < self.rows))
 
