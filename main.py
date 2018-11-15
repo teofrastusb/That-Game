@@ -60,14 +60,12 @@ class MyGame(arcade.Window):
                 # player one
                 slime = Slime('fake_id', self.conf, self.map)
                 slime.set_coord(randX, randY)
-                self.player = 1
                 self.slimes_one.append(slime)
                 self.all_sprites_list.append(slime)
 
                 # player two
                 slime = Slime('fake_id', self.conf, self.map)
                 slime.set_coord(self.map.column_count() - randX, self.map.row_count() - randY)
-                self.player = 2
                 self.slimes_two.append(slime)
                 self.all_sprites_list.append(slime)
 

@@ -10,7 +10,6 @@ class Slime(arcade.Sprite):
         self.map = map
         self.level = 1
         self.xp = 1
-        self.player = 0
         self.max_level = config['slimes'].getint('max_level')
         self.current_hp = config['slimes'].getint('max_hp')
         self.max_hp = config['slimes'].getint('max_hp')
