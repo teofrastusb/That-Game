@@ -34,7 +34,7 @@ class Sprite_man():
             mapthing.clear_cell(gamepiece.x,gamepiece.y)
 
     def spread_seeds(self,mapthing,all_sprites_list,conf):
-        #print('In spread seeds')
+        #In spread seeds
         to_plant =[]
         for planter in self.plant_list:
             if planter.seed:
