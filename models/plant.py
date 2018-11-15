@@ -8,6 +8,7 @@ class Plant(arcade.Sprite):
         self.id = id
         self.level = 1
         self.map = map
+        self.conf = config
         self.max_hp = config['plants'].getint('max_hp')
         self.current_hp = self.max_hp
         self.max_level = config['plants'].getint('max_level')
@@ -28,13 +29,11 @@ class Plant(arcade.Sprite):
         # Check if the plant levels up
         do_level_up = 0
 
-        level_up_chance = random.randint(0,self.max_level*20)
-        if level_up_chance > self.level:
-            level_up_chance = random.randint(0,self.max_level*20)
-            if level_up_chance > self.level:
-                level_up_chance = random.randint(0,self.max_level*20)
-                if level_up_chance > self.level and self.level < self.max_level:
-                    do_level_up = 1
+        level_up_chance = random.randint(0,self.conf['plants'].getint('level_up_chance_one'))
+        if level_up_chance == 0:
+            level_up_chance = random.randint(0,self.max_level + self.conf['plants'].getint('level_up_chance_two'))
+            if level_up_chance > self.level and self.level < self.max_level:
+                do_level_up = 1
 
         # If the plant levels up do the following
         if do_level_up:
