@@ -49,14 +49,13 @@ class MyGame(arcade.Window):
         self.plant_list = arcade.SpriteList()
         self.slimes_one = arcade.SpriteList()
         self.slimes_two = arcade.SpriteList()
-        self.sprite_man = Sprite_man(self.plant_list,self.slimes_one,self.slimes_two)
         self.all_sprites_list = arcade.SpriteList()
+        self.sprite_man = Sprite_man(self.map, self.conf, self.plant_list, self.slimes_one, self.slimes_two, self.all_sprites_list)
         self.turn = 0
         self.player_one = PlayerOne()
         self.player_two = PlayerTwo()
 
         arcade.set_background_color(arcade.color.BLACK)
-
 
     @trace 
     def place_slime(self, x, y, player):
@@ -88,17 +87,9 @@ class MyGame(arcade.Window):
             rand_x = random.randint(0, self.map.column_count() / 2 -1)
             rand_y = random.randint(0, self.map.row_count()-1 )
             # left half
-            plant = Plant(i, self.conf, self.map)
-            plant.set_coord(rand_x, rand_y)
-            self.all_sprites_list.append(plant)
-            self.plant_list.append(plant)
-
+            self.sprite_man.place_plant(rand_x, rand_y)
             # mirrored across x and y axis for right half
-            plant = Plant(i, self.conf, self.map)
-            print((self.map.column_count()-1) - rand_x,(self.map.row_count()-1) - rand_y)
-            plant.set_coord((self.map.column_count()-1) - rand_x,(self.map.row_count()-1) - rand_y)
-            self.all_sprites_list.append(plant)
-            self.plant_list.append(plant)
+            self.sprite_man.place_plant((self.map.column_count() - 1) - rand_x, (self.map.row_count() - 1) - rand_y)
 
     @trace
     def move(self, command, x, y):
@@ -138,7 +129,6 @@ class MyGame(arcade.Window):
             self.place_slime(x, y, 1)
         else:
             self.place_slime(x, y, 2)
-        self.all_sprites_list.append(slime)
 
     @trace
     def execute_round(self, slime, player):
@@ -217,23 +207,21 @@ class MyGame(arcade.Window):
         # allow all sprites to handle their own update
         self.all_sprites_list.update()
 
-        # Sprite manager check for dead, spread seeds
-        self.sprite_man.check_for_dead(self.map)
-        self.sprite_man.spread_seeds(self.map,self.all_sprites_list,self.conf)
+        self.sprite_man.spread_seeds()
 
         # Call external function for player 1 slimes
         for slime in self.slimes_one:
             self.execute_round(slime, self.player_one)
 
             # Sprite manager check for dead
-            self.sprite_man.check_for_dead(self.map)
+            self.sprite_man.check_for_dead()
 
         # Call external function for player 2 slimes
         for slime in self.slimes_two:
             self.execute_round(slime, self.player_two)
 
             # Sprite manager check for dead
-            self.sprite_man.check_for_dead(self.map)
+            self.sprite_man.check_for_dead()
 
         # Delay to slow game down        
         time.sleep(self.conf['misc'].getfloat('sleep'))
