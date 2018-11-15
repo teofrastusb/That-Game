@@ -43,7 +43,6 @@ class Sprite_man():
         giveup = 0
         for planter in to_plant:
             can_plant = False
-            options = [0,1,2,3]
             while not can_plant and giveup <= 5:
                 option = random.randint(0,3)
                 
@@ -68,7 +67,6 @@ class Sprite_man():
                         giveup += 1
 
             if can_plant:
-                print('In can plant')
                 plant = Plant('this is from can_plant', conf, mapthing)
                 plant.set_coord(planter.x+dx,planter.y+dy)
                 all_sprites_list.append(plant)
