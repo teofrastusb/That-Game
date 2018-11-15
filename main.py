@@ -200,7 +200,7 @@ class MyGame(arcade.Window):
 
         # Sprite manager check for dead, spread seeds
         self.sprite_man.check_for_dead(self.map)
-        #self.sprite_man.spread_seeds(self.map,self.all_sprites_list,self.conf)
+        self.sprite_man.spread_seeds(self.map,self.all_sprites_list,self.conf)
 
         # Call external function for player 1 slimes
         for slime in self.slimes_one:
@@ -217,7 +217,7 @@ class MyGame(arcade.Window):
             self.sprite_man.check_for_dead(self.map)
 
         # Delay to slow game down        
-        time.sleep(0.2)
+        time.sleep(0.01)
 
 def main():
     config = configparser.ConfigParser()

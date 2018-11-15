@@ -35,34 +35,42 @@ class Sprite_man():
 
     def spread_seeds(self,mapthing,all_sprites_list,conf):
         #print('In spread seeds')
+        to_plant =[]
         for planter in self.plant_list:
-            if planter.ready_to_seed:
+            if planter.seed:
+                to_plant.append(planter)
 
-                can_plant = False
-                options = [0,1,2,3]
-                for option in options:
-                    if option == 0:
-                        dx = 1
-                        dy = 0
-                    elif option == 1:
-                        dx = -1
-                        dy = 0
-                    elif option == 2:
-                        dx = 0
-                        dy = 1
+        giveup = 0
+        for planter in to_plant:
+            can_plant = False
+            options = [0,1,2,3]
+            while not can_plant and giveup <= 5:
+                option = random.randint(0,3)
+                
+                if option == 0:
+                    dx = 1
+                    dy = 0
+                elif option == 1:
+                    dx = -1
+                    dy = 0
+                elif option == 2:
+                    dx = 0
+                    dy = 1
+                elif option == 3:
+                    dx = 0
+                    dy = -1
+
+                if not(planter.x+dx is -1 or planter.x+dx is mapthing.column_count() or 
+                    planter.y+dy is -1 or planter.y+dy is mapthing.row_count()):
+                    if mapthing.matrix[planter.x+dx][planter.y+dy] == 0:
+                        can_plant = True
                     else:
-                        dx = 0
-                        dy = -1
-                    if not(planter.x+dx is -1 or planter.x+dx is mapthing.column_count() or 
-                        planter.y+dy is -1 or planter.y+dy is mapthing.row_count()):
-                        if mapthing.matrix[planter.x+dx][planter.y+dy] == 0:
-                            can_plant = True
-                            break
+                        giveup += 1
 
-                if can_plant:
-                    print('In can plant')
-                    plant = Plant('this is from can_plant', conf, mapthing)
-                    plant.set_coord(planter.x+dx,planter.y+dy)
-                    all_sprites_list.append(plant)
-                    self.plant_list.append(plant)
-                    planter.ready_to_seed = False    
+            if can_plant:
+                print('In can plant')
+                plant = Plant('this is from can_plant', conf, mapthing)
+                plant.set_coord(planter.x+dx,planter.y+dy)
+                all_sprites_list.append(plant)
+                self.plant_list.append(plant)
+                planter.seed = False    
