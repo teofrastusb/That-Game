@@ -52,8 +52,8 @@ class MyGame(arcade.Window):
         self.all_sprites_list = arcade.SpriteList()
         self.sprite_man = Sprite_man(self.map, self.conf, self.plant_list, self.slimes_one, self.slimes_two, self.all_sprites_list)
         self.turn = 0
-        self.player_one = PlayerOne()
-        self.player_two = PlayerTwo()
+        self.player_one = PlayerOne(1)
+        self.player_two = PlayerTwo(2)
 
         arcade.set_background_color(arcade.color.BLACK)
 
