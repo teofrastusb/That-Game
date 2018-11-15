@@ -35,7 +35,7 @@ class Sprite_man():
                 self.kill_list.append(slime)
 
         for gamepiece in self.kill_list:
-            print('clearing dead')
+            print('clearing dead', gamepiece.x, gamepiece.y)
             arcade.sprite.Sprite.kill(gamepiece) 
             self.map.clear_cell(gamepiece.x,gamepiece.y)
 

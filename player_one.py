@@ -21,10 +21,11 @@ class Player(PlayerBase):
 
     def command_slime(self, map, slime):
         self.find_slimes(map.get_matrix())
-        if len(self.slimes) > 0 and slime.id == self.slimes[0].id:
-            print("Controlling our original slime!")
-        else:
-            print("Controlling some other dumb slime!")
+
+        # if len(self.slimes) > 0 and slime.id == self.slimes[0].id:
+        #     print("Controlling our original slime!")
+        # else:
+        #     print("Controlling some other dumb slime!")
 
         if slime.x == 0:
             self.direction = 1

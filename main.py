@@ -103,6 +103,8 @@ class MyGame(arcade.Window):
         # Slime tries to bite a target, then if succesful this method awards 1 xp
         (x, y) = command.update_coord(x, y)
 
+        print('slime is tring to ', command)
+
         # Make sure target is in map range
         if not self.map.valid_coord(x, y):
             return 0
@@ -155,6 +157,7 @@ class MyGame(arcade.Window):
         if (command.is_bite()):
             # Attempt to bite things
             hit = self.bite_thing(command, slime.x, slime.y, slime.attack)
+            print('if 1 then hit', hit)
             if hit:
                 slime.xp += 1
 
