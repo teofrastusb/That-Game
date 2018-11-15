@@ -12,7 +12,7 @@ class Sprite_man():
         # nothin to do...yet
         pass
 
-    def check_for_dead(self,mapthing):
+    def check_for_dead(self, mapthing):
         #print('Bring out your dead!')
         self.kill_list = []
 
@@ -31,9 +31,9 @@ class Sprite_man():
 
         for gamepiece in self.kill_list:
             arcade.sprite.Sprite.kill(gamepiece) 
-            mapthing.clear_cell(gamepiece.x,gamepiece.y)
+            mapthing.clear_cell(gamepiece.x, gamepiece.y)
 
-    def spread_seeds(self,mapthing,all_sprites_list,conf):
+    def spread_seeds(self, mapthing, all_sprites_list, conf):
         #In spread seeds
         to_plant =[]
         for planter in self.plant_list:
@@ -44,7 +44,7 @@ class Sprite_man():
         for planter in to_plant:
             can_plant = False
             while not can_plant and giveup <= 5:
-                option = random.randint(0,3)
+                option = random.randint(0, 3)
                 
                 if option == 0:
                     dx = 1
@@ -68,7 +68,7 @@ class Sprite_man():
 
             if can_plant:
                 plant = Plant('this is from can_plant', conf, mapthing)
-                plant.set_coord(planter.x+dx,planter.y+dy)
+                plant.set_coord(planter.x+dx, planter.y+dy)
                 all_sprites_list.append(plant)
                 self.plant_list.append(plant)
                 planter.seed = False    
