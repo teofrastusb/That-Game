@@ -37,16 +37,9 @@ class Player(PlayerBase):
             self.move_command = Commands.LEFT
             self.bite_command = Commands.BITELEFT
 
-        target = map.matrix[slime.x+self.direction][slime.y]
-        #print(target)
-        # check for biteable
-        #return Commands.SPLIT
-        if not(target == 0):
-
-            # check for same team
-            if not(hasattr(target,'player') and target.player == slime.player):
-                return self.bite_command
-
+        # bite occupied square, otherwise move into it
+        if not map.is_cell_empty(slime.x+self.direction, slime.y):
+            return self.bite_command
         else:
             return self.move_command
         

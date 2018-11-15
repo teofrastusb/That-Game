@@ -74,16 +74,17 @@ class MyGame(arcade.Window):
                 slimes += 2
 
     @trace
-    def place_plants(self):
-        # Create the plants
-        # TODO: check the spot isn't taken
-        for i in range(self.conf['plants'].getint('num_total')//2):
+    def plant_plants(self):
+        plants = 0
+        while plants < self.conf['plants'].getint('num_total'):
             rand_x = random.randint(0, self.map.column_count() / 2 -1)
             rand_y = random.randint(0, self.map.row_count()-1 )
-            # left half
-            self.sprite_man.place_plant(rand_x, rand_y)
-            # mirrored across x and y axis for right half
-            self.sprite_man.place_plant((self.map.column_count() - 1) - rand_x, (self.map.row_count() - 1) - rand_y)
+            if self.map.is_cell_empty(rand_x, rand_y):
+                # left half
+                self.sprite_man.place_plant(rand_x, rand_y)
+                # mirrored across x and y axis for right half
+                self.sprite_man.place_plant((self.map.column_count() - 1) - rand_x, (self.map.row_count() - 1) - rand_y)
+                plants += 2
 
     @trace
     def bite_thing(self, command, x, y, attack):
@@ -154,7 +155,7 @@ class MyGame(arcade.Window):
     def setup(self):
         """ Initialize game state """
         self.place_slimes()
-        self.place_plants()
+        self.plant_plants()
 
     @trace
     def draw_grid(self):

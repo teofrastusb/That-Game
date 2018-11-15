@@ -7,7 +7,7 @@ class Map():
         self.rows = config['screen'].getint('rows')
         self.columns = config['screen'].getint('columns')
         # This setup creates a matrix with [x][y] coordinates even though it looks backwards
-        self.matrix = [[0] * config['screen'].getint('rows') for i in range(config['screen'].getint('columns'))]
+        self.matrix = [[None] * config['screen'].getint('rows') for i in range(config['screen'].getint('columns'))]
         self.margin = 2
         self.step_x = self.width // (self.columns)
         self.step_y = self.height // (self.rows)
@@ -40,7 +40,7 @@ class Map():
       return (y + 1/2) * self.step_y
 
     def is_cell_empty(self, x, y):
-      return self.matrix[x][y] == 0
+      return self.matrix[x][y] == None
 
     def adjacent_empty_cells(self, x, y):
       cells = self._adjacent_cells(x, y)
@@ -54,4 +54,4 @@ class Map():
         self.matrix[x][y] = gamepiece
 
     def clear_cell(self, x, y):
-      self.matrix[x][y] = 0
+      self.matrix[x][y] = None
