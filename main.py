@@ -103,32 +103,13 @@ class MyGame(arcade.Window):
             return (x_prime, y_prime)
         return (x, y)
 
-<<<<<<< HEAD
-    def bite_thing(self, command, x, y,attack):
-        # Check for bite commands
-        if command is Commands.BITEUP:
-            # Attempt to bite things above the slime location
-            self.damage_thing(x,y+1,attack)
-        elif command is Commands.BITEDOWN:
-            # Attempt to bite things below the slime location
-            self.damage_thing(x,y-1,attack)
-        elif command is Commands.BITELEFT:
-            # Attempt to bite things to the left of the slime location
-            self.damage_thing(x-1,y,attack)
-        elif command is Commands.BITERIGHT:
-            # Attempt to bite things to the right of the slime location
-            self.damage_thing(x+1,y,attack)
-
-    def damage_thing(self,x,y,attack):
-=======
     @trace
-    def bite_thing(self, command, x, y, player, attack):
+    def bite_thing(self, command, x, y, attack):
         (x, y) = command.update_coord(x, y)
-        self.damage_thing(x, y, player, attack)
+        self.damage_thing(x, y, attack)
 
     @trace
-    def damage_thing(self, x, y, player, attack):
->>>>>>> 406deaf0033b25333692e814d5b15408b855c949
+    def damage_thing(self, x, y, attack):
         # Make sure target is in map range
         if not self.map.valid_coord(x, y):
             return
@@ -144,14 +125,10 @@ class MyGame(arcade.Window):
     @trace
     def execute_round(self, slime, player):
         command = player.command_slime(self.map, slime)
-<<<<<<< HEAD
-        #print('Slime has command',command)
-=======
         # allow player to take no action
         if command is None:
             return
         #print('Slime for player',slime.player,' has command',command)
->>>>>>> 406deaf0033b25333692e814d5b15408b855c949
 
         # Check for move commands
         if command.is_move():

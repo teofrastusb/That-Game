@@ -42,22 +42,8 @@ class Plant(arcade.Sprite):
             # Change max hp on level up
             self.max_hp += self.hp_increment
 
-<<<<<<< HEAD
-            # Add hp on level up
-            self.current_hp += self.max_hp//2
-            if self.current_hp >= self.max_hp:
-                self.current_hp = self.max_hp
-
-    def seed_check(self):
-        # Check if the plant is level 20
-        if self.level == self.max_level:
-            self.ready_to_seed = 1
-            print("plant",self.id,"is ready to seed ;)")
-
-=======
             # Add hp on level up, not exceeding max
             self.current_htp = min(self.current_hp + self.max_hp//2, self.max_hp)
->>>>>>> 406deaf0033b25333692e814d5b15408b855c949
 
     def ready_to_seed(self):
         return self.level == self.max_level
