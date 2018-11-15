@@ -23,7 +23,7 @@ class Player(PlayerBase):
         target = map.matrix[slime.x+self.direction][slime.y]
         #print(target)
         # check for biteable
-        
+        #return Commands.SPLIT
         if not(target == 0):
 
             # check for same team

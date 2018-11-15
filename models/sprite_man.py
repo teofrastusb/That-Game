@@ -1,18 +1,24 @@
 import arcade
 import random
+import uuid
 from models.plant import Plant
 
 class Sprite_man():
-    def __init__(self, plant_list, slimes_one, slimes_two):
+    def __init__(self, map, config, plant_list, slimes_one, slimes_two, all_sprites_list):
         self.plant_list = plant_list
         self.slimes_one = slimes_one
         self.slimes_two = slimes_two
+        self.all_sprites_list = all_sprites_list
+        self.map = map
+        self.conf = config
 
-    def update(self):
-        # nothin to do...yet
-        pass
+    def place_plant(self, x, y):
+        plant = Plant(uuid.uuid4(), self.conf, self.map)
+        plant.set_coord(x, y)
+        self.plant_list.append(plant)
+        self.all_sprites_list.append(plant)
 
-    def check_for_dead(self,mapthing):
+    def check_for_dead(self):
         #print('Bring out your dead!')
         self.kill_list = []
 
@@ -28,49 +34,19 @@ class Sprite_man():
             if slime.current_hp <= 0:
                 self.kill_list.append(slime)
 
-
         for gamepiece in self.kill_list:
             arcade.sprite.Sprite.kill(gamepiece) 
-            mapthing.clear_cell(gamepiece.x,gamepiece.y)
+            self.map.clear_cell(gamepiece.x,gamepiece.y)
 
-    def spread_seeds(self,mapthing,all_sprites_list,conf):
-        #print('In spread seeds')
-        to_plant =[]
-        for planter in self.plant_list:
-            if planter.seed:
-                to_plant.append(planter)
+    def spread_seeds(self):
+        for plant in self.plant_list:
+            if plant.seed:
+                empty_adjacent_cells = self.map.adjacent_empty_cells(plant.x, plant.y)
 
-        giveup = 0
-        for planter in to_plant:
-            can_plant = False
-            options = [0,1,2,3]
-            while not can_plant and giveup <= 5:
-                option = random.randint(0,3)
-                
-                if option == 0:
-                    dx = 1
-                    dy = 0
-                elif option == 1:
-                    dx = -1
-                    dy = 0
-                elif option == 2:
-                    dx = 0
-                    dy = 1
-                elif option == 3:
-                    dx = 0
-                    dy = -1
+                # can't seed if there are no available cells
+                if len(empty_adjacent_cells) == 0:
+                    continue
 
-                if not(planter.x+dx is -1 or planter.x+dx is mapthing.column_count() or 
-                    planter.y+dy is -1 or planter.y+dy is mapthing.row_count()):
-                    if mapthing.matrix[planter.x+dx][planter.y+dy] == 0:
-                        can_plant = True
-                    else:
-                        giveup += 1
-
-            if can_plant:
-                print('In can plant')
-                plant = Plant('this is from can_plant', conf, mapthing)
-                plant.set_coord(planter.x+dx,planter.y+dy)
-                all_sprites_list.append(plant)
-                self.plant_list.append(plant)
-                planter.seed = False    
+                x, y = random.choice(empty_adjacent_cells)
+                self.place_plant(x, y)
+                plant.seed = False
