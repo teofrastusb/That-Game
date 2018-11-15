@@ -2,6 +2,9 @@ import random
 from models.commands import Commands
 
 class PlayerBase():
+    def __init__(self, player_id):
+      pass
+
     def command_slime(self, map, slime):
         """
           Player's should override this method to provide an AI for each slime they control.
