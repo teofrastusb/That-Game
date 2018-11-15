@@ -154,6 +154,7 @@ class MyGame(arcade.Window):
         # Check for bite commands
         if (command.is_bite()):
             # Attempt to bite things
+            print('Slime tries to bite')
             hit = self.bite_thing(command, slime.x, slime.y, slime.attack)
             if hit:
                 slime.xp += 1
