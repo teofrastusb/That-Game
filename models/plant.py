@@ -6,6 +6,8 @@ class Plant(arcade.Sprite):
         super().__init__(config['plants']['filename'],
                          config['plants'].getfloat('sprite_scaling'))
         self.id = id
+        self.x = None
+        self.y = None
         self.level = 1
         self.map = map
         self.conf = config
@@ -18,6 +20,8 @@ class Plant(arcade.Sprite):
         self.level_up()
 
     def set_coord(self, x, y):
+        if self.x is not None and self.y is not None:
+            self.map.clear_cell(self.x, self.y)
         self.x = x
         self.y = y
         self.map.update_cell(self, x, y)

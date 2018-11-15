@@ -5,8 +5,8 @@ class Slime(arcade.Sprite):
         super().__init__(config['slimes']['filename'],
                          config['slimes'].getfloat('sprite_scaling'))
         self.id = id
-        self.row = 0
-        self.column = 0
+        self.x = None
+        self.y = None
         self.map = map
         self.level = 1
         self.xp = 1
@@ -23,6 +23,8 @@ class Slime(arcade.Sprite):
         self.level_check()
 
     def set_coord(self, x, y):
+        if self.x is not None and self.y is not None:
+            self.map.clear_cell(self.x, self.y)
         self.x = x
         self.y = y
         self.map.update_cell(self, x, y)

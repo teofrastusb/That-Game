@@ -46,11 +46,8 @@ class MyGame(arcade.Window):
 
         # initial game state
         self.map = Map(config)
-        self.plant_list = arcade.SpriteList()
-        self.slimes_one = arcade.SpriteList()
-        self.slimes_two = arcade.SpriteList()
         self.all_sprites_list = arcade.SpriteList()
-        self.sprite_man = Sprite_man(self.map, self.conf, self.plant_list, self.slimes_one, self.slimes_two, self.all_sprites_list)
+        self.sprite_man = Sprite_man(self.map, self.conf, self.all_sprites_list)
         self.turn = 0
         self.player_one = PlayerOne(1)
         self.player_two = PlayerTwo(2)
@@ -61,10 +58,6 @@ class MyGame(arcade.Window):
     def place_slime(self, x, y, player):
         slime = Slime(uuid.uuid4(), self.conf, self.map, player)
         slime.set_coord(x, y)
-        if player == 1:
-            self.slimes_one.append(slime)
-        else:
-            self.slimes_two.append(slime)
         self.all_sprites_list.append(slime)
 
     @trace
@@ -83,6 +76,7 @@ class MyGame(arcade.Window):
     @trace
     def place_plants(self):
         # Create the plants
+        # TODO: check the spot isn't taken
         for i in range(self.conf['plants'].getint('num_total')//2):
             rand_x = random.randint(0, self.map.column_count() / 2 -1)
             rand_y = random.randint(0, self.map.row_count()-1 )
@@ -90,13 +84,6 @@ class MyGame(arcade.Window):
             self.sprite_man.place_plant(rand_x, rand_y)
             # mirrored across x and y axis for right half
             self.sprite_man.place_plant((self.map.column_count() - 1) - rand_x, (self.map.row_count() - 1) - rand_y)
-
-    @trace
-    def move(self, command, x, y):
-        (x_prime, y_prime) = command.update_coord(x, y)
-        if self.map.valid_coord(x_prime, y_prime):
-            return (x_prime, y_prime)
-        return (x, y)
 
     @trace
     def bite_thing(self, command, x, y, attack):
@@ -143,17 +130,10 @@ class MyGame(arcade.Window):
 
         # Check for move commands
         if command.is_move():
-            # Attempt to move the slime
-            original_x, original_y = slime.x, slime.y
-            x, y = self.move(command, slime.x, slime.y)
-            slime.set_coord(x, y)
-            self.map.clear_cell(original_x, original_y)
-            
-            # If there is a collision revert move
-            hits = arcade.check_for_collision_with_list(slime, self.all_sprites_list)
-            if len(hits) > 0:
-                slime.set_coord(original_x, original_y)
-                self.map.clear_cell(x, y)
+            # Attempt to move the slime if the target cell is empty
+            (x, y) = command.update_coord(slime.x, slime.y)
+            if self.map.valid_coord(x, y) and self.map.is_cell_empty(x, y):
+                slime.set_coord(x, y)
 
         # Check for bite commands
         if (command.is_bite()):
@@ -163,11 +143,12 @@ class MyGame(arcade.Window):
             if hit:
                 slime.xp += 1
 
-        # TODO Check for split command
         if (command is Commands.SPLIT):
             self.split(slime)
 
         # TODO Check for merge command
+
+        self.sprite_man.check_for_dead()
 
     @trace
     def setup(self):
@@ -215,18 +196,14 @@ class MyGame(arcade.Window):
         self.sprite_man.spread_seeds()
 
         # Call external function for player 1 slimes
-        for slime in self.slimes_one:
-            self.execute_round(slime, self.player_one)
-
-            # Sprite manager check for dead
-            self.sprite_man.check_for_dead()
+        for slime in self.all_sprites_list:
+            if type(slime) is Slime and slime.player == 1:
+                self.execute_round(slime, self.player_one)
 
         # Call external function for player 2 slimes
-        for slime in self.slimes_two:
-            self.execute_round(slime, self.player_two)
-
-            # Sprite manager check for dead
-            self.sprite_man.check_for_dead()
+        for slime in self.all_sprites_list:
+            if type(slime) is Slime and slime.player == 2:
+                self.execute_round(slime, self.player_two)
 
         # Delay to slow game down        
         time.sleep(self.conf['misc'].getfloat('sleep'))
