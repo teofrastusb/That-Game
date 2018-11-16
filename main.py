@@ -91,19 +91,21 @@ class MyGame(arcade.Window):
         # Slime tries to bite a target, then if succesful this method awards 1 xp
         (x, y) = command.update_coord(x, y)
 
-        print('slime is tring to ', command)
+        #print('slime is tring to ', command)
 
         # Make sure target is in map range
         if not self.map.valid_coord(x, y):
             return 0
 
         target = self.map.matrix[x][y]
-        # Check if target is a plant or slime
-        if target != 0:
-            print('plant health', target.current_hp)
+        # Check if target is a slime
+        if target != 0 and hasattr(target, 'player'):
             target.current_hp -= attack
-            print('plant health', target.current_hp)
             return 1
+
+        elif target != 0:
+            target.current_hp -= attack
+            return 2
 
     @trace
     def split(self, slime):
@@ -140,9 +142,12 @@ class MyGame(arcade.Window):
         if (command.is_bite()):
             # Attempt to bite things
             hit = self.bite_thing(command, slime.x, slime.y, slime.attack)
-            print('if 1 then hit', hit)
+            #print('if 1 then hit', hit)
             if hit:
                 slime.xp += 1
+                hit -= 1
+                if hit:
+                    slime.current_hp += slime.hp_increment//slime.hp_increment
 
         if (command is Commands.SPLIT):
             self.split(slime)
