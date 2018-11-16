@@ -19,7 +19,7 @@ class Player(PlayerBase):
                 if type(gamepiece) is Slime and gamepiece.player == self.id:
                     self.slimes.append(gamepiece)
 
-    def command_slime(self, map, slime):
+    def command_slime(self, map, slime, turn):
         self.find_slimes(map.get_matrix())
 
         # if len(self.slimes) > 0 and slime.id == self.slimes[0].id:

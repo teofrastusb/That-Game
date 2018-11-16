@@ -5,7 +5,9 @@ import random
 # All codes could use the same class name
 class Player(PlayerBase):
     # example player AI
-    def command_slime(self, map, slime):
+    def command_slime(self, map, slime, turn):
+        if turn == 1:
+            return Commands.MERGE
         # just do default
         command_options = [Commands.LEFT,Commands.RIGHT,Commands.UP,Commands.DOWN]
         option = random.randint(0,3)

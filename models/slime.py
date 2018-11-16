@@ -17,6 +17,7 @@ class Slime(arcade.Sprite):
         self.hp_increment = config['slimes'].getint('hp_increment')
         self.attack = config['slimes'].getint('attack')
         self.attack_increment = config['slimes'].getint('attack_increment')
+        self.ready_to_merge = False
 
     def update(self):
         # Check level, then ...

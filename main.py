@@ -127,7 +127,7 @@ class MyGame(arcade.Window):
 
     @trace
     def execute_round(self, slime, player):
-        command = player.command_slime(self.map, slime)
+        command = player.command_slime(self.map, slime, self.turn)
         # allow player to take no action
         if command is None:
             return
@@ -150,12 +150,15 @@ class MyGame(arcade.Window):
                 if hit:
                     slime.current_hp += slime.hp_increment//slime.hp_increment
 
-        if (command is Commands.SPLIT):
+        if command is Commands.SPLIT:
             self.split(slime)
 
-        # TODO Check for merge command
+        if command is Commands.MERGE:
+            slime.ready_to_merge = True
 
         self.sprite_man.check_for_dead()
+        self.sprite_man.check_for_merge()
+
 
     @trace
     def setup(self):

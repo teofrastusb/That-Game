@@ -12,8 +12,8 @@ class Map():
         self.step_x = self.width // (self.columns)
         self.step_y = self.height // (self.rows)
 
-    def _adjacent_cells(self, x, y):
-      return [
+    def adjacent_cells(self, x, y):
+      cells = [
         (x - 1, y),
         (x, y -1),
         (x - 1, y - 1),
@@ -23,6 +23,7 @@ class Map():
         (x - 1, y + 1),
         (x + 1, y - 1)
       ]
+      return [cell for cell in cells if self.valid_coord(cell[0], cell[1])] 
 
     def get_matrix(self):
       return self.matrix
@@ -43,8 +44,8 @@ class Map():
       return self.matrix[x][y] == None
 
     def adjacent_empty_cells(self, x, y):
-      cells = self._adjacent_cells(x, y)
-      return [(x, y) for x, y in cells if self.valid_coord(x, y) and self.is_cell_empty(x, y)]
+      cells = self.adjacent_cells(x, y)
+      return [(x, y) for x, y in cells if self.is_cell_empty(x, y)]
 
     def valid_coord(self, x, y):
       return ((0 <= x < self.columns) and (0 <= y < self.rows))
