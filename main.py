@@ -215,7 +215,7 @@ class MyGame(arcade.Window):
         # Delay to slow game down        
         time.sleep(self.conf['misc'].getfloat('sleep'))
 
-        # Check for end of game conditions, TODO add one team of slimes is empty
+        # Check for end of game conditions, TODO make this an int, add one team of slimes is empty
         # if self.turn > self.conf['screen'].getint('max_turn'):
         #     print('In endgame')
         #     #self.end_game()
