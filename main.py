@@ -123,6 +123,11 @@ class MyGame(arcade.Window):
             self.place_slime(x, y, 1)
         else:
             self.place_slime(x, y, 2)
+    
+    @trace
+    def end_game(self):
+    # Print winner, generate report, ...
+        pass
 
     @trace
     def execute_round(self, slime, player):
@@ -213,6 +218,12 @@ class MyGame(arcade.Window):
 
         # Delay to slow game down        
         time.sleep(self.conf['misc'].getfloat('sleep'))
+
+        # Check for end of game conditions, TODO add one team of slimes is empty
+        # if self.turn > self.conf['screen'].getint('max_turn'):
+        #     print('In endgame')
+        #     #self.end_game()
+        #     arcade.window_commands.close_window()
 
 def main():
     config = configparser.ConfigParser()
