@@ -98,14 +98,10 @@ class MyGame(arcade.Window):
             return 0
 
         target = self.map.matrix[x][y]
-        # Check if target is a slime
-        if target != 0 and hasattr(target, 'player'):
+        if target is not None:
             target.current_hp -= attack
-            return 1
 
-        elif target != 0:
-            target.current_hp -= attack
-            return 2
+        return 1 if type(target) is Slime else 2
 
     @trace
     def split(self, slime):
