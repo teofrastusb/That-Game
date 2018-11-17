@@ -91,8 +91,6 @@ class MyGame(arcade.Window):
         # Slime tries to bite a target, then if succesful this method awards 1 xp
         (x, y) = command.update_coord(x, y)
 
-        #print('slime is tring to ', command)
-
         # Make sure target is in map range
         if not self.map.valid_coord(x, y):
             return 0
@@ -210,8 +208,7 @@ class MyGame(arcade.Window):
             if type(slime) is Slime and slime.player == 1:
                 self.execute_round(slime, self.player_one)
 
-        # Call external function for player 2 slimes
-        for slime in self.all_sprites_list:
+                # Call external function for player 2 slimes
             if type(slime) is Slime and slime.player == 2:
                 self.execute_round(slime, self.player_two)
 
@@ -219,10 +216,10 @@ class MyGame(arcade.Window):
         time.sleep(self.conf['misc'].getfloat('sleep'))
 
         # Check for end of game conditions, TODO make this an int, add one team of slimes is empty
-        # if self.turn > self.conf['screen'].getint('max_turn'):
-        #     print('In endgame')
-        #     #self.end_game()
-        #     arcade.window_commands.close_window()
+        if self.turn > 1000: #self.conf['screen'].getint('max_turn'):
+            print('In endgame')
+            #self.end_game()
+            arcade.window_commands.close_window()
 
 def main():
     config = configparser.ConfigParser()

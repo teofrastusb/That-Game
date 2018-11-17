@@ -3,7 +3,7 @@ import random
 
 class Plant(arcade.Sprite):
     def __init__(self, id, config, map):
-        super().__init__(config['plants']['filename'],
+        super().__init__(config['plants']['filename1'],
                          config['plants'].getfloat('sprite_scaling'))
         self.id = id
         self.x = None
@@ -41,6 +41,11 @@ class Plant(arcade.Sprite):
         # If the plant levels up do the following
         if do_level_up:
             self.level += 1
+
+                # Change image based on level
+            # if self.level >= self.max_level//2:
+            #     self.(config['slimes']['filename2'],
+            #                     config['slimes'].getfloat('sprite_scaling'))
 
             # Change max hp on level up
             self.max_hp += self.hp_increment
