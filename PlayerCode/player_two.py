@@ -59,7 +59,7 @@ class Player(PlayerBase):
             elif map.matrix[slime.x][slime.y+1].player != slime.player:
                 return Commands.BITEUP
 
-        if slime.level >= 3:
+        if slime.level >= 5:
             return Commands.SPLIT
 
         # Move randomly

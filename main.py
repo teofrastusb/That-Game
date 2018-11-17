@@ -124,17 +124,19 @@ class MyGame(arcade.Window):
         # can't split if there are no available cells
         if len(empty_adjacent_cells) == 0:
             return
+        
+        # can't split if the slime is not high enough level
+        if slime.level >= self.conf['slimes'].getint('min_split_level'):
+            x, y = random.choice(empty_adjacent_cells)
+            slime.split()
 
-        x, y = random.choice(empty_adjacent_cells)
-        slime.split()
-
-        if slime.player == 1:
-            self.place_slime(x, y, 1)
-        else:
-            self.place_slime(x, y, 2)
+            if slime.player == 1:
+                self.place_slime(x, y, 1)
+            else:
+                self.place_slime(x, y, 2)
     
     @trace
-    def end_game(self):
+    def end_game(self,player1_slime_count,player2_slime_count):
     # Print winner, generate report, ...
         arcade.window_commands.close_window()
         player1_score=0
@@ -162,9 +164,13 @@ class MyGame(arcade.Window):
             winner = self.player_two
 
         print(type(self.player_one),' got a score of', player1_score)
-        print(type(self.player_one),' highest slime level was ',  player1_max)
+        print(type(self.player_one),' highest endgame slime level was ',  player1_max)
+        print(type(self.player_one),' ended with ',  player1_slime_count, 'slimes.')
+
         print(type(self.player_two),' got a score of', player2_score)
-        print(type(self.player_two),' highest slime level was ',  player2_max)
+        print(type(self.player_two),' highest endgame slime level was ',  player2_max)
+        print(type(self.player_two),' ended with ',  player2_slime_count, 'slimes.')
+
         print('The winner is ', type(winner))
 
     @trace
@@ -247,22 +253,28 @@ class MyGame(arcade.Window):
 
         self.sprite_man.spread_seeds()
 
+        player1_slime_count = 0
+        player2_slime_count = 0
+
         # Call external function for player 1 slimes
         for slime in self.all_sprites_list:
             if type(slime) is Slime and slime.player == 1:
                 self.execute_round(slime, self.player_one)
+                player1_slime_count += 1
 
                 # Call external function for player 2 slimes
             if type(slime) is Slime and slime.player == 2:
                 self.execute_round(slime, self.player_two)
+                player2_slime_count += 1
 
         # Delay to slow game down        
         time.sleep(self.conf['misc'].getfloat('sleep'))
 
 
-        # Check for end of game conditions, TODO make this an int, add one team of slimes is empty
-        if self.turn > self.max_turns:
-            self.end_game()
+        # Check for end of game conditions
+        if self.turn > self.max_turns or player2_slime_count == 0 or player1_slime_count == 0:
+            time.sleep(self.conf['misc'].getfloat('sleep')*10)
+            self.end_game(player1_slime_count,player2_slime_count)
 
 def main():
     config = configparser.ConfigParser()
