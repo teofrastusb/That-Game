@@ -146,13 +146,13 @@ class MyGame(arcade.Window):
         for slime in self.all_sprites_list:
             if type(slime) is Slime and slime.player == 1:
                 player1_score += int(slime.level**(3/2))
-                if player1_max > slime.level:
+                if player1_max < slime.level:
                     player1_max = slime.level
 
                 # Call external function for player 2 slimes
             if type(slime) is Slime and slime.player == 2:
                 player2_score += int(slime.level**(3/2))
-                if player2_max > slime.level:
+                if player2_max < slime.level:
                     player2_max = slime.level
         
         if player1_score > player2_score:
@@ -161,11 +161,11 @@ class MyGame(arcade.Window):
         elif player1_score < player2_score:
             winner = self.player_two
 
-        print(self.player_one,' got a score of', player1_score)
-        print(self.player_one,' highest slime level was ',  player1_max)
-        print(self.player_two,' got a score of', player2_score)
-        print(self.player_two,' highest slime level was ',  player2_max)
-        print('The winner is ', winner)
+        print(type(self.player_one),' got a score of', player1_score)
+        print(type(self.player_one),' highest slime level was ',  player1_max)
+        print(type(self.player_two),' got a score of', player2_score)
+        print(type(self.player_two),' highest slime level was ',  player2_max)
+        print('The winner is ', type(winner))
 
     @trace
     def execute_round(self, slime, player):

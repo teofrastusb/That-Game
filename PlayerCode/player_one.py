@@ -27,12 +27,19 @@ class Player(PlayerBase):
         # else:
         #     print("Controlling some other dumb slime!")
 
+        print(slime.x, slime.y)
+
         if slime.x == 0:
+            slime.bool_1 = False
+        elif slime.x == map.columns-1:
+            slime.bool_1 = True
+
+        if not(slime.bool_1):
             self.direction = 1
             self.move_command = Commands.RIGHT
             self.bite_command = Commands.BITERIGHT
 
-        elif slime.x == map.columns-1:
+        elif slime.bool_1:
             self.direction = -1
             self.move_command = Commands.LEFT
             self.bite_command = Commands.BITELEFT

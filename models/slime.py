@@ -18,6 +18,9 @@ class Slime(arcade.Sprite):
         self.attack = config['slimes'].getint('attack')
         self.attack_increment = config['slimes'].getint('attack_increment')
         self.ready_to_merge = False
+        self.bool_1 = False
+        self.bool_2 = False
+        self.bool_3 = False
 
     def update(self):
         # Check level, then ...
@@ -40,7 +43,7 @@ class Slime(arcade.Sprite):
         starting_level = self.level
 
         # Update level based on xp
-        self.level = self.xp
+        self.level = int(self.xp**(1/2))
 
         # Check if the slime level is at or above maximum
         if self.level >= self.max_level:
