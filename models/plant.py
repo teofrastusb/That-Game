@@ -44,7 +44,6 @@ class Plant(arcade.Sprite):
 
                 # Change image based on level
             if self.level >= self.max_level//2:
-                print('gold plant is now', self.level)
                 # TODO change sprite image to the next image
                 arcade.Sprite(self.conf['plants']['filename2'],
                                 self.conf['plants'].getfloat('sprite_scaling'))

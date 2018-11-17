@@ -55,10 +55,10 @@ class Slime(arcade.Sprite):
         # Add hp on level up
         if starting_level < self.level:
             self.current_hp += self.hp_increment
-            print('xp', self.xp)
-            print('level', self.level)
-            print('max hp', self.max_hp)
-            print('current hp', self.current_hp)
+            # print('xp', self.xp)
+            # print('level', self.level)
+            # print('max hp', self.max_hp)
+            # print('current hp', self.current_hp)
         
         # make sure current hp isn't above max hp
         if self.current_hp >= self.max_hp:

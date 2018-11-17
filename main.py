@@ -42,6 +42,7 @@ class MyGame(arcade.Window):
         self.width = config['screen'].getint('width')
         self.height = config['screen'].getint('height')
         self.num_slimes = config['slimes'].getint('num_total')
+        self.max_turns = config['screen'].getint('max_turns')
         self.conf = config
 
         # initial game state
@@ -215,9 +216,9 @@ class MyGame(arcade.Window):
         # Delay to slow game down        
         time.sleep(self.conf['misc'].getfloat('sleep'))
 
+
         # Check for end of game conditions, TODO make this an int, add one team of slimes is empty
-        if self.turn > 1000: #self.conf['screen'].getint('max_turn'):
-            print('In endgame')
+        if self.turn > self.max_turns:
             #self.end_game()
             arcade.window_commands.close_window()
 
