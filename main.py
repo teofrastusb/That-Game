@@ -136,7 +136,7 @@ class MyGame(arcade.Window):
                 self.place_slime(x, y, 2)
     
     @trace
-    def end_game(self,player1_slime_count,player2_slime_count):
+    def end_game(self,player1_slime_count,player2_slime_count,final_turn):
     # Print winner, generate report, ...
         arcade.window_commands.close_window()
         player1_score=0
@@ -162,6 +162,8 @@ class MyGame(arcade.Window):
 
         elif player1_score < player2_score:
             winner = self.player_two
+        
+        print('Gamed ended on turn',final_turn)
 
         print(type(self.player_one),' got a score of', player1_score)
         print(type(self.player_one),' highest endgame slime level was ',  player1_max)
@@ -171,7 +173,7 @@ class MyGame(arcade.Window):
         print(type(self.player_two),' highest endgame slime level was ',  player2_max)
         print(type(self.player_two),' ended with ',  player2_slime_count, 'slimes.')
 
-        print('The winner is ', type(winner))
+        print('The winner was ', type(winner))
 
     @trace
     def execute_round(self, slime, player):
@@ -274,7 +276,7 @@ class MyGame(arcade.Window):
         # Check for end of game conditions
         if self.turn > self.max_turns or player2_slime_count == 0 or player1_slime_count == 0:
             time.sleep(self.conf['misc'].getfloat('sleep')*10)
-            self.end_game(player1_slime_count,player2_slime_count)
+            self.end_game(player1_slime_count,player2_slime_count,self.turn)
 
 def main():
     config = configparser.ConfigParser()

@@ -27,6 +27,9 @@ class Player(PlayerBase):
         # else:
         #     print("Controlling some other dumb slime!")
 
+        if slime.level >= 3:
+            return Commands.SPLIT
+
         # determine if the slime is on the side of the map
         if slime.x == 0:
             slime.bool_1 = False
