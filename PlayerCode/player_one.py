@@ -6,7 +6,7 @@ class Player(PlayerBase):
     # example player AI
     def __init__(self, player_id):
         self.id = player_id
-        self.direction = 1
+        self.direction_x = 1
         self.move_command = Commands.RIGHT
         self.bite_command = Commands.BITERIGHT
         self.slimes = []
@@ -27,25 +27,51 @@ class Player(PlayerBase):
         # else:
         #     print("Controlling some other dumb slime!")
 
-        print(slime.x, slime.y)
-
+        # determine if the slime is on the side of the map
         if slime.x == 0:
             slime.bool_1 = False
         elif slime.x == map.columns-1:
             slime.bool_1 = True
 
-        if not(slime.bool_1):
-            self.direction = 1
+        # determine if the slime should go up or down when changing rows
+        if slime.y == 0:
+            slime.bool_2 = False
+        elif slime.y == map.rows-1:
+            slime.bool_2 = True
+
+        # determine if the slime should change rows
+        # up
+        if slime.bool_3 and not slime.bool_2:
+            slime.bool_3 = False
+            # bite occupied square, otherwise move into it
+            if not map.is_cell_empty(slime.x, slime.y+1):
+                return Commands.BITEUP
+            else:
+                return Commands.UP
+
+        # down
+        elif slime.bool_3 and slime.bool_2:
+            slime.bool_3 = False
+            if not map.is_cell_empty(slime.x, slime.y-1):
+                return Commands.BITEDOWN
+            else:
+                return Commands.DOWN
+            
+        # move down the row
+        if not slime.bool_1:
+            self.direction_x = 1
             self.move_command = Commands.RIGHT
             self.bite_command = Commands.BITERIGHT
+            slime.bool_3 = True
 
         elif slime.bool_1:
-            self.direction = -1
+            self.direction_x = -1
             self.move_command = Commands.LEFT
             self.bite_command = Commands.BITELEFT
+            slime.bool_3 = True
 
         # bite occupied square, otherwise move into it
-        if not map.is_cell_empty(slime.x+self.direction, slime.y):
+        if not map.is_cell_empty(slime.x+self.direction_x, slime.y):
             return self.bite_command
         else:
             return self.move_command

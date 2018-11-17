@@ -22,6 +22,7 @@ class Slime(arcade.Sprite):
         self.bool_2 = False
         self.bool_3 = False
 
+
     def update(self):
         # Check level, then ...
         self.level_check()
@@ -36,7 +37,7 @@ class Slime(arcade.Sprite):
         self.set_position(self.map.center_x(x), self.map.center_y(y))
 
     def split(self):
-        self.xp = self.xp // 2.2
+        self.xp = self.xp // 3
 
     def level_check(self):
         # Save current level
