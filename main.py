@@ -20,6 +20,17 @@ from models.sprite_man import Sprite_man
 
 # Import player's AIs, it would be great if we could make the program pick the player files to import from but hand enetering for now is fine.
 player_codes = os.listdir(os.path.dirname(os.path.realpath(__file__))+'\PlayerCode')
+print(player_codes)
+code1 = None
+code2 = None
+
+code1 = player_codes[random.randint(0,len(player_codes)-2)]
+print( 'Code1 is', code1)
+while not code2:
+    option = player_codes[random.randint(0,len(player_codes)-2)]
+    if option != code1:
+        code2 = option
+print( 'Code2 is', code2)
 
 from PlayerCode.player_one import Player as PlayerOne
 from PlayerCode.player_two import Player as PlayerTwo
