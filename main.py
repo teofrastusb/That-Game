@@ -19,8 +19,10 @@ from models.commands import Commands
 from models.sprite_man import Sprite_man
 
 # Import player's AIs, it would be great if we could make the program pick the player files to import from but hand enetering for now is fine.
-from player_one import Player as PlayerOne
-from player_two import Player as PlayerTwo
+player_codes = os.listdir(os.path.dirname(os.path.realpath(__file__))+'\PlayerCode')
+
+from PlayerCode.player_one import Player as PlayerOne
+from PlayerCode.player_two import Player as PlayerTwo
 
 # log debug message for decorated methods
 def trace(function):
@@ -122,7 +124,36 @@ class MyGame(arcade.Window):
     @trace
     def end_game(self):
     # Print winner, generate report, ...
-        pass
+        arcade.window_commands.close_window()
+        player1_score=0
+        player2_score=0
+        player1_max=0
+        player2_max=0
+        winner = 'No one'
+
+        for slime in self.all_sprites_list:
+            if type(slime) is Slime and slime.player == 1:
+                player1_score += int(slime.level**(3/2))
+                if player1_max > slime.level:
+                    player1_max = slime.level
+
+                # Call external function for player 2 slimes
+            if type(slime) is Slime and slime.player == 2:
+                player2_score += int(slime.level**(3/2))
+                if player2_max > slime.level:
+                    player2_max = slime.level
+        
+        if player1_score > player2_score:
+            winner = self.player_one
+
+        elif player1_score < player2_score:
+            winner = self.player_two
+
+        print(self.player_one,' got a score of', player1_score)
+        print(self.player_one,' highest slime level was ',  player1_max)
+        print(self.player_two,' got a score of', player2_score)
+        print(self.player_two,' highest slime level was ',  player2_max)
+        print('The winner is ', winner)
 
     @trace
     def execute_round(self, slime, player):
@@ -219,8 +250,7 @@ class MyGame(arcade.Window):
 
         # Check for end of game conditions, TODO make this an int, add one team of slimes is empty
         if self.turn > self.max_turns:
-            #self.end_game()
-            arcade.window_commands.close_window()
+            self.end_game()
 
 def main():
     config = configparser.ConfigParser()
