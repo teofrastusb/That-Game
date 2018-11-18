@@ -5,6 +5,7 @@ import math
 import logging
 from models.plant import Plant
 from models.slime import Slime
+from models.rock import Rock
 
 class Sprite_man():
     def __init__(self, map, config, all_sprites_list):
@@ -17,11 +18,17 @@ class Sprite_man():
         plant.set_coord(x, y)
         self.all_sprites_list.append(plant)
 
+    def drop_rock(self, x, y):
+        rock = Rock(uuid.uuid4(), self.conf, self.map)
+        rock.set_coord(x, y)
+        self.all_sprites_list.append(rock)
+
     def check_for_dead(self):
         for gamepiece in self.all_sprites_list:
-            if gamepiece.current_hp <= 0:
-                arcade.sprite.Sprite.kill(gamepiece) 
-                self.map.clear_cell(gamepiece.x,gamepiece.y)
+            if type(gamepiece) is not Rock:
+                if gamepiece.current_hp <= 0:
+                    arcade.sprite.Sprite.kill(gamepiece) 
+                    self.map.clear_cell(gamepiece.x,gamepiece.y)
 
     def check_for_merge(self):
         for gamepiece in self.all_sprites_list:

@@ -4,7 +4,6 @@ class Commands(Enum):
     RIGHT = auto()
     UP = auto()
     DOWN = auto()
-    BITE = auto()
     BITELEFT = auto()
     BITERIGHT = auto()
     BITEUP = auto()
@@ -16,7 +15,7 @@ class Commands(Enum):
         return self in (Commands.LEFT, Commands.RIGHT, Commands.UP, Commands.DOWN)
 
     def is_bite(self):
-        return self in (Commands.BITE, Commands.BITELEFT, Commands.BITERIGHT, Commands.BITEUP, Commands.BITEDOWN)
+        return self in (Commands.BITELEFT, Commands.BITERIGHT, Commands.BITEUP, Commands.BITEDOWN)
 
     def update_coord(self, x, y):
         """Returns x,y updated based on the direction of the command"""

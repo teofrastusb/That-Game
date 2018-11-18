@@ -3,6 +3,7 @@ from models.commands import Commands
 import random
 from models.slime import Slime
 from models.plant import Plant
+from models.rock import Rock
 
 # All codes could use the same class name
 class Player(PlayerBase):
@@ -38,13 +39,16 @@ class Player(PlayerBase):
         #     return Commands.MERGE
 
         # check each direction for a plant then a slime, if a slime is found check if it is on our team
+        
+        
         if slime.x != 0 and map.matrix[slime.x-1][slime.y] != None:
             if type(map.matrix[slime.x-1][slime.y]) is Plant:
                 return Commands.BITELEFT
-            elif map.matrix[slime.x-1][slime.y].player != slime.player:
-                return Commands.BITELEFT
+            elif type(map.matrix[slime.x-1][slime.y]) is not Rock:
+                if map.matrix[slime.x-1][slime.y].player != slime.player:
+                    return Commands.BITELEFT
         elif slime.x != map.columns-1 and map.matrix[slime.x+1][slime.y] != None:
-            if not hasattr(map.matrix[slime.x+1][slime.y],'player'):
+            if type(map.matrix[slime.x+1][slime.y]) is Plant:
                 return Commands.BITERIGHT
             elif map.matrix[slime.x+1][slime.y].player != slime.player:
                 return Commands.BITERIGHT

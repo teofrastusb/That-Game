@@ -14,6 +14,7 @@ import uuid
 # Import classes
 from models.plant import Plant
 from models.slime import Slime
+from models.rock import Rock
 from models.map import Map
 from models.commands import Commands
 from models.sprite_man import Sprite_man
@@ -33,8 +34,8 @@ from models.sprite_man import Sprite_man
 #         code2 = 'PlayerCode.' + option[0:len(option)-3]
 # print( 'Code2 is', code2)
 
-from PlayerCode.player_three import Player as PlayerOne
-from PlayerCode.player_two import Player as PlayerTwo
+from PlayerCode.player_one import Player as PlayerOne
+from PlayerCode.player_one import Player as PlayerTwo
 
 # log debug message for decorated methods
 def trace(function):
@@ -102,19 +103,30 @@ class MyGame(arcade.Window):
                 plants += 2
 
     @trace
+    def drop_rocks(self):
+        rocks = 0
+        while rocks < self.conf['rocks'].getint('num_total'):
+            rand_x = random.randint(0, self.map.column_count() / 2 -1)
+            rand_y = random.randint(0, self.map.row_count()-1 )
+            if self.map.is_cell_empty(rand_x, rand_y):
+                # left half
+                self.sprite_man.drop_rock(rand_x, rand_y)
+                # mirrored across x and y axis for right half
+                self.sprite_man.drop_rock((self.map.column_count() - 1) - rand_x, (self.map.row_count() - 1) - rand_y)
+                rocks += 2
+
+    @trace
     def bite_thing(self, command, x, y, attack):
         # Slime tries to bite a target, then if succesful this method awards 1 xp
         (x, y) = command.update_coord(x, y)
+        target = self.map.matrix[x][y]
 
         # Make sure target is in map range
-        if not self.map.valid_coord(x, y):
+        if not self.map.valid_coord(x, y) or type(target) is Rock:
             return 0
-
-        target = self.map.matrix[x][y]
-        if target is not None:
+        elif target is not None:
             target.current_hp -= attack
-
-        return 1 if type(target) is Slime else 2
+            return 1 if type(target) is Slime else 2
 
     @trace
     def split(self, slime):
@@ -215,6 +227,7 @@ class MyGame(arcade.Window):
         """ Initialize game state """
         self.place_slimes()
         self.plant_plants()
+        self.drop_rocks()
 
     @trace
     def draw_grid(self):
