@@ -59,7 +59,7 @@ class Player(PlayerBase):
             elif map.matrix[slime.x][slime.y+1].player != slime.player:
                 return Commands.BITEUP
 
-        if len(self.friends) <= 10:
+        if len(self.friends) <= 5:
             if slime.level >= 4:
                 return Commands.SPLIT
 
