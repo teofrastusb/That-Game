@@ -39,29 +39,17 @@ class Player(PlayerBase):
         #     return Commands.MERGE
 
         # check each direction for a plant then a slime, if a slime is found check if it is on our team
+        bite_option = [Commands.BITELEFT, Commands.BITERIGHT, Commands.BITEUP, Commands.BITEDOWN]
+        dx = [slime.x-1, slime.x+1, slime.x, slime.x]
+        dy = [slime.y, slime.y, slime.y+1, slime.y-1]
         
-        
-        if slime.x != 0 and map.matrix[slime.x-1][slime.y] != None:
-            if type(map.matrix[slime.x-1][slime.y]) is Plant:
-                return Commands.BITELEFT
-            elif type(map.matrix[slime.x-1][slime.y]) is not Rock:
-                if map.matrix[slime.x-1][slime.y].player != slime.player:
-                    return Commands.BITELEFT
-        elif slime.x != map.columns-1 and map.matrix[slime.x+1][slime.y] != None:
-            if type(map.matrix[slime.x+1][slime.y]) is Plant:
-                return Commands.BITERIGHT
-            elif map.matrix[slime.x+1][slime.y].player != slime.player:
-                return Commands.BITERIGHT
-        elif slime.y != 0 and map.matrix[slime.x][slime.y-1] != None:
-            if not hasattr(map.matrix[slime.x][slime.y-1],'player'):
-                return Commands.BITEDOWN
-            elif map.matrix[slime.x][slime.y-1].player != slime.player:
-                return Commands.BITEDOWN
-        elif slime.y != map.rows-1 and map.matrix[slime.x][slime.y+1] != None:
-            if not hasattr(map.matrix[slime.x][slime.y+1],'player'):
-                return Commands.BITEUP
-            elif map.matrix[slime.x][slime.y+1].player != slime.player:
-                return Commands.BITEUP
+        for i in range(4):
+            if map.valid_coord(dx[i], dy[i]) and map.matrix[dx[i]][dy[i]] != None:
+                if type(map.matrix[dx[i]][dy[i]]) is Plant:
+                    return bite_option[i]
+                elif type(map.matrix[dx[i]][dy[i]]) is not Rock:
+                    if map.matrix[dx[i]][dy[i]].player != slime.player:
+                        return bite_option[i]
 
         if len(self.friends) <= 5:
             if slime.level >= 4:

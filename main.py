@@ -35,7 +35,7 @@ from models.sprite_man import Sprite_man
 # print( 'Code2 is', code2)
 
 from PlayerCode.player_one import Player as PlayerOne
-from PlayerCode.player_one import Player as PlayerTwo
+from PlayerCode.player_three import Player as PlayerTwo
 
 # log debug message for decorated methods
 def trace(function):
@@ -67,8 +67,6 @@ class MyGame(arcade.Window):
         self.turn = 0
         self.player_one = PlayerOne(1)
         self.player_two = PlayerTwo(2)
-
-        arcade.set_background_color(arcade.color.BLACK)
 
     @trace 
     def place_slime(self, x, y, player):
@@ -245,17 +243,44 @@ class MyGame(arcade.Window):
                 arcade.draw_rectangle_filled(x_box, y_box, self.map.width/self.map.columns-2, self.map.height/self.map.rows-2, color)
 
     @trace
-    def on_draw(self):
-        """
-        Render the screen.
-        """
-        arcade.start_render()
-        self.draw_grid()
-        self.all_sprites_list.draw()
+    def slime_sprite_update(self):
+        """Update the slimes sprites based on player and level."""
+        for slime in self.all_sprites_list:
+            if type(slime) is Slime:
+                if slime.player == 1 and slime.level < self.conf['slimes'].getint('min_split_level')*2:
+                    slime.texture=arcade.draw_commands.load_texture(
+                        self.conf['slimes'].get('filename1'),scale=self.conf['slimes'].getfloat('sprite_scaling')
+                        )
+                elif slime.player == 1 and slime.level >= self.conf['slimes'].getint('min_split_level')*2:
+                    slime.texture=arcade.draw_commands.load_texture(
+                        self.conf['slimes'].get('filename3'),scale=self.conf['slimes'].getfloat('sprite_scaling')
+                        )
+                elif slime.player == 2 and slime.level < self.conf['slimes'].getint('min_split_level')*2:
+                    slime.texture=arcade.draw_commands.load_texture(
+                        self.conf['slimes'].get('filename2'),scale=self.conf['slimes'].getfloat('sprite_scaling')
+                        )
+                elif slime.player == 2 and slime.level >= self.conf['slimes'].getint('min_split_level')*2:
+                    slime.texture=arcade.draw_commands.load_texture(
+                        self.conf['slimes'].get('filename4'),scale=self.conf['slimes'].getfloat('sprite_scaling')
+                        )
 
-        # Put the text on the screen.
-        output = "turn: {}".format(self.turn)
-        arcade.draw_text(output, 10, 20, arcade.color.BLACK, 14)
+    @trace
+    def on_draw(self):
+        """Render the screen."""
+        if self.conf['misc'].get('render') == 'True':
+            print(self.conf['misc'].get('render'))
+            arcade.start_render()
+            arcade.set_background_color(arcade.color.AMAZON)
+            #self.draw_grid()
+            self.slime_sprite_update()
+            self.all_sprites_list.draw()
+
+            # Put the text on the screen.
+            output = "turn: {}".format(self.turn)
+            arcade.draw_text(output, 10, 20, arcade.color.BLACK, 14)
+
+            # Delay to slow game down        
+            time.sleep(self.conf['misc'].getfloat('sleep'))
 
     @trace
     def update(self, delta_time):
@@ -277,25 +302,11 @@ class MyGame(arcade.Window):
             if type(slime) is Slime and slime.player == 1:
                 self.execute_round(slime, self.player_one)
                 player1_slime_count += 1
-                 
-                slime.texture=arcade.draw_commands.load_texture(self.conf['slimes'].get('filename2'),
-                scale=self.conf['slimes'].getfloat('sprite_scaling'))
-
-                if slime.level >= self.conf['slimes'].getint('min_split_level'):
-                    slime.texture=arcade.draw_commands.load_texture(self.conf['slimes'].get('filename4'),
-                    scale=self.conf['slimes'].getfloat('sprite_scaling'))
 
                 # Call external function for player 2 slimes
             if type(slime) is Slime and slime.player == 2:
                 self.execute_round(slime, self.player_two)
                 player2_slime_count += 1
-
-                if slime.level >= self.conf['slimes'].getint('min_split_level'):
-                    slime.texture=arcade.draw_commands.load_texture(self.conf['slimes'].get('filename3'),
-                    scale=self.conf['slimes'].getfloat('sprite_scaling'))
-
-        # Delay to slow game down        
-        time.sleep(self.conf['misc'].getfloat('sleep'))
 
         # Check for end of game conditions
         if self.turn > self.max_turns or player2_slime_count == 0 or player1_slime_count == 0:
