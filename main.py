@@ -268,7 +268,6 @@ class MyGame(arcade.Window):
     def on_draw(self):
         """Render the screen."""
         if self.conf['misc'].get('render') == 'True':
-            print(self.conf['misc'].get('render'))
             arcade.start_render()
             arcade.set_background_color(arcade.color.AMAZON)
             #self.draw_grid()
