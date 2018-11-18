@@ -2,7 +2,7 @@ import arcade
 
 class Slime(arcade.Sprite):
     def __init__(self, id, config, map, player):
-        super().__init__(config['slimes']['filename'],
+        super().__init__(config['slimes']['filename1'],
                          config['slimes'].getfloat('sprite_scaling'))
         self.id = id
         self.x = None

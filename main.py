@@ -163,7 +163,7 @@ class MyGame(arcade.Window):
         elif player1_score < player2_score:
             winner = self.player_two
         
-        print('Gamed ended on turn',final_turn)
+        print('Game ended on turn number',final_turn)
 
         print(type(self.player_one),' got a score of', player1_score)
         print(type(self.player_one),' highest endgame slime level was ',  player1_max)
@@ -253,6 +253,7 @@ class MyGame(arcade.Window):
         # allow all sprites to handle their own update
         self.all_sprites_list.update()
 
+        # check to see if the plants spread seeds
         self.sprite_man.spread_seeds()
 
         player1_slime_count = 0
@@ -263,6 +264,9 @@ class MyGame(arcade.Window):
             if type(slime) is Slime and slime.player == 1:
                 self.execute_round(slime, self.player_one)
                 player1_slime_count += 1
+                 
+                slime.texture=arcade.draw_commands.load_texture(self.conf['slimes'].get('filename2'),
+                scale=self.conf['slimes'].getfloat('sprite_scaling'))
 
                 # Call external function for player 2 slimes
             if type(slime) is Slime and slime.player == 2:
@@ -272,10 +276,9 @@ class MyGame(arcade.Window):
         # Delay to slow game down        
         time.sleep(self.conf['misc'].getfloat('sleep'))
 
-
         # Check for end of game conditions
         if self.turn > self.max_turns or player2_slime_count == 0 or player1_slime_count == 0:
-            time.sleep(self.conf['misc'].getfloat('sleep')*10)
+            time.sleep(self.conf['misc'].getfloat('sleep')*50)
             self.end_game(player1_slime_count,player2_slime_count,self.turn)
 
 def main():

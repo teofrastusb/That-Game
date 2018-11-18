@@ -42,6 +42,10 @@ class Plant(arcade.Sprite):
         if do_level_up:
             self.level += 1
 
+            if self.level >= int(self.max_level*3/4):
+                self.texture=arcade.draw_commands.load_texture(self.conf['plants'].get('filename2'),
+                scale=self.conf['plants'].getfloat('sprite_scaling'))
+
                 # Change image based on level
             if self.level >= self.max_level//2:
                 # TODO change sprite image to the next image
@@ -58,6 +62,8 @@ class Plant(arcade.Sprite):
         self.level = 1
         self.max_hp = self.conf['plants'].getint('max_hp')
         self.current_hp = self.max_hp
+        self.texture=arcade.draw_commands.load_texture(self.conf['plants'].get('filename1'),
+                scale=self.conf['plants'].getfloat('sprite_scaling'))
 
     def can_seed(self):
         return self.level == self.max_level
