@@ -2,6 +2,12 @@ from models.player_base import PlayerBase
 from models.commands import Commands
 from models.slime import Slime
 
+class SlimeState():
+    def __init__(self):
+        self.bool_1 = False
+        self.bool_2 = False
+        self.bool_3 = False
+
 class Player(PlayerBase):
     # example player AI
     def __init__(self, player_id):
@@ -9,43 +15,35 @@ class Player(PlayerBase):
         self.direction_x = 1
         self.move_command = Commands.RIGHT
         self.bite_command = Commands.BITERIGHT
-        self.slimes = []
+        self.slimes = {}
 
-    def find_slimes(self, matrix):
-        self.slimes = []
-        for x in range(len(matrix)):
-            for y in range(len(matrix[x])):
-                gamepiece = matrix[x][y]
-                if type(gamepiece) is Slime and gamepiece.player == self.id:
-                    self.slimes.append(gamepiece)
+    def get_state(self, slime_id):
+        if slime_id not in self.slimes:
+            self.slimes[slime_id] = SlimeState()
+        return self.slimes[slime_id]
 
     def command_slime(self, map, slime, turn):
-        self.find_slimes(map.get_matrix())
-
-        # if len(self.slimes) > 0 and slime.id == self.slimes[0].id:
-        #     print("Controlling our original slime!")
-        # else:
-        #     print("Controlling some other dumb slime!")
-
+        state = self.get_state(slime.id)
+        
         if slime.level >= 3:
             return Commands.SPLIT
 
         # determine if the slime is on the side of the map
         if slime.x == 0:
-            slime.bool_1 = False
+            state.bool_1 = False
         elif slime.x == map.columns-1:
-            slime.bool_1 = True
+            state.bool_1 = True
 
         # determine if the slime should go up or down when changing rows
         if slime.y == 0:
-            slime.bool_2 = False
+            state.bool_2 = False
         elif slime.y == map.rows-1:
-            slime.bool_2 = True
+            state.bool_2 = True
 
         # determine if the slime should change rows
         # up
-        if slime.bool_3 and not slime.bool_2:
-            slime.bool_3 = False
+        if state.bool_3 and not state.bool_2:
+            state.bool_3 = False
             # bite occupied square, otherwise move into it
             if not map.is_cell_empty(slime.x, slime.y+1):
                 return Commands.BITEUP
@@ -53,25 +51,25 @@ class Player(PlayerBase):
                 return Commands.UP
 
         # down
-        elif slime.bool_3 and slime.bool_2:
-            slime.bool_3 = False
+        elif state.bool_3 and state.bool_2:
+            state.bool_3 = False
             if not map.is_cell_empty(slime.x, slime.y-1):
                 return Commands.BITEDOWN
             else:
                 return Commands.DOWN
             
         # move down the row
-        if not slime.bool_1:
+        if not state.bool_1:
             self.direction_x = 1
             self.move_command = Commands.RIGHT
             self.bite_command = Commands.BITERIGHT
-            slime.bool_3 = True
+            state.bool_3 = True
 
-        elif slime.bool_1:
+        elif state.bool_1:
             self.direction_x = -1
             self.move_command = Commands.LEFT
             self.bite_command = Commands.BITELEFT
-            slime.bool_3 = True
+            state.bool_3 = True
 
         # bite occupied square, otherwise move into it
         if not map.is_cell_empty(slime.x+self.direction_x, slime.y):
