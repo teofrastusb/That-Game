@@ -12,19 +12,19 @@ class Player(PlayerBase):
         self.direction_x = 1
         self.move_command = Commands.RIGHT
         self.bite_command = Commands.BITERIGHT
-        self.freinds = []
+        self.friends = []
         self.enemies =[]
         self.plants =[]
 
     def find_stuff(self, matrix):
-        self.freinds = []
+        self.friends = []
         self.enemies =[]
         self.plants =[]
         for x in range(len(matrix)):
             for y in range(len(matrix[x])):
                 gamepiece = matrix[x][y]
                 if type(gamepiece) is Slime and gamepiece.player == self.id:
-                    self.freinds.append(gamepiece)
+                    self.friends.append(gamepiece)
                 if type(gamepiece) is Slime and gamepiece.player != self.id:
                     self.enemies.append(gamepiece)
                 if type(gamepiece) is Plant:
@@ -59,8 +59,9 @@ class Player(PlayerBase):
             elif map.matrix[slime.x][slime.y+1].player != slime.player:
                 return Commands.BITEUP
 
-        if slime.level >= 5:
-            return Commands.SPLIT
+        if len(self.friends) <= 10:
+            if slime.level >= 4:
+                return Commands.SPLIT
 
         # Move randomly
         command_options = [Commands.LEFT,Commands.RIGHT,Commands.UP,Commands.DOWN]

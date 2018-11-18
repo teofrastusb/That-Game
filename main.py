@@ -33,7 +33,7 @@ from models.sprite_man import Sprite_man
 #         code2 = 'PlayerCode.' + option[0:len(option)-3]
 # print( 'Code2 is', code2)
 
-from PlayerCode.player_one import Player as PlayerOne
+from PlayerCode.player_three import Player as PlayerOne
 from PlayerCode.player_two import Player as PlayerTwo
 
 # log debug message for decorated methods
@@ -268,10 +268,18 @@ class MyGame(arcade.Window):
                 slime.texture=arcade.draw_commands.load_texture(self.conf['slimes'].get('filename2'),
                 scale=self.conf['slimes'].getfloat('sprite_scaling'))
 
+                if slime.level >= self.conf['slimes'].getint('min_split_level'):
+                    slime.texture=arcade.draw_commands.load_texture(self.conf['slimes'].get('filename4'),
+                    scale=self.conf['slimes'].getfloat('sprite_scaling'))
+
                 # Call external function for player 2 slimes
             if type(slime) is Slime and slime.player == 2:
                 self.execute_round(slime, self.player_two)
                 player2_slime_count += 1
+
+                if slime.level >= self.conf['slimes'].getint('min_split_level'):
+                    slime.texture=arcade.draw_commands.load_texture(self.conf['slimes'].get('filename3'),
+                    scale=self.conf['slimes'].getfloat('sprite_scaling'))
 
         # Delay to slow game down        
         time.sleep(self.conf['misc'].getfloat('sleep'))
