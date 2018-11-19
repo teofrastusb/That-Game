@@ -10,8 +10,8 @@ class SlimeState():
 
 class Player(PlayerBase):
     # example player AI
-    def __init__(self, player_id):
-        self.id = player_id
+    def __init__(self, id):
+        super().__init__(id, "The Fighting Mongooses")
         self.direction_x = 1
         self.move_command = Commands.RIGHT
         self.bite_command = Commands.BITERIGHT

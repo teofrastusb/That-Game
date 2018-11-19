@@ -49,7 +49,7 @@ def trace(function):
 class MyGame(arcade.Window):
     """ Main application class. """
 
-    def __init__(self, config):
+    def __init__(self, config, player_one, player_two):
         super().__init__(config['screen'].getint('width'),
                          config['screen'].getint('height'),
                          "SlimeMind")
@@ -65,8 +65,8 @@ class MyGame(arcade.Window):
         self.all_sprites_list = arcade.SpriteList()
         self.sprite_man = Sprite_man(self.map, self.conf, self.all_sprites_list)
         self.turn = 0
-        self.player_one = PlayerOne(1)
-        self.player_two = PlayerTwo(2)
+        self.player_one = player_one
+        self.player_two = player_two
 
     @trace 
     def place_slime(self, x, y, player):
@@ -146,44 +146,46 @@ class MyGame(arcade.Window):
                 self.place_slime(x, y, 2)
     
     @trace
-    def end_game(self,player1_slime_count,player2_slime_count,final_turn):
-    # Print winner, generate report, ...
+    def end_game(self):
+        """ Print winner, generate report, ... """
         arcade.window_commands.close_window()
-        player1_score=0
-        player2_score=0
-        player1_max=0
-        player2_max=0
-        winner = 'No one'
+        player1_score = 0
+        player2_score = 0
+        player1_max = 0
+        player2_max = 0
+        player1_slime_count = 0
+        player2_slime_count = 0
+        winner = 'tie'
 
         for slime in self.all_sprites_list:
             if type(slime) is Slime and slime.player == 1:
+                player1_slime_count += 1
                 player1_score += int(slime.level**(3/2))
                 if player1_max < slime.level:
                     player1_max = slime.level
 
-                # Call external function for player 2 slimes
             if type(slime) is Slime and slime.player == 2:
+                player2_slime_count += 1
                 player2_score += int(slime.level**(3/2))
                 if player2_max < slime.level:
                     player2_max = slime.level
-        
+
         if player1_score > player2_score:
-            winner = self.player_one
-
+            winner = self.player_one.name
         elif player1_score < player2_score:
-            winner = self.player_two
+            winner = self.player_two.name
         
-        print('Game ended on turn number',final_turn)
+        print('Game ended on turn number', self.turn)
 
-        print(type(self.player_one),' got a score of', player1_score)
-        print(type(self.player_one),' highest endgame slime level was ',  player1_max)
-        print(type(self.player_one),' ended with ',  player1_slime_count, 'slimes.')
+        print(self.player_one.name,' got a score of', player1_score)
+        print(self.player_one.name,' highest endgame slime level was ',  player1_max)
+        print(self.player_one.name,' ended with ',  player1_slime_count, 'slimes.')
 
-        print(type(self.player_two),' got a score of', player2_score)
-        print(type(self.player_two),' highest endgame slime level was ',  player2_max)
-        print(type(self.player_two),' ended with ',  player2_slime_count, 'slimes.')
+        print(self.player_two.name,' got a score of', player2_score)
+        print(self.player_two.name,' highest endgame slime level was ',  player2_max)
+        print(self.player_two.name,' ended with ',  player2_slime_count, 'slimes.')
 
-        print('The winner was ', type(winner))
+        print('The winner was ', winner)
 
     @trace
     def execute_round(self, slime, player):
@@ -310,18 +312,25 @@ class MyGame(arcade.Window):
         # Check for end of game conditions
         if self.turn > self.max_turns or player2_slime_count == 0 or player1_slime_count == 0:
             time.sleep(self.conf['misc'].getfloat('sleep')*50)
-            self.end_game(player1_slime_count,player2_slime_count,self.turn)
+            self.end_game()
 
 def main():
+    # config
     config = configparser.ConfigParser()
     config.read('resources/config.ini')
 
+    # logging
     logger = logging.getLogger()
     logger.setLevel(config['logging']['level'])
     handler = logging.StreamHandler()
     logger.addHandler(handler)
 
-    window = MyGame(config)
+    # players
+    player_one = PlayerOne(1)
+    player_two = PlayerTwo(2)
+
+    # run the actual game
+    window = MyGame(config, player_one, player_two)
     window.setup()
     arcade.run()
 

@@ -2,8 +2,10 @@ import random
 from models.commands import Commands
 
 class PlayerBase():
-    def __init__(self, player_id):
-      pass
+    """ Base class player's must implement """ 
+    def __init__(self, id, name):
+      self.id = id
+      self.name = name
 
     def command_slime(self, map, slime, turn):
         """
