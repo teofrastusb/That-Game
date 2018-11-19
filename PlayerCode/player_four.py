@@ -18,7 +18,7 @@ class Player(PlayerBase):
         self.plants =[]
 
     def find_stuff(self, matrix):
-        self.friends = []
+        self.friends =[]
         self.enemies =[]
         self.plants =[]
         for x in range(len(matrix)):
@@ -30,6 +30,8 @@ class Player(PlayerBase):
                     self.enemies.append(gamepiece)
                 if type(gamepiece) is Plant:
                     self.plants.append(gamepiece)
+
+        print(len(self.plants))
 
     # All AI must have this line
     def a_star(self, target, slime):
@@ -62,7 +64,7 @@ class Player(PlayerBase):
                     if map.matrix[dx[i]][dy[i]].player != slime.player:
                         return bite_option[i]
 
-        if len(self.friends) < 20:
+        if len(self.friends) < 8:
             if slime.level >= 4:
                 return Commands.SPLIT
 
@@ -74,7 +76,9 @@ class Player(PlayerBase):
             if nearest_plant_distance < distance:
                 nearest_plant = plant
 
-        target = nearest_plant
+        if nearest_plant != 0:
+            target = nearest_plant
+            command_call = self.a_star(target, slime)
+        else: command_call = Commands.RIGHT
 
-        command_call = self.a_star(target, slime)
         return command_call
