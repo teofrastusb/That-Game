@@ -245,24 +245,22 @@ class MyGame(arcade.Window):
     @trace
     def slime_sprite_update(self):
         """Update the slimes sprites based on player and level."""
+        scale = self.conf['slimes'].getfloat('sprite_scaling')
+        min_split_level = self.conf['slimes'].getint('min_split_level') * 2
+
         for slime in self.all_sprites_list:
             if type(slime) is Slime:
-                if slime.player == 1 and slime.level < self.conf['slimes'].getint('min_split_level')*2:
-                    slime.texture=arcade.draw_commands.load_texture(
-                        self.conf['slimes'].get('filename1'),scale=self.conf['slimes'].getfloat('sprite_scaling')
-                        )
-                elif slime.player == 1 and slime.level >= self.conf['slimes'].getint('min_split_level')*2:
-                    slime.texture=arcade.draw_commands.load_texture(
-                        self.conf['slimes'].get('filename3'),scale=self.conf['slimes'].getfloat('sprite_scaling')
-                        )
-                elif slime.player == 2 and slime.level < self.conf['slimes'].getint('min_split_level')*2:
-                    slime.texture=arcade.draw_commands.load_texture(
-                        self.conf['slimes'].get('filename2'),scale=self.conf['slimes'].getfloat('sprite_scaling')
-                        )
-                elif slime.player == 2 and slime.level >= self.conf['slimes'].getint('min_split_level')*2:
-                    slime.texture=arcade.draw_commands.load_texture(
-                        self.conf['slimes'].get('filename4'),scale=self.conf['slimes'].getfloat('sprite_scaling')
-                        )
+                if slime.player == 1:
+                    if slime.level < min_split_level:
+                        filename = self.conf['slimes'].get('filename1')
+                    else:
+                        filename = self.conf['slimes'].get('filename3')
+                else:
+                    if slime.level < min_split_level:
+                        filename = self.conf['slimes'].get('filename2')
+                    else:
+                        filename = self.conf['slimes'].get('filename4')
+                slime.texture=arcade.draw_commands.load_texture(filename, scale=scale)
 
     @trace
     def on_draw(self):
