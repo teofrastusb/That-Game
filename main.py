@@ -1,7 +1,3 @@
-"""
-This program will attempt to set the plants to grow.
-"""
-
 # Import libraries
 import arcade
 import random
