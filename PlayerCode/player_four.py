@@ -1,14 +1,15 @@
 from models.player_base import PlayerBase
 from models.commands import Commands
-import random
 from models.slime import Slime
 from models.plant import Plant
 from models.rock import Rock
+import random
 
 # All codes could use the same class name
 class Player(PlayerBase):
     # example player AI
     def __init__(self, player_id):
+        super().__init__(id, "6 pack attack")
         self.id = player_id
         self.direction_x = 1
         self.move_command = Commands.RIGHT
@@ -31,18 +32,17 @@ class Player(PlayerBase):
                 if type(gamepiece) is Plant:
                     self.plants.append(gamepiece)
 
-        print(len(self.plants))
-
     # All AI must have this line
     def a_star(self, target, slime):
-        if slime.x > target.x:
-            return Commands.LEFT
-        elif slime.x < target.x:
-            return Commands.RIGHT
-        elif slime.y > target.y:
-            return Commands.DOWN
-        elif slime.y < target.y:
-            return Commands.UP
+        if target != 0:
+            if slime.x > target.x:
+                return Commands.LEFT
+            elif slime.x < target.x:
+                return Commands.RIGHT
+            elif slime.y > target.y:
+                return Commands.DOWN
+            elif slime.y < target.y:
+                return Commands.UP
 
     # All AI must have this line
     def command_slime(self, map, slime, turn):
@@ -64,21 +64,38 @@ class Player(PlayerBase):
                     if map.matrix[dx[i]][dy[i]].player != slime.player:
                         return bite_option[i]
 
-        if len(self.friends) < 8:
+        if len(self.friends) < 6:
             if slime.level >= 4:
                 return Commands.SPLIT
 
         # Move with a purpose
+        # Find nearest plant
         nearest_plant= 0
-        nearest_plant_distance = 0
+        nearest_plant_distance = 1000
         for plant in self.plants:
-            distance = int(((slime.x-plant.x)**2 + (slime.y-plant.y)**2)**(1/2))
-            if nearest_plant_distance < distance:
+            distance = abs(slime.x-plant.x)+abs(slime.y-plant.y)
+            if nearest_plant_distance > distance:
                 nearest_plant = plant
+        
+        # Find nearest enemy
+        nearest_enemy= 0
+        nearest_enemy_distance = 0
+        for enemy in self.enemies:
+            distance = int(((slime.x-enemy.x)**2 + (slime.y-enemy.y)**2)**(1/2))
+            if nearest_enemy_distance < distance:
+                nearest_enemy = enemy
 
-        if nearest_plant != 0:
+        # Determine if there are enough friends to attack
+        target = 0
+
+        if len(self.friends) < 6:
             target = nearest_plant
-            command_call = self.a_star(target, slime)
-        else: command_call = Commands.RIGHT
+        else:
+            target = nearest_enemy
+        
+        if target != 0:
+            print('Go to target at',target.x,target.y)
+
+        command_call = self.a_star(target, slime)
 
         return command_call
