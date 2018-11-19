@@ -30,7 +30,18 @@ class Player(PlayerBase):
                     self.enemies.append(gamepiece)
                 if type(gamepiece) is Plant:
                     self.plants.append(gamepiece)
-    
+
+    # All AI must have this line
+    def a_star(self, target, slime):
+        if slime.x > target.x:
+            return Commands.LEFT
+        elif slime.x < target.x:
+            return Commands.RIGHT
+        elif slime.y > target.y:
+            return Commands.DOWN
+        elif slime.y < target.y:
+            return Commands.UP
+
     # All AI must have this line
     def command_slime(self, map, slime, turn):
         self.find_stuff(map.get_matrix())
@@ -51,19 +62,19 @@ class Player(PlayerBase):
                     if map.matrix[dx[i]][dy[i]].player != slime.player:
                         return bite_option[i]
 
-        if len(self.friends) <= 5:
+        if len(self.friends) < 20:
             if slime.level >= 4:
                 return Commands.SPLIT
 
         # Move with a purpose
         nearest_plant= 0
         nearest_plant_distance = 0
-        for palnt in self.plants:
-            distance = int(((self.x-palnt.x)**2 + (self.y-plant.y)**2)**(1/2))
+        for plant in self.plants:
+            distance = int(((slime.x-plant.x)**2 + (slime.y-plant.y)**2)**(1/2))
             if nearest_plant_distance < distance:
-                nearest_plant = palnt
+                nearest_plant = plant
 
-        command_options = [Commands.LEFT,Commands.RIGHT,Commands.UP,Commands.DOWN]
-        option = random.randint(0,3)
-        command_call = command_options[option]
+        target = nearest_plant
+
+        command_call = self.a_star(target, slime)
         return command_call
