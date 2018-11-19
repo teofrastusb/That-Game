@@ -295,26 +295,20 @@ class MyGame(arcade.Window):
         player2_slime_count = 0
 
         # Call external function for player 1 slimes
-        count_slimes = 0
         slime_list =[]
         for slime in self.all_sprites_list:
             if type(slime) is Slime:
                 slime_list.append(slime)
 
-        print(len(slime_list))
         for slime in slime_list:    
             if type(slime) is Slime and slime.player == 1:
                 self.execute_round(slime, self.player_one)
                 player1_slime_count += 1
-                count_slimes += 1
-                print(count_slimes)
 
                 # Call external function for player 2 slimes
             if type(slime) is Slime and slime.player == 2:
                 self.execute_round(slime, self.player_two)
                 player2_slime_count += 1
-                count_slimes += 1
-                print(count_slimes)
 
         # Check for end of game conditions
         if self.turn > self.max_turns or player2_slime_count == 0 or player1_slime_count == 0:

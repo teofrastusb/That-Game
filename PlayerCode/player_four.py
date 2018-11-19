@@ -71,12 +71,14 @@ class Player(PlayerBase):
         # Move with a purpose
         # Find nearest plant
         nearest_plant= 0
+        plants_checked= 0
         nearest_plant_distance = 1000
         for plant in self.plants:
+            plants_checked += 1
             distance = abs(slime.x-plant.x)+abs(slime.y-plant.y)
             if nearest_plant_distance > distance:
                 nearest_plant = plant
-        
+
         # Find nearest enemy
         nearest_enemy= 0
         nearest_enemy_distance = 0
@@ -88,13 +90,14 @@ class Player(PlayerBase):
         # Determine if there are enough friends to attack
         target = 0
 
-        if len(self.friends) < 6:
+        friend_power=0
+        for friend in self.friends:
+            friend_power += friend.level
+
+        if friend_power < 30 and len(self.plants) > 0:
             target = nearest_plant
         else:
             target = nearest_enemy
-        
-        if target != 0:
-            print('Go to target at',target.x,target.y)
 
         command_call = self.a_star(target, slime)
 
