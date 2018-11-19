@@ -10,6 +10,7 @@ import time
 import configparser
 import logging
 import uuid
+import csv
 
 # Import classes
 from models.plant import Plant
@@ -149,43 +150,40 @@ class MyGame(arcade.Window):
     def end_game(self):
         """ Print winner, generate report, ... """
         arcade.window_commands.close_window()
-        player1_score = 0
-        player2_score = 0
-        player1_max = 0
-        player2_max = 0
-        player1_slime_count = 0
-        player2_slime_count = 0
-        winner = 'tie'
+        results = {}
+        results['winner'] = 'tie'
+        results['final turn'] = self.turn
+        results['player one score'] = 0
+        results['player two score'] = 0
+        results['player one max slime level'] = 0
+        results['player two max slime level'] = 0
+        results['player one slime count'] = 0
+        results['player two slime count'] = 0
 
         for slime in self.all_sprites_list:
             if type(slime) is Slime and slime.player == 1:
-                player1_slime_count += 1
-                player1_score += int(slime.level**(3/2))
-                if player1_max < slime.level:
-                    player1_max = slime.level
+                results['player one slime count'] += 1
+                results['player one score'] += int(slime.level**(3/2))
+                if results['player one max slime level'] < slime.level:
+                    results['player one max slime level'] = slime.level
 
             if type(slime) is Slime and slime.player == 2:
-                player2_slime_count += 1
-                player2_score += int(slime.level**(3/2))
-                if player2_max < slime.level:
-                    player2_max = slime.level
+                results['player two slime count'] += 1
+                results['player two score'] += int(slime.level**(3/2))
+                if results['player two max slime level'] < slime.level:
+                    results['player two max slime level'] = slime.level
 
-        if player1_score > player2_score:
-            winner = self.player_one.name
-        elif player1_score < player2_score:
-            winner = self.player_two.name
-        
-        print('Game ended on turn number', self.turn)
+        if results['player one score'] > results['player two score']:
+            results['winner'] = self.player_one.name
+        elif results['player one score'] < results['player two score']:
+            results['winner'] = self.player_two.name
 
-        print(self.player_one.name,' got a score of', player1_score)
-        print(self.player_one.name,' highest endgame slime level was ',  player1_max)
-        print(self.player_one.name,' ended with ',  player1_slime_count, 'slimes.')
-
-        print(self.player_two.name,' got a score of', player2_score)
-        print(self.player_two.name,' highest endgame slime level was ',  player2_max)
-        print(self.player_two.name,' ended with ',  player2_slime_count, 'slimes.')
-
-        print('The winner was ', winner)
+        print('GAME OVER')
+        for k, v in results.items():
+            print(k, v)
+        with open('results.csv', 'a', newline = '') as f:
+            writer = csv.DictWriter(f, fieldnames = results.keys())
+            writer.writerow(results)
 
     @trace
     def execute_round(self, slime, player):
