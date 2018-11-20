@@ -2,14 +2,15 @@ import arcade
 import uuid
 
 class Gamepiece(arcade.Sprite):
-    def __init__(self, filename, scaling, config, map, player = 0):
-        super().__init__(filename, scaling)
+    def __init__(self, filename, scale, config, map, player = 0):
+        super().__init__(filename, scale)
         self.id = uuid.uuid4()
         self.player = player
         self.x = None
         self.y = None
         self.map = map
         self.conf = config
+        self.scale = scale
 
     def set_coord(self, x, y):
         if self.x is not None and self.y is not None:

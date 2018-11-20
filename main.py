@@ -206,34 +206,12 @@ class MyGame(arcade.Window):
                 arcade.draw_rectangle_filled(x_box, y_box, self.map.width/self.map.columns-2, self.map.height/self.map.rows-2, color)
 
     @trace
-    # TODO: move to Slime
-    def slime_sprite_update(self):
-        """Update the slimes sprites based on player and level."""
-        scale = self.conf['Slime'].getfloat('sprite_scaling')
-        min_split_level = self.conf['Slime'].getint('min_split_level') * 2
-
-        for slime in self.all_sprites_list:
-            if type(slime) is Slime:
-                if slime.player == 1:
-                    if slime.level < min_split_level:
-                        filename = self.conf['Slime'].get('filename1')
-                    else:
-                        filename = self.conf['Slime'].get('filename3')
-                else:
-                    if slime.level < min_split_level:
-                        filename = self.conf['Slime'].get('filename2')
-                    else:
-                        filename = self.conf['Slime'].get('filename4')
-                slime.texture=arcade.draw_commands.load_texture(filename, scale=scale)
-
-    @trace
     def on_draw(self):
         """Render the screen."""
         if self.conf['misc'].get('render') == 'True':
             arcade.start_render()
             arcade.set_background_color(arcade.color.AMAZON)
             #self.draw_grid()
-            self.slime_sprite_update()
             self.all_sprites_list.draw()
 
             # Put the text on the screen.
@@ -255,24 +233,17 @@ class MyGame(arcade.Window):
         # check to see if the plants spread seeds
         self.sprite_man.spread_seeds()
 
+        # execute player AI for each slime
         player1_slime_count = 0
         player2_slime_count = 0
-
-        # Call external function for player 1 slimes
-        slime_list =[]
         for slime in self.all_sprites_list:
             if type(slime) is Slime:
-                slime_list.append(slime)
-
-        for slime in slime_list:    
-            if type(slime) is Slime and slime.player == 1:
-                self.execute_round(slime, self.player_one)
-                player1_slime_count += 1
-
-                # Call external function for player 2 slimes
-            if type(slime) is Slime and slime.player == 2:
-                self.execute_round(slime, self.player_two)
-                player2_slime_count += 1
+                if slime.player == 1:
+                    self.execute_round(slime, self.player_one)
+                    player1_slime_count += 1
+                if slime.player == 2:
+                    self.execute_round(slime, self.player_two)
+                    player2_slime_count += 1
 
         # Check for end of game conditions
         if self.turn > self.max_turns or player2_slime_count == 0 or player1_slime_count == 0:

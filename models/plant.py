@@ -40,28 +40,20 @@ class Plant(Gamepiece):
         if do_level_up:
             self.level += 1
 
-            if self.level >= int(self.max_level*3/4):
-                self.texture=arcade.draw_commands.load_texture(self.conf.get('filename2'),
-                scale=self.conf.getfloat('sprite_scaling'))
-
-                # Change image based on level
-            if self.level >= self.max_level//2:
-                # TODO change sprite image to the next image
-                arcade.Sprite(self.conf['filename2'],
-                                self.conf.getfloat('sprite_scaling'))
+            if self.level >= int(self.max_level * 3 / 4):
+                self.texture = arcade.draw_commands.load_texture(self.conf.get('filename2'), scale = self.scale)
 
             # Change max hp on level up
             self.max_hp += self.hp_increment
 
             # Add hp on level up, not exceeding max
-            self.current_htp = min(self.current_hp + self.max_hp//2, self.max_hp)
+            self.current_hp = min(self.current_hp + self.max_hp//2, self.max_hp)
 
     def reset_level(self):
         self.level = 1
         self.max_hp = self.conf.getint('max_hp')
         self.current_hp = self.max_hp
-        self.texture=arcade.draw_commands.load_texture(self.conf.get('filename1'),
-                scale=self.conf.getfloat('sprite_scaling'))
+        self.texture = arcade.draw_commands.load_texture(self.conf.get('filename1'), scale = self.scale)
 
     def can_seed(self):
         return self.level == self.max_level
