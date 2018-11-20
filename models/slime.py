@@ -3,19 +3,19 @@ from models.gamepiece import Gamepiece
 
 class Slime(Gamepiece):
     def __init__(self, config, map, player):
-        super().__init__(config['slimes']['filename1'],
-                         config['slimes'].getfloat('sprite_scaling'),
+        super().__init__(config['filename1'],
+                         config.getfloat('sprite_scaling'),
                          config,
                          map,
                          player)
         self.level = 1
         self.xp = 1
-        self.max_level = config['slimes'].getint('max_level')
-        self.current_hp = config['slimes'].getint('max_hp')
-        self.max_hp = config['slimes'].getint('max_hp')
-        self.hp_increment = config['slimes'].getint('hp_increment')
-        self.attack = config['slimes'].getint('attack')
-        self.attack_increment = config['slimes'].getint('attack_increment')
+        self.max_level = config.getint('max_level')
+        self.current_hp = config.getint('max_hp')
+        self.max_hp = config.getint('max_hp')
+        self.hp_increment = config.getint('hp_increment')
+        self.attack = config.getint('attack')
+        self.attack_increment = config.getint('attack_increment')
         self.ready_to_merge = False
 
     def update(self):

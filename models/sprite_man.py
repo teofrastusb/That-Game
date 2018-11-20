@@ -15,9 +15,9 @@ class Sprite_man():
 
     def place_gamepiece(self, piece_class, x, y, player = 0):
         if piece_class is Slime:
-            piece = piece_class(self.conf, self.map, player)
+            piece = piece_class(self.conf[piece_class.__name__], self.map, player)
         else:
-            piece = piece_class(self.conf, self.map)
+            piece = piece_class(self.conf[piece_class.__name__], self.map)
         piece.set_coord(x, y)
         self.all_sprites_list.append(piece)
 
@@ -49,7 +49,7 @@ class Sprite_man():
                 if len(empty_adjacent_cells) == 0:
                     continue
 
-                level_up_chance = random.randint(0,self.conf['plants'].getint('seed_chance'))
+                level_up_chance = random.randint(0,self.conf['Plant'].getint('seed_chance'))
                 if level_up_chance == 0:
                     x, y = random.choice(empty_adjacent_cells)
                     self.place_gamepiece(Plant, x, y)

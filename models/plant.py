@@ -4,14 +4,14 @@ from models.gamepiece import Gamepiece
 
 class Plant(Gamepiece):
     def __init__(self, config, map):
-        super().__init__(config['plants']['filename1'],
-                         config['plants'].getfloat('sprite_scaling'),
+        super().__init__(config['filename1'],
+                         config.getfloat('sprite_scaling'),
                          config,
                          map)
         self.level = 1
-        self.max_hp = config['plants'].getint('max_hp')
+        self.max_hp = config.getint('max_hp')
         self.current_hp = self.max_hp
-        self.max_level = config['plants'].getint('max_level')
+        self.max_level = config.getint('max_level')
         self.hp_increment = self.max_level
 
     def update(self):
@@ -30,9 +30,9 @@ class Plant(Gamepiece):
         # Check if the plant levels up
         do_level_up = 0
 
-        level_up_chance = random.randint(0,self.conf['plants'].getint('level_up_chance_one'))
+        level_up_chance = random.randint(0,self.conf.getint('level_up_chance_one'))
         if level_up_chance == 0:
-            level_up_chance = random.randint(0,self.max_level + self.conf['plants'].getint('level_up_chance_two'))
+            level_up_chance = random.randint(0,self.max_level + self.conf.getint('level_up_chance_two'))
             if level_up_chance > self.level and self.level < self.max_level:
                 do_level_up = 1
 
@@ -41,14 +41,14 @@ class Plant(Gamepiece):
             self.level += 1
 
             if self.level >= int(self.max_level*3/4):
-                self.texture=arcade.draw_commands.load_texture(self.conf['plants'].get('filename2'),
-                scale=self.conf['plants'].getfloat('sprite_scaling'))
+                self.texture=arcade.draw_commands.load_texture(self.conf.get('filename2'),
+                scale=self.conf.getfloat('sprite_scaling'))
 
                 # Change image based on level
             if self.level >= self.max_level//2:
                 # TODO change sprite image to the next image
-                arcade.Sprite(self.conf['plants']['filename2'],
-                                self.conf['plants'].getfloat('sprite_scaling'))
+                arcade.Sprite(self.conf['filename2'],
+                                self.conf.getfloat('sprite_scaling'))
 
             # Change max hp on level up
             self.max_hp += self.hp_increment
@@ -58,10 +58,10 @@ class Plant(Gamepiece):
 
     def reset_level(self):
         self.level = 1
-        self.max_hp = self.conf['plants'].getint('max_hp')
+        self.max_hp = self.conf.getint('max_hp')
         self.current_hp = self.max_hp
-        self.texture=arcade.draw_commands.load_texture(self.conf['plants'].get('filename1'),
-                scale=self.conf['plants'].getfloat('sprite_scaling'))
+        self.texture=arcade.draw_commands.load_texture(self.conf.get('filename1'),
+                scale=self.conf.getfloat('sprite_scaling'))
 
     def can_seed(self):
         return self.level == self.max_level

@@ -100,7 +100,7 @@ class MyGame(arcade.Window):
             return
         
         # can't split if the slime is not high enough level
-        if slime.level >= self.conf['slimes'].getint('min_split_level'):
+        if slime.level >= self.conf['Slime'].getint('min_split_level'):
             x, y = random.choice(empty_adjacent_cells)
             slime.split()
 
@@ -186,9 +186,9 @@ class MyGame(arcade.Window):
     @trace
     def setup(self):
         """ Initialize game state """
-        self.place_pieces(self.conf['slimes'].getint('num_total'), Slime)
-        self.place_pieces(self.conf['plants'].getint('num_total'), Plant)
-        self.place_pieces(self.conf['rocks'].getint('num_total'), Rock)
+        self.place_pieces(self.conf['Slime'].getint('num_total'), Slime)
+        self.place_pieces(self.conf['Plant'].getint('num_total'), Plant)
+        self.place_pieces(self.conf['Rock'].getint('num_total'), Rock)
 
     @trace
     def draw_grid(self):
@@ -206,23 +206,24 @@ class MyGame(arcade.Window):
                 arcade.draw_rectangle_filled(x_box, y_box, self.map.width/self.map.columns-2, self.map.height/self.map.rows-2, color)
 
     @trace
+    # TODO: move to Slime
     def slime_sprite_update(self):
         """Update the slimes sprites based on player and level."""
-        scale = self.conf['slimes'].getfloat('sprite_scaling')
-        min_split_level = self.conf['slimes'].getint('min_split_level') * 2
+        scale = self.conf['Slime'].getfloat('sprite_scaling')
+        min_split_level = self.conf['Slime'].getint('min_split_level') * 2
 
         for slime in self.all_sprites_list:
             if type(slime) is Slime:
                 if slime.player == 1:
                     if slime.level < min_split_level:
-                        filename = self.conf['slimes'].get('filename1')
+                        filename = self.conf['Slime'].get('filename1')
                     else:
-                        filename = self.conf['slimes'].get('filename3')
+                        filename = self.conf['Slime'].get('filename3')
                 else:
                     if slime.level < min_split_level:
-                        filename = self.conf['slimes'].get('filename2')
+                        filename = self.conf['Slime'].get('filename2')
                     else:
-                        filename = self.conf['slimes'].get('filename4')
+                        filename = self.conf['Slime'].get('filename4')
                 slime.texture=arcade.draw_commands.load_texture(filename, scale=scale)
 
     @trace
