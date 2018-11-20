@@ -1,16 +1,14 @@
-import arcade
 import random
+import arcade
+from models.gamepiece import Gamepiece
 
-class Plant(arcade.Sprite):
-    def __init__(self, id, config, map):
+class Plant(Gamepiece):
+    def __init__(self, config, map):
         super().__init__(config['plants']['filename1'],
-                         config['plants'].getfloat('sprite_scaling'))
-        self.id = id
-        self.x = None
-        self.y = None
+                         config['plants'].getfloat('sprite_scaling'),
+                         config,
+                         map)
         self.level = 1
-        self.map = map
-        self.conf = config
         self.max_hp = config['plants'].getint('max_hp')
         self.current_hp = self.max_hp
         self.max_level = config['plants'].getint('max_level')

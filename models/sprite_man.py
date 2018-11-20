@@ -13,15 +13,13 @@ class Sprite_man():
         self.map = map
         self.conf = config
 
-    def place_plant(self, x, y):
-        plant = Plant(uuid.uuid4(), self.conf, self.map)
-        plant.set_coord(x, y)
-        self.all_sprites_list.append(plant)
-
-    def drop_rock(self, x, y):
-        rock = Rock(uuid.uuid4(), self.conf, self.map)
-        rock.set_coord(x, y)
-        self.all_sprites_list.append(rock)
+    def place_gamepiece(self, piece_class, x, y, player = 0):
+        if piece_class is Slime:
+            piece = piece_class(self.conf, self.map, player)
+        else:
+            piece = piece_class(self.conf, self.map)
+        piece.set_coord(x, y)
+        self.all_sprites_list.append(piece)
 
     def check_for_dead(self):
         for gamepiece in self.all_sprites_list:
@@ -54,4 +52,4 @@ class Sprite_man():
                 level_up_chance = random.randint(0,self.conf['plants'].getint('seed_chance'))
                 if level_up_chance == 0:
                     x, y = random.choice(empty_adjacent_cells)
-                    self.place_plant(x, y)
+                    self.place_gamepiece(Plant, x, y)

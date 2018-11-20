@@ -5,7 +5,6 @@ import os
 import time
 import configparser
 import logging
-import uuid
 import csv
 
 # Import classes
@@ -53,7 +52,6 @@ class MyGame(arcade.Window):
         # config
         self.width = config['screen'].getint('width')
         self.height = config['screen'].getint('height')
-        self.num_slimes = config['slimes'].getint('num_total')
         self.max_turns = config['screen'].getint('max_turns')
         self.conf = config
 
@@ -65,51 +63,20 @@ class MyGame(arcade.Window):
         self.player_one = player_one
         self.player_two = player_two
 
-    @trace 
-    def place_slime(self, x, y, player):
-        slime = Slime(uuid.uuid4(), self.conf, self.map, player)
-        slime.set_coord(x, y)
-        self.all_sprites_list.append(slime)
-
     @trace
-    def place_slimes(self):
-        slimes = 0
-        while slimes < self.num_slimes:
-            randX = random.randint(1, self.map.column_count() / 2 -1)
-            randY = random.randint(1, self.map.row_count() -1)
-            if self.map.is_cell_empty(randX, randY):
-                # player one
-                self.place_slime(randX, randY, 1)
-                # player two
-                self.place_slime(self.map.column_count() - randX, self.map.row_count() - randY, 2)
-                slimes += 2
-
-    @trace
-    def plant_plants(self):
-        plants = 0
-        while plants < self.conf['plants'].getint('num_total'):
-            rand_x = random.randint(0, self.map.column_count() / 2 -1)
-            rand_y = random.randint(0, self.map.row_count()-1 )
+    def place_pieces(self, number, piece_class):
+        pieces = 0
+        while pieces < number:
+            rand_x = random.randint(0, self.map.column_count() / 2 - 1)
+            rand_y = random.randint(0, self.map.row_count() - 1)
             if self.map.is_cell_empty(rand_x, rand_y):
                 # left half
-                self.sprite_man.place_plant(rand_x, rand_y)
+                self.sprite_man.place_gamepiece(piece_class, rand_x, rand_y, 1)
                 # mirrored across x and y axis for right half
-                self.sprite_man.place_plant((self.map.column_count() - 1) - rand_x, (self.map.row_count() - 1) - rand_y)
-                plants += 2
-
-    @trace
-    def drop_rocks(self):
-        rocks = 0
-        while rocks < self.conf['rocks'].getint('num_total'):
-            rand_x = random.randint(0, self.map.column_count() / 2 -1)
-            rand_y = random.randint(0, self.map.row_count()-1 )
-            if self.map.is_cell_empty(rand_x, rand_y):
-                # left half
-                self.sprite_man.drop_rock(rand_x, rand_y)
-                # mirrored across x and y axis for right half
-                self.sprite_man.drop_rock((self.map.column_count() - 1) - rand_x, (self.map.row_count() - 1) - rand_y)
-                rocks += 2
-
+                mirror_x = (self.map.column_count() - 1) - rand_x
+                mirror_y = (self.map.row_count() - 1) - rand_y
+                self.sprite_man.place_gamepiece(piece_class, mirror_x, mirror_y, 2)
+                pieces += 2
     @trace
     def bite_thing(self, command, x, y, attack):
         # Slime tries to bite a target, then if succesful this method awards 1 xp
@@ -138,9 +105,9 @@ class MyGame(arcade.Window):
             slime.split()
 
             if slime.player == 1:
-                self.place_slime(x, y, 1)
+                self.sprite_man.place_gamepiece(Slime, x, y, 1)
             else:
-                self.place_slime(x, y, 2)
+                self.sprite_man.place_gamepiece(Slime, x, y, 2)
     
     @trace
     def end_game(self):
@@ -219,9 +186,9 @@ class MyGame(arcade.Window):
     @trace
     def setup(self):
         """ Initialize game state """
-        self.place_slimes()
-        self.plant_plants()
-        self.drop_rocks()
+        self.place_pieces(self.conf['slimes'].getint('num_total'), Slime)
+        self.place_pieces(self.conf['plants'].getint('num_total'), Plant)
+        self.place_pieces(self.conf['rocks'].getint('num_total'), Rock)
 
     @trace
     def draw_grid(self):

@@ -1,16 +1,15 @@
 import arcade
+from models.gamepiece import Gamepiece
 
-class Slime(arcade.Sprite):
-    def __init__(self, id, config, map, player):
+class Slime(Gamepiece):
+    def __init__(self, config, map, player):
         super().__init__(config['slimes']['filename1'],
-                         config['slimes'].getfloat('sprite_scaling'))
-        self.id = id
-        self.x = None
-        self.y = None
-        self.map = map
+                         config['slimes'].getfloat('sprite_scaling'),
+                         config,
+                         map,
+                         player)
         self.level = 1
         self.xp = 1
-        self.player = player
         self.max_level = config['slimes'].getint('max_level')
         self.current_hp = config['slimes'].getint('max_hp')
         self.max_hp = config['slimes'].getint('max_hp')
@@ -22,15 +21,6 @@ class Slime(arcade.Sprite):
     def update(self):
         # Check level, then ...
         self.level_check()
-
-    def set_coord(self, x, y):
-        if self.x is not None and self.y is not None:
-            self.map.clear_cell(self.x, self.y)
-        self.x = x
-        self.y = y
-        self.map.update_cell(self, x, y)
-        # display
-        self.set_position(self.map.center_x(x), self.map.center_y(y))
 
     def split(self):
         self.xp = self.xp // 3
@@ -63,6 +53,3 @@ class Slime(arcade.Sprite):
         # make sure current hp isn't above max hp
         if self.current_hp >= self.max_hp:
             self.current_hp = self.max_hp
-
-
-            
