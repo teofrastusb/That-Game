@@ -32,7 +32,7 @@ class Player(PlayerBase):
                 if type(gamepiece) is Plant:
                     self.plants.append(gamepiece)
 
-    # All AI must have this line
+    # Retrun the direction to move to the target
     def a_star(self, target, slime):
         if target != 0:
             if slime.x > target.x:
@@ -72,19 +72,21 @@ class Player(PlayerBase):
         # Find nearest plant
         nearest_plant= 0
         plants_checked= 0
-        nearest_plant_distance = 1000
+        nearest_plant_distance = 10000
         for plant in self.plants:
             plants_checked += 1
             distance = abs(slime.x-plant.x)+abs(slime.y-plant.y)
             if nearest_plant_distance > distance:
+                nearest_plant_distance = distance
                 nearest_plant = plant
 
         # Find nearest enemy
         nearest_enemy= 0
-        nearest_enemy_distance = 0
+        nearest_enemy_distance = 10000
         for enemy in self.enemies:
-            distance = int(((slime.x-enemy.x)**2 + (slime.y-enemy.y)**2)**(1/2))
-            if nearest_enemy_distance < distance:
+            distance = abs(slime.x-enemy.x) + abs(slime.y-enemy.y)
+            if nearest_enemy_distance > distance:
+                nearest_enemy_distance = distance
                 nearest_enemy = enemy
 
         # Determine if there are enough friends to attack

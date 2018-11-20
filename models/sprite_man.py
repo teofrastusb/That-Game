@@ -51,6 +51,7 @@ class Sprite_man():
                 if len(empty_adjacent_cells) == 0:
                     continue
 
-                x, y = random.choice(empty_adjacent_cells)
-                self.place_plant(x, y)
-                plant.reset_level()
+                level_up_chance = random.randint(0,self.conf['plants'].getint('seed_chance'))
+                if level_up_chance == 0:
+                    x, y = random.choice(empty_adjacent_cells)
+                    self.place_plant(x, y)
