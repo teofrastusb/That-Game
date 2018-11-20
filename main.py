@@ -57,7 +57,7 @@ class MyGame(arcade.Window):
 
         # initial game state
         self.map = Map(config)
-        self.all_sprites_list = arcade.SpriteList()
+        self.all_sprites_list = arcade.SpriteList(use_spatial_hash=False)
         self.sprite_man = Sprite_man(self.map, self.conf, self.all_sprites_list)
         self.turn = 0
         self.player_one = player_one
