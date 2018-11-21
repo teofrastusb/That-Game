@@ -6,6 +6,7 @@ import time
 import configparser
 import logging
 import csv
+import copy
 
 # Import classes
 from models.plant import Plant
@@ -31,7 +32,7 @@ from models.sprite_man import Sprite_man
 # print( 'Code2 is', code2)
 
 from PlayerCode.player_four import Player as PlayerOne
-from PlayerCode.player_three import Player as PlayerTwo
+from PlayerCode.player_five import Player as PlayerTwo
 
 # log debug message for decorated methods
 def trace(function):
