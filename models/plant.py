@@ -17,15 +17,6 @@ class Plant(Gamepiece):
     def update(self):
         self.level_up()
 
-    def set_coord(self, x, y):
-        if self.x is not None and self.y is not None:
-            self.map.clear_cell(self.x, self.y)
-        self.x = x
-        self.y = y
-        self.map.update_cell(self, x, y)
-        # display
-        self.set_position(self.map.center_x(x), self.map.center_y(y))
-
     def level_up(self):
         # Check if the plant levels up
         do_level_up = 0
