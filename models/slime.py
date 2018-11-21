@@ -14,8 +14,8 @@ class Slime(Gamepiece):
         self.current_hp = config.getint('max_hp')
         self.max_hp = config.getint('max_hp')
         self.hp_increment = config.getint('hp_increment')
-        self.attack = config.getint('attack')
         self.attack_increment = config.getint('attack_increment')
+        self.attack =config.getint('attack_increment')
         self.min_split_level = config.getint('min_split_level')
         self.ready_to_merge = False
 
@@ -45,7 +45,7 @@ class Slime(Gamepiece):
         starting_level = self.level
 
         # Update level based on xp
-        self.level = int(self.xp**(1/2))
+        self.level = int(self.xp*(-0.001*self.xp+0.185)+1.9)
 
         # Check if the slime level is at or above maximum
         if self.level >= self.max_level:

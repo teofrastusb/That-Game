@@ -114,14 +114,16 @@ class MyGame(arcade.Window):
         """ Print winner, generate report, ... """
         arcade.window_commands.close_window()
         results = {}
+        results['player one team name'] = self.player_one.name
+        results['player one score'] = 0
+        results['player one max slime level'] = 0
+        results['player one slime count'] = 0
+        results['player two team name'] = self.player_two.name
+        results['player two score'] = 0
+        results['player two max slime level'] = 0
+        results['player two slime count'] = 0
         results['winner'] = 'tie'
         results['final turn'] = self.turn
-        results['player one score'] = 0
-        results['player two score'] = 0
-        results['player one max slime level'] = 0
-        results['player two max slime level'] = 0
-        results['player one slime count'] = 0
-        results['player two slime count'] = 0
 
         for slime in self.all_sprites_list:
             if type(slime) is Slime and slime.player == 1:
@@ -141,9 +143,19 @@ class MyGame(arcade.Window):
         elif results['player one score'] < results['player two score']:
             results['winner'] = self.player_two.name
 
-        print('GAME OVER')
-        for k, v in results.items():
-            print(k, v)
+        # print('GAME OVER')
+        # for k, v in results.items():
+        #     print(k, v)
+        
+        if not os.path.isfile('results.csv'):
+            print('Made it into no file line')
+            with open('results.csv', 'a', newline = '') as f:
+                top_row = ['Player one team name','Player one score','Player one max slime level',
+                'Player one slime count','Player two team name','Player two score',
+                'Player two max slime level','Player two slime count','Winner','Final turn']
+                writer = csv.writer(f, delimiter=",")
+                writer.writerow(top_row)
+
         with open('results.csv', 'a', newline = '') as f:
             writer = csv.DictWriter(f, fieldnames = results.keys())
             writer.writerow(results)
