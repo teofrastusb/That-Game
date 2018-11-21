@@ -6,7 +6,6 @@ import time
 import configparser
 import logging
 import csv
-import copy
 
 # Import classes
 from models.plant import Plant
