@@ -9,7 +9,7 @@ import random
 class Player(PlayerBase):
     # example player AI
     def __init__(self, player_id):
-        super().__init__(id, "Cheaty Pete")
+        super().__init__(id, "I Cheat on the 10th turn.")
         self.id = player_id
         self.direction_x = 1
         self.move_command = Commands.RIGHT
