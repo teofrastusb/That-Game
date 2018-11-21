@@ -12,7 +12,7 @@ class Plant(Gamepiece):
         self.max_hp = config.getint('max_hp')
         self.current_hp = self.max_hp
         self.max_level = config.getint('max_level')
-        self.hp_increment = self.max_level
+        self.hp_increment = config.getint('hp_increment')
 
     def update(self):
         self.level_up()
