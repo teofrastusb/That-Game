@@ -1,5 +1,3 @@
-import copy
-
 class Map():
     def __init__(self, config):
         self.width = config['screen'].getint('width')
@@ -69,3 +67,12 @@ class Map():
     def clear_cell(self, x, y):
       if self.valid_coord(x, y):
         self.matrix[x][y] = None
+
+    def dump_state(self):
+      state = [[None] * self.rows for i in range(self.columns)]
+      for x in range(len(self.matrix)):
+        for y in range(len(self.matrix[x])):
+          piece = self.matrix[x][y]
+          if piece is not None:
+            state[x][y] = piece.__dict__()
+      return state

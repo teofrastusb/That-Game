@@ -48,3 +48,14 @@ class Plant(Gamepiece):
     def can_seed(self):
         return self.level == self.max_level
 
+    def __dict__(self):
+        return {
+            'type': 'PLANT',
+            'x': self.x,
+            'y': self.y,
+            'level': self.level,
+            'current_hp': self.current_hp,
+            'max_hp': self.max_hp,
+            'can_seed': self.can_seed()
+        }
+

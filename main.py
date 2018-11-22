@@ -30,8 +30,8 @@ from models.sprite_man import Sprite_man
 #         code2 = 'PlayerCode.' + option[0:len(option)-3]
 # print( 'Code2 is', code2)
 
-from PlayerCode.player_four import Player as PlayerOne
-from PlayerCode.player_three import Player as PlayerTwo
+from PlayerCode.default import Player as PlayerOne
+from PlayerCode.rudimentary_cheat import Player as PlayerTwo
 
 # time method
 def timed(function):
@@ -153,11 +153,13 @@ class MyGame(arcade.Window):
                 writer.writeheader()
             writer.writerow(results)
 
-    @timed
     def execute_round(self, slime, player):
-        map_copy = copy.deepcopy(self.map)
-        slime_copy = copy.deepcopy(slime)
-        command = player.command_slime(map_copy, slime_copy, self.turn)
+        # provide player with read-only copy of state so they can't cheat
+        state = self.map.dump_state()
+        command = player.command_slime(state,
+                                       state[slime.x][slime.y],
+                                       self.turn)
+
         # allow player to take no action
         if command is None:
             return

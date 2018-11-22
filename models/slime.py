@@ -67,3 +67,18 @@ class Slime(Gamepiece):
         # make sure current hp isn't above max hp
         if self.current_hp >= self.max_hp:
             self.current_hp = self.max_hp
+
+    def __dict__(self):
+        return {
+            'type': 'SLIME',
+            'id': self.id,
+            'player': self.player,
+            'x': self.x,
+            'y': self.y,
+            'level': self.level,
+            'xp': self.xp,
+            'current_hp': self.current_hp,
+            'max_hp': self.max_hp,
+            'attack': self.attack,
+            'ready_to_merge': self.ready_to_merge
+        }

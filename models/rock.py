@@ -5,3 +5,6 @@ class Rock(Gamepiece):
         super().__init__(config['filename1'],
                          config.getfloat('sprite_scaling'),
                          config)
+
+    def __dict__(self):
+        return { 'type': 'ROCK', 'x': self.x, 'y': self.y }
