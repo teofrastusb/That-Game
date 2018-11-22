@@ -66,14 +66,16 @@ class MyGame(arcade.Window):
     def bite_thing(self, command, x, y, attack):
         # Slime tries to bite a target, then if succesful this method awards 1 xp
         (x, y) = command.update_coord(x, y)
+        if not self.map.valid_coord(x, y):
+            return 0
+
         target = self.map.matrix[x][y]
 
-        # Make sure target is in map range
-        if not self.map.valid_coord(x, y) or type(target) is Rock:
+        if target is None or type(target) is Rock:
             return 0
-        elif target is not None:
-            target.current_hp -= attack
-            return 1 if type(target) is Slime else 2
+
+        target.current_hp -= attack
+        return 1 if type(target) is Slime else 2
 
     def split(self, slime):
         """ split slime into random empty adjacent cell """
