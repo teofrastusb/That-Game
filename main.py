@@ -143,9 +143,9 @@ class MyGame(arcade.Window):
         elif results['player one score'] < results['player two score']:
             results['winner'] = self.player_two.name
 
-        # print('GAME OVER')
-        # for k, v in results.items():
-        #     print(k, v)
+        print('GAME OVER')
+        for k, v in results.items():
+            print(k, v)
         
         if not os.path.isfile('results.csv'):
             with open('results.csv', 'a', newline = '') as f:
