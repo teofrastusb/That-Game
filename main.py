@@ -15,7 +15,7 @@ from models.map import Map
 from models.commands import Commands
 from models.sprite_man import Sprite_man
 
-from PlayerCode.player_three import Player as PlayerOne
+from PlayerCode.player_four import Player as PlayerOne
 from PlayerCode.player_three import Player as PlayerTwo
 
 # log debug message for decorated methods

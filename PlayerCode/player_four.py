@@ -96,7 +96,7 @@ class Player(PlayerBase):
         for friend in self.friends:
             friend_power += friend.level
 
-        if friend_power < 60 and len(self.plants) > 0:
+        if friend_power < 30 and len(self.plants) > 0:
             target = nearest_plant
         else:
             target = nearest_enemy

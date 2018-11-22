@@ -30,26 +30,26 @@ class Slime(Gamepiece):
     def update_texture(self):
         """Update the slimes sprites based on player and level."""
         if self.player == 1:
-            if self.level < self.max_level - 2:
+            if self.level < self.max_level -2:
                 filename = self.conf.get('player_one_basic')
             else:
                 filename = self.conf.get('player_one_king')
         else:
-            if self.level < self.max_level - 2:
+            if self.level < self.max_level -2:
                 filename = self.conf.get('player_two_basic')
             else:
                 filename = self.conf.get('player_two_king')
         self.texture = arcade.draw_commands.load_texture(filename, scale = self.scale)
 
     def split(self):
-        self.xp = self.xp // 3
+        self.xp = self.xp // 4
 
     def level_check(self):
         # Save current level
         starting_level = self.level
 
         # Update level based on xp
-        self.level = int(1.841*self.xp**0.309)
+        self.level = int(1.847*self.xp**0.286)
 
         # Check if the slime level is at or above maximum
         if self.level >= self.max_level:
