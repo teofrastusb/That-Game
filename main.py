@@ -18,12 +18,13 @@ from models.sprite_man import Sprite_man
 from PlayerCode.player_four import Player as PlayerOne
 from PlayerCode.player_three import Player as PlayerTwo
 
-# log debug message for decorated methods
-def trace(function):
+# time method
+def timed(function):
     def wrapper(*args, **kwargs):
-        logging.getLogger().debug("method: %s args: %s ", function.__name__, str(args))
+        start = time.perf_counter()
         ret = function(*args, **kwargs)
-        logging.getLogger().debug("exiting: %s", function.__name__)
+        elapsed = time.perf_counter() - start
+        logging.getLogger().debug("time: %s for method: %s args: %s ", elapsed, function.__name__, str(args))
         return ret
     return wrapper
 
@@ -48,7 +49,6 @@ class MyGame(arcade.Window):
         self.player_one = player_one
         self.player_two = player_two
 
-    @trace
     def place_pieces(self, number, piece_class):
         pieces = 0
         while pieces < number:
@@ -62,7 +62,7 @@ class MyGame(arcade.Window):
                 mirror_y = (self.map.row_count() - 1) - rand_y
                 self.sprite_man.place_gamepiece(piece_class, mirror_x, mirror_y, 2)
                 pieces += 2
-    @trace
+
     def bite_thing(self, command, x, y, attack):
         # Slime tries to bite a target, then if succesful this method awards 1 xp
         (x, y) = command.update_coord(x, y)
@@ -75,7 +75,6 @@ class MyGame(arcade.Window):
             target.current_hp -= attack
             return 1 if type(target) is Slime else 2
 
-    @trace
     def split(self, slime):
         """ split slime into random empty adjacent cell """
         empty_adjacent_cells = self.map.adjacent_empty_cells(slime.x, slime.y)
@@ -93,8 +92,7 @@ class MyGame(arcade.Window):
                 self.sprite_man.place_gamepiece(Slime, x, y, 1)
             else:
                 self.sprite_man.place_gamepiece(Slime, x, y, 2)
-    
-    @trace
+
     def end_game(self):
         """ Print winner, generate report, ... """
         arcade.window_commands.close_window()
@@ -132,21 +130,21 @@ class MyGame(arcade.Window):
         for k, v in results.items():
             print(k, v)
         
-        if not os.path.isfile('results.csv'):
-            with open('results.csv', 'a', newline = '') as f:
-                top_row = ['Player one team name','Player one score','Player one max slime level',
-                'Player one slime count','Player two team name','Player two score',
-                'Player two max slime level','Player two slime count','Winner','Final turn']
-                writer = csv.writer(f, delimiter=",")
-                writer.writerow(top_row)
+        existing_file = os.path.isfile('results.csv')
 
         with open('results.csv', 'a', newline = '') as f:
             writer = csv.DictWriter(f, fieldnames = results.keys())
+            if not existing_file:
+                writer.writeheader()
             writer.writerow(results)
 
-    @trace
     def execute_round(self, slime, player):
-        command = player.command_slime(self.map, slime, self.turn)
+        # provide player with read-only copy of state so they can't cheat
+        state = self.map.dump_state()
+        command = player.command_slime(state,
+                                       state[slime.x][slime.y],
+                                       self.turn)
+
         # allow player to take no action
         if command is None:
             return
@@ -156,7 +154,7 @@ class MyGame(arcade.Window):
             # Attempt to move the slime if the target cell is empty
             (x, y) = command.update_coord(slime.x, slime.y)
             if self.map.valid_coord(x, y) and self.map.is_cell_empty(x, y):
-                slime.set_coord(x, y)
+                self.map.move_gamepiece(slime, x, y)
 
         # Check for bite commands
         if (command.is_bite()):
@@ -178,15 +176,12 @@ class MyGame(arcade.Window):
         self.sprite_man.check_for_dead()
         self.sprite_man.check_for_merge()
 
-
-    @trace
     def setup(self):
         """ Initialize game state """
         self.place_pieces(self.conf['Slime'].getint('num_total'), Slime)
         self.place_pieces(self.conf['Plant'].getint('num_total'), Plant)
         self.place_pieces(self.conf['Rock'].getint('num_total'), Rock)
 
-    @trace
     def draw_grid(self):
         # Draw a grid based on map.py center_x and center_y functions
         for row in range(self.map.rows):
@@ -201,7 +196,6 @@ class MyGame(arcade.Window):
                 # Draw the box
                 arcade.draw_rectangle_filled(x_box, y_box, self.map.width/self.map.columns-2, self.map.height/self.map.rows-2, color)
 
-    @trace
     def on_draw(self):
         """Render the screen."""
         if self.conf['misc'].get('render') == 'True':
@@ -217,7 +211,6 @@ class MyGame(arcade.Window):
             # Delay to slow game down        
             time.sleep(self.conf['misc'].getfloat('sleep'))
 
-    @trace
     def update(self, delta_time):
         """ Movement and game logic """
         # Turn counter

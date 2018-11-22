@@ -2,11 +2,10 @@ import arcade
 from models.gamepiece import Gamepiece
 
 class Slime(Gamepiece):
-    def __init__(self, config, map, player):
+    def __init__(self, config, player):
         super().__init__(config.get('player_one_basic'),
                          config.getfloat('sprite_scaling'),
                          config,
-                         map,
                          player)
         self.level = 1
         self.xp = 1
@@ -44,6 +43,9 @@ class Slime(Gamepiece):
     def split(self):
         self.xp = self.xp // 4
 
+    def max_hp(self):
+        return (self.level**self.hp_exponent) + self.hp_base
+
     def level_check(self):
         # Save current level
         starting_level = self.level
@@ -58,14 +60,25 @@ class Slime(Gamepiece):
         # Update attack based on level
         self.attack = self.level**self.attack_exponent+self.attack_base
 
-        # Update max hp based on level
-        self.max_hp = self.level**self.hp_exponent+self.hp_base
-
         # Add hp on level up
         if starting_level < self.level:
-            self.max_hp = self.level**self.hp_exponent+self.hp_base
-            if self.max_hp>(starting_level**self.hp_exponent+self.hp_base):
-                self.current_hp += (self.max_hp-(starting_level**self.hp_exponent+self.hp_base))
-            # make sure current hp isn't above max hp
-                if self.current_hp >= self.max_hp:
-                    self.current_hp = self.max_hp
+            if self.max_hp() > (starting_level**self.hp_exponent + self.hp_base):
+                self.current_hp += (self.max_hp() - (starting_level**self.hp_exponent + self.hp_base))
+                # make sure current hp isn't above max hp
+                if self.current_hp >= self.max_hp():
+                    self.current_hp = self.max_hp()
+
+    def __dict__(self):
+        return {
+            'type': 'SLIME',
+            'id': self.id,
+            'player': self.player,
+            'x': self.x,
+            'y': self.y,
+            'level': self.level,
+            'xp': self.xp,
+            'current_hp': self.current_hp,
+            'max_hp': self.max_hp(),
+            'attack': self.attack,
+            'ready_to_merge': self.ready_to_merge
+        }

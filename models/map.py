@@ -1,5 +1,3 @@
-import copy
-
 class Map():
     def __init__(self, config):
         self.width = config['screen'].getint('width')
@@ -25,6 +23,18 @@ class Map():
       ]
       return [cell for cell in cells if self.valid_coord(cell[0], cell[1])] 
 
+    def move_gamepiece(self, gamepiece, x, y):
+      # clear original, if occupied
+      self.clear_cell(gamepiece.x, gamepiece.y)
+
+      # move to new spot
+      gamepiece.x = x
+      gamepiece.y = y
+      self.update_cell(gamepiece, x, y)
+
+      # display
+      gamepiece.set_position(self.center_x(x), self.center_y(y))
+
     def get_matrix(self):
       return self.matrix
     
@@ -48,11 +58,21 @@ class Map():
       return [(x, y) for x, y in cells if self.is_cell_empty(x, y)]
 
     def valid_coord(self, x, y):
-      return ((0 <= x < self.columns) and (0 <= y < self.rows))
+      return (x is not None and y is not None and (0 <= x < self.columns) and (0 <= y < self.rows))
 
     def update_cell(self, gamepiece, x, y):
       if self.is_cell_empty(x, y):
         self.matrix[x][y] = gamepiece
 
     def clear_cell(self, x, y):
-      self.matrix[x][y] = None
+      if self.valid_coord(x, y):
+        self.matrix[x][y] = None
+
+    def dump_state(self):
+      state = [[None] * self.rows for i in range(self.columns)]
+      for x in range(len(self.matrix)):
+        for y in range(len(self.matrix[x])):
+          piece = self.matrix[x][y]
+          if piece is not None:
+            state[x][y] = piece.__dict__()
+      return state
