@@ -1,18 +1,10 @@
 from models.player_base import PlayerBase
 from models.commands import Commands
 import random
-from models.slime import Slime
-from models.plant import Plant
-from models.rock import Rock
 
-# All codes could use the same class name
 class Player(PlayerBase):
-    # example player AI
     def __init__(self, id):
-        super().__init__(id, "player_three")
-        self.direction_x = 1
-        self.move_command = Commands.RIGHT
-        self.bite_command = Commands.BITERIGHT
+        super().__init__(id, "bite or move randomly, limited split")
         self.friends = []
         self.enemies =[]
         self.plants =[]
@@ -24,39 +16,35 @@ class Player(PlayerBase):
         for x in range(len(matrix)):
             for y in range(len(matrix[x])):
                 gamepiece = matrix[x][y]
-                if type(gamepiece) is Slime and gamepiece.player == self.id:
-                    self.friends.append(gamepiece)
-                if type(gamepiece) is Slime and gamepiece.player != self.id:
-                    self.enemies.append(gamepiece)
-                if type(gamepiece) is Plant:
-                    self.plants.append(gamepiece)
-    
-    # All AI must have this line
-    def command_slime(self, map, slime, turn):
-        self.find_stuff(map.get_matrix())
-        
-        # if turn == 1:
-        #     return Commands.MERGE
+                if gamepiece is not None:
+                    if gamepiece['type'] == 'SLIME':
+                        if gamepiece['player'] == self.id:
+                            self.friends.append(gamepiece)
+                        else:
+                            self.enemies.append(gamepiece)
+                    if gamepiece['type'] == 'PLANT':
+                        self.plants.append(gamepiece)
 
-        # check each direction for a plant then a slime, if a slime is found check if it is on our team
+    def valid_coord(self, state, x, y):
+        return ((0 <= x < len(state)) and (0 <= y < len(state[0])))
+
+    def command_slime(self, state, slime, turn):
+        self.find_stuff(state)
+
+        # bite nearby plants or enemies
         bite_option = [Commands.BITELEFT, Commands.BITERIGHT, Commands.BITEUP, Commands.BITEDOWN]
-        dx = [slime.x-1, slime.x+1, slime.x, slime.x]
-        dy = [slime.y, slime.y, slime.y+1, slime.y-1]
-        
+        dx = [slime['x']-1, slime['x']+1, slime['x'], slime['x']]
+        dy = [slime['y'], slime['y'], slime['y']+1, slime['y']-1]
         for i in range(4):
-            if map.valid_coord(dx[i], dy[i]) and map.matrix[dx[i]][dy[i]] != None:
-                if type(map.matrix[dx[i]][dy[i]]) is Plant:
+            if self.valid_coord(state, dx[i], dy[i]):
+                neighbor = state[dx[i]][dy[i]]
+                if neighbor in self.plants or neighbor in self.enemies:
                     return bite_option[i]
-                elif type(map.matrix[dx[i]][dy[i]]) is not Rock:
-                    if map.matrix[dx[i]][dy[i]].player != slime.player:
-                        return bite_option[i]
 
-        if len(self.friends) <= 5:
-            if slime.level >= 4:
-                return Commands.SPLIT
+        # split only up to 6 total slimes
+        if len(self.friends) <= 5 and slime['level'] >= 4:
+            return Commands.SPLIT
 
         # Move randomly
-        command_options = [Commands.LEFT,Commands.RIGHT,Commands.UP,Commands.DOWN]
-        option = random.randint(0,3)
-        command_call = command_options[option]
-        return command_call
+        move_options = [Commands.LEFT,Commands.RIGHT,Commands.UP,Commands.DOWN]
+        return random.choice(move_options)
