@@ -11,11 +11,15 @@ class Slime(Gamepiece):
         self.level = 1
         self.xp = 1
         self.max_level = config.getint('max_level')
-        self.current_hp = config.getint('max_hp')
-        self.max_hp = config.getint('max_hp')
-        self.hp_increment = config.getint('hp_increment')
-        self.attack_increment = config.getint('attack_increment')
-        self.attack =config.getint('attack_increment')
+
+        self.hp_exponent = config.getfloat('hp_exponent')
+        self.hp_base = config.getint('hp_base')
+        self.current_hp =config.getint('hp_base')
+
+        self.attack_exponent = config.getfloat('attack_exponent')
+        self.attack_base = config.getint('attack_base')
+        self.attack =config.getint('attack_base')
+
         self.min_split_level = config.getint('min_split_level')
         self.ready_to_merge = False
 
@@ -26,12 +30,12 @@ class Slime(Gamepiece):
     def update_texture(self):
         """Update the slimes sprites based on player and level."""
         if self.player == 1:
-            if self.level < self.min_split_level * 2:
+            if self.level < self.max_level - 2:
                 filename = self.conf.get('player_one_basic')
             else:
                 filename = self.conf.get('player_one_king')
         else:
-            if self.level < self.min_split_level * 2:
+            if self.level < self.max_level - 2:
                 filename = self.conf.get('player_two_basic')
             else:
                 filename = self.conf.get('player_two_king')
@@ -51,20 +55,17 @@ class Slime(Gamepiece):
         if self.level >= self.max_level:
             self.level = self.max_level
 
-        # Update attack based on level up
-        self.attack = self.level*self.attack_increment
+        # Update attack based on level
+        self.attack = self.level**self.attack_exponent+self.attack_base
 
         # Update max hp based on level
-        self.max_hp = self.level*self.hp_increment
+        self.max_hp = self.level**self.hp_exponent+self.hp_base
 
         # Add hp on level up
         if starting_level < self.level:
-            self.current_hp += self.hp_increment
-            # print('xp', self.xp)
-            # print('level', self.level)
-            # print('max hp', self.max_hp)
-            # print('current hp', self.current_hp)
-        
-        # make sure current hp isn't above max hp
-        if self.current_hp >= self.max_hp:
-            self.current_hp = self.max_hp
+            self.max_hp = self.level**self.hp_exponent+self.hp_base
+            if self.max_hp>(starting_level**self.hp_exponent+self.hp_base):
+                self.current_hp += (self.max_hp-(starting_level**self.hp_exponent+self.hp_base))
+            # make sure current hp isn't above max hp
+                if self.current_hp >= self.max_hp:
+                    self.current_hp = self.max_hp

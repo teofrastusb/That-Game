@@ -148,7 +148,6 @@ class MyGame(arcade.Window):
         #     print(k, v)
         
         if not os.path.isfile('results.csv'):
-            print('Made it into no file line')
             with open('results.csv', 'a', newline = '') as f:
                 top_row = ['Player one team name','Player one score','Player one max slime level',
                 'Player one slime count','Player two team name','Player two score',
@@ -183,7 +182,7 @@ class MyGame(arcade.Window):
                 slime.xp += 1
                 hit -= 1
                 if hit:
-                    slime.current_hp += slime.hp_increment//slime.hp_increment
+                    slime.current_hp += slime.hp_base
 
         if command is Commands.SPLIT:
             self.split(slime)
