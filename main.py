@@ -15,8 +15,7 @@ from models.map import Map
 from models.commands import Commands
 from models.sprite_man import Sprite_man
 
-from PlayerCode.player_four import Player as PlayerOne
-from PlayerCode.player_three import Player as PlayerTwo
+from runners.single_match import Runner
 
 # time method
 def timed(function):
@@ -252,9 +251,8 @@ def main():
     handler = logging.StreamHandler()
     logger.addHandler(handler)
 
-    # players
-    player_one = PlayerOne(1)
-    player_two = PlayerTwo(2)
+    runner = Runner('PlayerCode')
+    player_one, player_two = runner.choose_players()
 
     # run the actual game
     window = MyGame(config, player_one, player_two)
