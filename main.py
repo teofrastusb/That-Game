@@ -30,7 +30,7 @@ from models.sprite_man import Sprite_man
 #         code2 = 'PlayerCode.' + option[0:len(option)-3]
 # print( 'Code2 is', code2)
 
-from PlayerCode.default import Player as PlayerOne
+from PlayerCode.player_two import Player as PlayerOne
 from PlayerCode.player_four import Player as PlayerTwo
 
 # time method
