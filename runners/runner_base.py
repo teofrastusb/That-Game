@@ -6,7 +6,6 @@ class RunnerBase():
     def __init__(self, name, player_dir):
         self.name = name
         self.player_dir = player_dir
-        self.filename = name + '_results.csv'
         self.config = configparser.ConfigParser()
         self.config.read('resources/config.ini')
 
@@ -20,15 +19,6 @@ class RunnerBase():
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         return module.Player(player_num)
-
-    def record_results(self, results):
-        """ Generate report, ... """
-        existing_file = os.path.isfile(self.filename)
-        with open(self.filename, 'a', newline = '') as f:
-            writer = csv.DictWriter(f, fieldnames = results.keys())
-            if not existing_file:
-                writer.writeheader()
-            writer.writerow(results)
 
     def run(self):
         raise NotImplementedError("All runners must implement this method")
