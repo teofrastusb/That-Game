@@ -1,7 +1,9 @@
+import arcade
 from random import sample
 from os import listdir
-import importlib.util
+
 from runners.runner_base import RunnerBase
+from engine import Engine
 
 class Runner(RunnerBase): 
     def __init__(self, player_dir):
@@ -13,17 +15,14 @@ class Runner(RunnerBase):
         file_one, file_two = sample(players, 2)
         print(file_one, "vs", file_two)
 
-        spec = importlib.util.spec_from_file_location("PlayerCode.Player", self.player_dir + '/' + file_one)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        player_one = module.Player(1)
-
-        spec = importlib.util.spec_from_file_location("PlayerCode.Player", self.player_dir + '/' + file_two)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        player_two = module.Player(2)
+        player_one = self.create_player(file_one, 1)
+        player_two = self.create_player(file_two, 2)
 
         return (player_one, player_two)
 
     def run(self):
-        pass
+        player_one, player_two = self.choose_players()
+
+        # run the actual game
+        window = Engine(self.config, player_one, player_two)
+        arcade.run()
