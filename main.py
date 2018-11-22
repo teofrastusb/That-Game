@@ -167,7 +167,7 @@ class MyGame(arcade.Window):
             # Attempt to move the slime if the target cell is empty
             (x, y) = command.update_coord(slime.x, slime.y)
             if self.map.valid_coord(x, y) and self.map.is_cell_empty(x, y):
-                slime.set_coord(x, y)
+                self.map.move_gamepiece(slime, x, y)
 
         # Check for bite commands
         if (command.is_bite()):

@@ -3,11 +3,10 @@ import arcade
 from models.gamepiece import Gamepiece
 
 class Plant(Gamepiece):
-    def __init__(self, config, map):
+    def __init__(self, config):
         super().__init__(config['filename1'],
                          config.getfloat('sprite_scaling'),
-                         config,
-                         map)
+                         config)
         self.level = 1
         self.max_hp = config.getint('max_hp')
         self.current_hp = self.max_hp

@@ -2,11 +2,10 @@ import arcade
 from models.gamepiece import Gamepiece
 
 class Slime(Gamepiece):
-    def __init__(self, config, map, player):
+    def __init__(self, config, player):
         super().__init__(config.get('player_one_basic'),
                          config.getfloat('sprite_scaling'),
                          config,
-                         map,
                          player)
         self.level = 1
         self.xp = 1

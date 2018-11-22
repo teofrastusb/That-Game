@@ -15,10 +15,10 @@ class Sprite_man():
 
     def place_gamepiece(self, piece_class, x, y, player = 0):
         if piece_class is Slime:
-            piece = piece_class(self.conf[piece_class.__name__], self.map, player)
+            piece = piece_class(self.conf[piece_class.__name__], player)
         else:
-            piece = piece_class(self.conf[piece_class.__name__], self.map)
-        piece.set_coord(x, y)
+            piece = piece_class(self.conf[piece_class.__name__])
+        self.map.move_gamepiece(piece, x, y)
         self.all_sprites_list.append(piece)
 
     def check_for_dead(self):
