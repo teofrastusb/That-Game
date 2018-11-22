@@ -15,23 +15,8 @@ from models.map import Map
 from models.commands import Commands
 from models.sprite_man import Sprite_man
 
-# Import player's AIs, TODO make the program pick the player files to import from but hand enetering for now is fine.
-# player_codes = os.listdir(os.path.dirname(os.path.realpath(__file__))+'\PlayerCode')
-# print(player_codes)
-# code1 = None
-# code2 = None
-
-# code1 = player_codes[random.randint(0,len(player_codes)-2)]
-# code1 = 'PlayerCode.' + code1[0:len(code1)-3]
-# print( 'Code1 is', code1)
-# while not code2:
-#     option = player_codes[random.randint(0,len(player_codes)-2)]
-#     if option != code1:
-#         code2 = 'PlayerCode.' + option[0:len(option)-3]
-# print( 'Code2 is', code2)
-
-from PlayerCode.player_three import Player as PlayerOne
-from PlayerCode.player_four import Player as PlayerTwo
+from PlayerCode.player_four import Player as PlayerOne
+from PlayerCode.player_three import Player as PlayerTwo
 
 # time method
 def timed(function):
@@ -180,7 +165,7 @@ class MyGame(arcade.Window):
                 slime.xp += 1
                 hit -= 1
                 if hit:
-                    slime.current_hp += slime.hp_increment//slime.hp_increment
+                    slime.current_hp += slime.hp_base
 
         if command is Commands.SPLIT:
             self.split(slime)
