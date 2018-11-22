@@ -128,13 +128,13 @@ class MyGame(arcade.Window):
         for slime in self.all_sprites_list:
             if type(slime) is Slime and slime.player == 1:
                 results['player one slime count'] += 1
-                results['player one score'] += int(slime.level**(3/2))
+                results['player one score'] += (slime.level**(3.8)-slime.level**3.7+1)/5
                 if results['player one max slime level'] < slime.level:
                     results['player one max slime level'] = slime.level
 
             if type(slime) is Slime and slime.player == 2:
                 results['player two slime count'] += 1
-                results['player two score'] += int(slime.level**(3/2))
+                results['player two score'] += (slime.level**(3.8)-slime.level**3.7+1)/5
                 if results['player two max slime level'] < slime.level:
                     results['player two max slime level'] = slime.level
 

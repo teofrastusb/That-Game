@@ -45,7 +45,7 @@ class Slime(Gamepiece):
         starting_level = self.level
 
         # Update level based on xp
-        self.level = int(self.xp*(-0.001*self.xp+0.185)+1.9)
+        self.level = int(1.77*self.xp**0.331+1)
 
         # Check if the slime level is at or above maximum
         if self.level >= self.max_level:
