@@ -143,21 +143,16 @@ class MyGame(arcade.Window):
         elif results['player one score'] < results['player two score']:
             results['winner'] = self.player_two.name
 
-        # print('GAME OVER')
-        # for k, v in results.items():
-        #     print(k, v)
+        print('GAME OVER')
+        for k, v in results.items():
+            print(k, v)
         
-        if not os.path.isfile('results.csv'):
-            print('Made it into no file line')
-            with open('results.csv', 'a', newline = '') as f:
-                top_row = ['Player one team name','Player one score','Player one max slime level',
-                'Player one slime count','Player two team name','Player two score',
-                'Player two max slime level','Player two slime count','Winner','Final turn']
-                writer = csv.writer(f, delimiter=",")
-                writer.writerow(top_row)
+        existing_file = os.path.isfile('results.csv')
 
         with open('results.csv', 'a', newline = '') as f:
             writer = csv.DictWriter(f, fieldnames = results.keys())
+            if not existing_file:
+                writer.writeheader()
             writer.writerow(results)
 
     @trace
