@@ -31,7 +31,7 @@ from models.sprite_man import Sprite_man
 # print( 'Code2 is', code2)
 
 from PlayerCode.default import Player as PlayerOne
-from PlayerCode.rudimentary_cheat import Player as PlayerTwo
+from PlayerCode.player_four import Player as PlayerTwo
 
 # time method
 def timed(function):
