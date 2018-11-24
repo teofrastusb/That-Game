@@ -3,7 +3,8 @@ from random import sample
 from os import listdir
 
 from runners.runner_base import RunnerBase
-from engine import Engine
+from engine.engine import Engine
+from visualizer.visualizer import Visualizer
 
 class Runner(RunnerBase): 
     def __init__(self, player_dir):
@@ -23,6 +24,12 @@ class Runner(RunnerBase):
     def run(self):
         player_one, player_two = self.choose_players()
 
-        # run the actual game
-        window = Engine(self.config, player_one, player_two)
-        arcade.run()
+        engine = Engine(self.config, player_one, player_two)
+        # visualize or just run the match
+        if self.config['misc'].getboolean('render'):
+            visualizer = Visualizer(self.config, engine.map.dump_state(), engine.run_turn)
+            arcade.window_commands.run()
+        else:
+            while not engine.is_game_over():
+                engine.run_turn()
+        engine.end_game()

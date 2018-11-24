@@ -1,12 +1,12 @@
-import arcade
-from models.gamepiece import Gamepiece
+import uuid
 
-class Slime(Gamepiece):
+class Slime():
     def __init__(self, config, player):
-        super().__init__(config.get('player_one_basic'),
-                         config.getfloat('sprite_scaling'),
-                         config,
-                         player)
+        self.id = uuid.uuid4()
+        self.player = player
+        self.x = None
+        self.y = None
+        self.conf = config
         self.level = 1
         self.xp = 1
         self.max_level = config.getint('max_level')
@@ -24,21 +24,6 @@ class Slime(Gamepiece):
 
     def update(self):
         self.level_check()
-        self.update_texture()
-
-    def update_texture(self):
-        """Update the slimes sprites based on player and level."""
-        if self.player == 1:
-            if self.level < self.max_level -2:
-                filename = self.conf.get('player_one_basic')
-            else:
-                filename = self.conf.get('player_one_king')
-        else:
-            if self.level < self.max_level -2:
-                filename = self.conf.get('player_two_basic')
-            else:
-                filename = self.conf.get('player_two_king')
-        self.texture = arcade.draw_commands.load_texture(filename, scale = self.scale)
 
     def split(self):
         self.xp = self.xp // 4

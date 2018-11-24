@@ -1,12 +1,12 @@
 import random
-import arcade
-from models.gamepiece import Gamepiece
+import uuid
 
-class Plant(Gamepiece):
+class Plant():
     def __init__(self, config):
-        super().__init__(config['filename1'],
-                         config.getfloat('sprite_scaling'),
-                         config)
+        self.id = uuid.uuid4()
+        self.x = None
+        self.y = None
+        self.conf = config
         self.level = 1
         self.max_hp = config.getint('max_hp')
         self.current_hp = self.max_hp
@@ -30,9 +30,6 @@ class Plant(Gamepiece):
         if do_level_up:
             self.level += 1
 
-            if self.level >= int(self.max_level * 3 / 4):
-                self.texture = arcade.draw_commands.load_texture(self.conf.get('filename2'), scale = self.scale)
-
             # Change max hp on level up
             self.max_hp += self.hp_increment
 
@@ -43,7 +40,6 @@ class Plant(Gamepiece):
         self.level = 1
         self.max_hp = self.conf.getint('max_hp')
         self.current_hp = self.max_hp
-        self.texture = arcade.draw_commands.load_texture(self.conf.get('filename1'), scale = self.scale)
 
     def can_seed(self):
         return self.level == self.max_level
@@ -51,6 +47,7 @@ class Plant(Gamepiece):
     def __dict__(self):
         return {
             'type': 'PLANT',
+            'id': self.id,
             'x': self.x,
             'y': self.y,
             'level': self.level,
