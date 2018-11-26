@@ -208,18 +208,16 @@ class Engine():
 
         # get current state of the world
         slimes = self.get_slimes()
-        completed_ids = []
         while len(slimes) > 0:
             slime = slimes.pop(0)
-            completed_ids.append(slime.id)
-            if slime.player == 1:
-                self.execute_round(slime, self.player_one)
-                self.player_one_slime_count += 1
-            if slime.player == 2:
-                self.execute_round(slime, self.player_two)
-                self.player_two_slime_count += 1
-            # find all un-run slimes based on the newly updated state
-            slimes = [slime for slime in self.get_slimes() if slime.id not in completed_ids]
+            # do not run for dead slimes
+            if (slime.current_hp > 0):
+                if slime.player == 1:
+                    self.execute_round(slime, self.player_one)
+                    self.player_one_slime_count += 1
+                if slime.player == 2:
+                    self.execute_round(slime, self.player_two)
+                    self.player_two_slime_count += 1
 
         # track state for later visualization
         return self.map.dump_state()

@@ -2,7 +2,8 @@ import arcade
 
 class SlimeSprite(arcade.Sprite):
     def __init__(self, config, id):
-        super().__init__(config.get('player_one_basic'), config.getfloat('sprite_scaling'))
+        self.filename = config.get('player_one_basic')
+        super().__init__(self.filename, config.getfloat('sprite_scaling'))
         self.id = id
         self.conf = config
 
@@ -18,4 +19,7 @@ class SlimeSprite(arcade.Sprite):
                 filename = self.conf.get('player_two_basic')
             else:
                 filename = self.conf.get('player_two_king')
-        self.texture = arcade.draw_commands.load_texture(filename, scale = self.conf.getfloat('sprite_scaling'))
+        # only load texture on changes
+        if self.filename != filename:
+            self.filename = filename
+            self.texture = arcade.draw_commands.load_texture(filename, scale = self.conf.getfloat('sprite_scaling'))

@@ -11,16 +11,6 @@ from visualizer.rock_sprite import RockSprite
 
 class Visualizer(arcade.Window):
     """ Main application class. """
-# TODO:
-# take in callback that returns a state
-#     for 'normal' runs this will be the engine returning it directly
-#     for historical this will just be the file being ready line by line
-# on update call callback then:
-#     kill missing sprites by id
-#     update x,y of existing sprites by id
-#     update texture based on level of plants
-#     update texture based on level of slimes
-#     hydrate sprite list from state
 
     def __init__(self, config, initial_state, get_state):
         super().__init__(config['screen'].getint('width'),
@@ -42,9 +32,10 @@ class Visualizer(arcade.Window):
             self.add_sprite(piece)
 
     def set_sprite_position(self, sprite, x, y):
-        x = (x + 1/2) * self.step_x
-        y = (y + 1/2) * self.step_y
-        sprite.set_position(x, y)
+        center_x = (x + 1/2) * self.step_x
+        center_y = (y + 1/2) * self.step_y
+        if self.turn == 0 or sprite.center_x != center_x or sprite.center_y != center_y:
+            sprite.set_position(center_x, center_y)
 
     def flatten_state(self, state):
         flat = []
@@ -121,7 +112,8 @@ class Visualizer(arcade.Window):
         sprite.update_texture(piece)
 
         # movement
-        self.set_sprite_position(sprite, piece['x'], piece['y'])
+        if type(sprite) is SlimeSprite:
+            self.set_sprite_position(sprite, piece['x'], piece['y'])
 
     def update(self, delta_time):
         """ Movement and game logic """
