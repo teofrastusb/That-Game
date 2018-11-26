@@ -2,6 +2,7 @@ import random
 import os
 import time
 import csv
+import threading
 
 from engine.plant import Plant
 from engine.slime import Slime
@@ -182,7 +183,7 @@ class Engine():
                 gamepiece = self.map.get(x, y)
                 if type(gamepiece) is Slime:
                     slimes.append(gamepiece)
-        return slimes
+        return slimes  
 
     def run_turn(self):
         """ Movement and game logic """
@@ -213,10 +214,27 @@ class Engine():
             slime = slimes.pop(0)
             completed_ids.append(slime.id)
             if slime.player == 1:
-                self.execute_round(slime, self.player_one)
+                if __name__ == 'engine.engine':
+                    start = time.perf_counter()
+                    p = threading.Thread(target=self.execute_round, args=(slime, self.player_one))
+                    p.start()
+                    p.join(timeout = self.conf['misc'].getfloat('turn_max_time'))
+                    print(p.is_alive())
+                    # do whatever you want to time
+                    elapsed_seconds = time.perf_counter() - start
+                    print(elapsed_seconds)
+
                 self.player_one_slime_count += 1
             if slime.player == 2:
-                self.execute_round(slime, self.player_two)
+                if __name__ == 'engine.engine':
+                    start = time.perf_counter()
+                    p = threading.Thread(target=self.execute_round, args=(slime, self.player_two))
+                    p.start()
+                    p.join(timeout = self.conf['misc'].getfloat('turn_max_time'))
+                    # do whatever you want to time
+                    elapsed_seconds = time.perf_counter() - start
+                    print(elapsed_seconds)
+
                 self.player_two_slime_count += 1
             # find all un-run slimes based on the newly updated state
             slimes = [slime for slime in self.get_slimes() if slime.id not in completed_ids]
