@@ -63,7 +63,7 @@ class Visualizer(arcade.Window):
             sprite = PlantSprite(self.conf['Plant'], piece['id'])
             self.set_sprite_position(sprite, piece['x'], piece['y'])
         elif piece['type'] == 'SLIME':
-            sprite = SlimeSprite(self.conf['Slime'], piece['id'])
+            sprite = SlimeSprite(self.conf['Slime'], piece)
             self.set_sprite_position(sprite, piece['x'], piece['y'])
         elif piece['type'] == 'ROCK':
             sprite = RockSprite(self.conf['Rock'], piece['id'])
