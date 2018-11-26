@@ -21,8 +21,11 @@ class Visualizer(arcade.Window):
         self.conf = config
         self.width = config['screen'].getint('width')
         self.height = config['screen'].getint('height')
-        self.step_x = self.width // (config['screen'].getint('columns'))
-        self.step_y = self.height // (config['screen'].getint('rows'))
+        self.rows = config['screen'].getint('rows')
+        self.columns = config['screen'].getint('columns')
+        self.step_x = self.width // self.columns
+        self.step_y = self.height // self.rows
+        self.do_draw_grid = config['screen'].getboolean('draw_grid')
 
         # initial game state
         self.all_sprites_list = arcade.SpriteList(use_spatial_hash=False)
@@ -70,25 +73,24 @@ class Visualizer(arcade.Window):
         self.all_sprites_list.append(sprite)
 
     def draw_grid(self):
-        # TODO: fix this
-        # Draw a grid based on map.py center_x and center_y functions
-        for row in range(self.map.rows):
-            for column in range(self.map.columns):
-                # Figure out what color to draw the box
-                color = arcade.color.ALMOND
+        if self.do_draw_grid:
+            for row in range(self.rows):
+                for column in range(self.columns):
+                    # Figure out what color to draw the box
+                    color = arcade.color.BLACK
 
-                # Do the math to figure out where the box is
-                x_box = (self.map.width/self.map.columns) * (column) + (self.map.width/self.map.columns)/2
-                y_box = (self.map.height/self.map.rows)* (row) + (self.map.height/self.map.rows)/2
+                    # Do the math to figure out where the box is
+                    x_box = (self.width/self.columns) * (column) + (self.width/self.columns)/2
+                    y_box = (self.height/self.rows) * (row) + (self.height/self.rows)/2
 
-                # Draw the box
-                arcade.draw_rectangle_filled(x_box, y_box, self.map.width/self.map.columns-2, self.map.height/self.map.rows-2, color)
+                    # Draw the box
+                    arcade.draw_rectangle_outline(x_box, y_box, self.width/self.columns-2, self.height/self.rows-2, color, 4)
 
     def on_draw(self):
         """Render the screen."""
         arcade.start_render()
         arcade.set_background_color(arcade.color.AMAZON)
-        #self.draw_grid()
+        self.draw_grid()
         turn_timer(self.all_sprites_list.draw, self.turn)()
 
         # Put the text on the screen.
