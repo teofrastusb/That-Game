@@ -1,5 +1,5 @@
 from runners.single_match import Runner
-from timer import timed
+from timer.timer import timed
 
 def main():
     runner = Runner('PlayerCode')

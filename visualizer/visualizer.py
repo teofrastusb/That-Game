@@ -8,6 +8,7 @@ import csv
 from visualizer.plant_sprite import PlantSprite
 from visualizer.slime_sprite import SlimeSprite
 from visualizer.rock_sprite import RockSprite
+from timer.timer import turn_timer
 
 class Visualizer(arcade.Window):
     """ Main application class. """
@@ -26,6 +27,7 @@ class Visualizer(arcade.Window):
         # initial game state
         self.all_sprites_list = arcade.SpriteList(use_spatial_hash=False)
         self.turn = 0
+        self.start = 0
         self.get_state = get_state
         # initialize sprites
         for piece in self.flatten_state(initial_state):
@@ -87,10 +89,13 @@ class Visualizer(arcade.Window):
         arcade.start_render()
         arcade.set_background_color(arcade.color.AMAZON)
         #self.draw_grid()
-        self.all_sprites_list.draw()
+        turn_timer(self.all_sprites_list.draw, self.turn)()
 
         # Put the text on the screen.
-        output = "turn: {}".format(self.turn)
+        elapsed = time.perf_counter() - self.start
+        self.start = time.perf_counter()
+        output = f"turn: {self.turn} seconds since last turn: {elapsed}"
+        print(f"timer,{self.turn},full_turn,{elapsed}")
         arcade.draw_text(output, 10, 20, arcade.color.BLACK, 14)
 
         # Delay to slow game down        
@@ -115,9 +120,14 @@ class Visualizer(arcade.Window):
         if type(sprite) is SlimeSprite:
             self.set_sprite_position(sprite, piece['x'], piece['y'])
 
+    def add_sprites(self, state_dict, ids):
+        for piece in state_dict.values():
+            if piece['id'] not in ids:
+                self.add_sprite(piece)
+
     def update(self, delta_time):
         """ Movement and game logic """
-        state = self.get_state()
+        state = turn_timer(self.get_state, self.turn)()
         # stop visualizing when there's no more state to render
         if state is False:
             arcade.window_commands.close_window()
@@ -126,15 +136,14 @@ class Visualizer(arcade.Window):
         # Turn counter
         self.turn += 1
 
-        state_dict = self.hashify_state(state)
+        state_dict = turn_timer(self.hashify_state, self.turn)(state)
 
-        # add any new sprites
-        ids = [sprite.id for sprite in self.all_sprites_list]
-        for piece in state_dict.values():
-            if piece['id'] not in ids:
-                self.add_sprite(piece)
-
-        # kill or update sprites
+        ids = []
         for sprite in self.all_sprites_list:
-            self.handle_sprite(sprite, state_dict)
+            # track ids of existing sprites so we can add mising ones
+            ids.append(sprite.id)
+            # kill or update sprites
+            turn_timer(self.handle_sprite, self.turn)(sprite, state_dict)
 
+        # add new sprites
+        turn_timer(self.add_sprites, self.turn)(state_dict, ids)
