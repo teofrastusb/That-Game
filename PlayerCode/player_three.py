@@ -1,6 +1,7 @@
 from models.player_base import PlayerBase
 from models.commands import Commands
 import random
+import time
 
 class Player(PlayerBase):
     def __init__(self, id):
@@ -30,6 +31,11 @@ class Player(PlayerBase):
 
     def command_slime(self, state, slime, turn):
         self.find_stuff(state)
+
+        num_thing= random.randint(1,3)
+        num_thing = num_thing/100
+        print('slime is trying to wait', num_thing)
+        time.sleep(num_thing)
 
         # bite nearby plants or enemies
         bite_option = [Commands.BITELEFT, Commands.BITERIGHT, Commands.BITEUP, Commands.BITEDOWN]

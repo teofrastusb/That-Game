@@ -2,6 +2,7 @@ import random
 import os
 import time
 import csv
+from concurrent.futures import ThreadPoolExecutor, TimeoutError
 
 from engine.plant import Plant
 from engine.slime import Slime
@@ -9,6 +10,18 @@ from engine.rock import Rock
 from engine.map import Map
 from engine.sprite_man import Sprite_man
 from models.commands import Commands
+
+def run_with_timeout(func, timeout, *args):
+    """ Execute a function with a timeout """
+    # NOTE: this abandones the thread, so it will continue to run to completion, we just ignore the result
+    with ThreadPoolExecutor() as thread:
+        future = thread.submit(func, *args)
+        
+        try:
+            return future.result(timeout = timeout)
+        except TimeoutError as e:
+            print(f"player timed out")
+            return None
 
 class Engine():
     """ Main application class. """
@@ -139,7 +152,7 @@ class Engine():
     def execute_round(self, slime, player):
         # provide player with read-only copy of state so they can't cheat
         state = self.map.dump_state()
-        command = player.command_slime(state, state[slime.x][slime.y], self.turn)
+        command = run_with_timeout(player.command_slime, self.conf['misc'].getfloat('round_max_time'), state, state[slime.x][slime.y], self.turn)
 
         # allow player to take no action
         if command is None:
