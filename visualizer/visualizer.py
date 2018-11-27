@@ -101,7 +101,7 @@ class Visualizer(arcade.Window):
         arcade.draw_text(output, 10, 20, arcade.color.BLACK, 14)
 
         # Delay to slow game down        
-        time.sleep(self.conf['misc'].getfloat('sleep'))
+        time.sleep(self.conf['visualizer'].getfloat('sleep'))
 
     def handle_sprite(self, sprite, state_dict):
         """ Removes, moves, and updates textures of a sprite based on state"""

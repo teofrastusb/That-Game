@@ -152,7 +152,7 @@ class Engine():
     def execute_round(self, slime, player):
         # provide player with read-only copy of state so they can't cheat
         state = self.map.dump_state()
-        command = run_with_timeout(player.command_slime, self.conf['misc'].getfloat('round_max_time'), state, state[slime.x][slime.y], self.turn)
+        command = run_with_timeout(player.command_slime, self.conf['engine'].getfloat('round_max_time'), state, state[slime.x][slime.y], self.turn)
 
         # allow player to take no action
         if command is None:

@@ -26,7 +26,7 @@ class Runner(RunnerBase):
 
         engine = Engine(self.config, player_one, player_two)
         # visualize or just run the match
-        if self.config['misc'].getboolean('render'):
+        if self.config['visualizer'].getboolean('render'):
             visualizer = Visualizer(self.config, engine.map.dump_state(), engine.run_turn)
             arcade.window_commands.run()
         else:
