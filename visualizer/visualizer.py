@@ -60,13 +60,13 @@ class Visualizer(arcade.Window):
 
     def add_sprite(self, piece):
         if piece['type'] == 'PLANT':
-            sprite = PlantSprite(self.conf['Plant'], piece['id'])
+            sprite = PlantSprite(self.conf, piece['id'])
             self.set_sprite_position(sprite, piece['x'], piece['y'])
         elif piece['type'] == 'SLIME':
-            sprite = SlimeSprite(self.conf['Slime'], piece)
+            sprite = SlimeSprite(self.conf, piece)
             self.set_sprite_position(sprite, piece['x'], piece['y'])
         elif piece['type'] == 'ROCK':
-            sprite = RockSprite(self.conf['Rock'], piece['id'])
+            sprite = RockSprite(self.conf, piece['id'])
             self.set_sprite_position(sprite, piece['x'], piece['y'])
         else:
             raise Exception("Unrecognized piece type")

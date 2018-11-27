@@ -1,23 +1,27 @@
 import arcade
+from PIL import Image
 
 class SlimeSprite(arcade.Sprite):
     def __init__(self, config, piece):
         self.conf = config
         self.filename = self.choose_texture(piece)
         self.id = piece['id']
-        super().__init__(self.filename, config.getfloat('sprite_scaling'))
+        im = Image.open(config['Slime'].get('player_one_basic'))
+        width, height = im.size
+        scale_adj = (config['screen'].getfloat('width')/config['screen'].getfloat('columns'))/(width)*1.2
+        super().__init__(self.filename, scale_adj)
 
     def choose_texture(self, piece):
         if piece['player'] == 1:
-            if piece['level'] < self.conf.getint('max_level') - 2:
-                filename = self.conf.get('player_one_basic')
+            if piece['level'] < self.conf['Slime'].getint('max_level') - 2:
+                filename = self.conf['Slime'].get('player_one_basic')
             else:
-                filename = self.conf.get('player_one_king')
+                filename = self.conf['Slime'].get('player_one_king')
         else:
-            if piece['level'] < self.conf.getint('max_level') - 2:
-                filename = self.conf.get('player_two_basic')
+            if piece['level'] < self.conf['Slime'].getint('max_level') - 2:
+                filename = self.conf['Slime'].get('player_two_basic')
             else:
-                filename = self.conf.get('player_two_king')
+                filename = self.conf['Slime'].get('player_two_king')
         return filename
 
     def update_texture(self, piece):
@@ -26,4 +30,4 @@ class SlimeSprite(arcade.Sprite):
         # only load texture on changes
         if self.filename != filename:
             self.filename = filename
-            self.texture = arcade.draw_commands.load_texture(filename, scale = self.conf.getfloat('sprite_scaling'))
+            self.texture = arcade.draw_commands.load_texture(filename, scale = scale_adj)
