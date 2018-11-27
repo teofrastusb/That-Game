@@ -223,25 +223,6 @@ class Engine():
         slimes = self.get_slimes()
         while len(slimes) > 0:
             slime = slimes.pop(0)
-<<<<<<< HEAD
-            completed_ids.append(slime.id)
-            if slime.player == 1:
-                if __name__ == 'engine.engine':
-                    p = threading.Thread(target=self.execute_round, args=(slime, self.player_one))
-                    p.start()
-                    p.join(timeout = self.conf['misc'].getfloat('turn_max_time'))
-
-                self.player_one_slime_count += 1
-            if slime.player == 2:
-                if __name__ == 'engine.engine':
-                    p = threading.Thread(target=self.execute_round, args=(slime, self.player_two))
-                    p.start()
-                    p.join(timeout = self.conf['misc'].getfloat('turn_max_time'))
-
-                self.player_two_slime_count += 1
-            # find all un-run slimes based on the newly updated state
-            slimes = [slime for slime in self.get_slimes() if slime.id not in completed_ids]
-=======
             # do not run for dead slimes
             if (slime.current_hp > 0):
                 if slime.player == 1:
@@ -250,7 +231,6 @@ class Engine():
                 if slime.player == 2:
                     self.execute_round(slime, self.player_two)
                     self.player_two_slime_count += 1
->>>>>>> d21d292341f7f6e2ac96a73d52b24975dfff4768
 
         # track state for later visualization
         return self.map.dump_state()
