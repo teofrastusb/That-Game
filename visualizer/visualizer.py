@@ -8,19 +8,10 @@ import csv
 from visualizer.plant_sprite import PlantSprite
 from visualizer.slime_sprite import SlimeSprite
 from visualizer.rock_sprite import RockSprite
+from timer.timer import turn_timer
 
 class Visualizer(arcade.Window):
     """ Main application class. """
-# TODO:
-# take in callback that returns a state
-#     for 'normal' runs this will be the engine returning it directly
-#     for historical this will just be the file being ready line by line
-# on update call callback then:
-#     kill missing sprites by id
-#     update x,y of existing sprites by id
-#     update texture based on level of plants
-#     update texture based on level of slimes
-#     hydrate sprite list from state
 
     def __init__(self, config, initial_state, get_state):
         super().__init__(config['screen'].getint('width'),
@@ -30,21 +21,26 @@ class Visualizer(arcade.Window):
         self.conf = config
         self.width = config['screen'].getint('width')
         self.height = config['screen'].getint('height')
-        self.step_x = self.width // (config['screen'].getint('columns'))
-        self.step_y = self.height // (config['screen'].getint('rows'))
+        self.rows = config['screen'].getint('rows')
+        self.columns = config['screen'].getint('columns')
+        self.step_x = self.width // self.columns
+        self.step_y = self.height // self.rows
+        self.do_draw_grid = config['screen'].getboolean('draw_grid')
 
         # initial game state
         self.all_sprites_list = arcade.SpriteList(use_spatial_hash=False)
         self.turn = 0
+        self.start = 0
         self.get_state = get_state
         # initialize sprites
         for piece in self.flatten_state(initial_state):
             self.add_sprite(piece)
 
     def set_sprite_position(self, sprite, x, y):
-        x = (x + 1/2) * self.step_x
-        y = (y + 1/2) * self.step_y
-        sprite.set_position(x, y)
+        center_x = (x + 1/2) * self.step_x
+        center_y = (y + 1/2) * self.step_y
+        if self.turn == 0 or sprite.center_x != center_x or sprite.center_y != center_y:
+            sprite.set_position(center_x, center_y)
 
     def flatten_state(self, state):
         flat = []
@@ -67,7 +63,7 @@ class Visualizer(arcade.Window):
             sprite = PlantSprite(self.conf['Plant'], piece['id'])
             self.set_sprite_position(sprite, piece['x'], piece['y'])
         elif piece['type'] == 'SLIME':
-            sprite = SlimeSprite(self.conf['Slime'], piece['id'])
+            sprite = SlimeSprite(self.conf['Slime'], piece)
             self.set_sprite_position(sprite, piece['x'], piece['y'])
         elif piece['type'] == 'ROCK':
             sprite = RockSprite(self.conf['Rock'], piece['id'])
@@ -77,33 +73,35 @@ class Visualizer(arcade.Window):
         self.all_sprites_list.append(sprite)
 
     def draw_grid(self):
-        # TODO: fix this
-        # Draw a grid based on map.py center_x and center_y functions
-        for row in range(self.map.rows):
-            for column in range(self.map.columns):
-                # Figure out what color to draw the box
-                color = arcade.color.ALMOND
+        if self.do_draw_grid:
+            for row in range(self.rows):
+                for column in range(self.columns):
+                    # Figure out what color to draw the box
+                    color = arcade.color.BLACK
 
-                # Do the math to figure out where the box is
-                x_box = (self.map.width/self.map.columns) * (column) + (self.map.width/self.map.columns)/2
-                y_box = (self.map.height/self.map.rows)* (row) + (self.map.height/self.map.rows)/2
+                    # Do the math to figure out where the box is
+                    x_box = (self.width/self.columns) * (column) + (self.width/self.columns)/2
+                    y_box = (self.height/self.rows) * (row) + (self.height/self.rows)/2
 
-                # Draw the box
-                arcade.draw_rectangle_filled(x_box, y_box, self.map.width/self.map.columns-2, self.map.height/self.map.rows-2, color)
+                    # Draw the box
+                    arcade.draw_rectangle_outline(x_box, y_box, self.width/self.columns-2, self.height/self.rows-2, color, 4)
 
     def on_draw(self):
         """Render the screen."""
         arcade.start_render()
         arcade.set_background_color(arcade.color.AMAZON)
-        #self.draw_grid()
-        self.all_sprites_list.draw()
+        self.draw_grid()
+        turn_timer(self.all_sprites_list.draw, self.turn)()
 
         # Put the text on the screen.
-        output = "turn: {}".format(self.turn)
+        elapsed = time.perf_counter() - self.start
+        self.start = time.perf_counter()
+        output = f"turn: {self.turn} seconds since last turn: {elapsed}"
+        print(f"timer,{self.turn},full_turn,{elapsed}")
         arcade.draw_text(output, 10, 20, arcade.color.BLACK, 14)
 
         # Delay to slow game down        
-        time.sleep(self.conf['misc'].getfloat('sleep'))
+        time.sleep(self.conf['visualizer'].getfloat('sleep'))
 
     def handle_sprite(self, sprite, state_dict):
         """ Removes, moves, and updates textures of a sprite based on state"""
@@ -121,11 +119,17 @@ class Visualizer(arcade.Window):
         sprite.update_texture(piece)
 
         # movement
-        self.set_sprite_position(sprite, piece['x'], piece['y'])
+        if type(sprite) is SlimeSprite:
+            self.set_sprite_position(sprite, piece['x'], piece['y'])
+
+    def add_sprites(self, state_dict, ids):
+        for piece in state_dict.values():
+            if piece['id'] not in ids:
+                self.add_sprite(piece)
 
     def update(self, delta_time):
         """ Movement and game logic """
-        state = self.get_state()
+        state = turn_timer(self.get_state, self.turn)()
         # stop visualizing when there's no more state to render
         if state is False:
             arcade.window_commands.close_window()
@@ -134,15 +138,14 @@ class Visualizer(arcade.Window):
         # Turn counter
         self.turn += 1
 
-        state_dict = self.hashify_state(state)
+        state_dict = turn_timer(self.hashify_state, self.turn)(state)
 
-        # add any new sprites
-        ids = [sprite.id for sprite in self.all_sprites_list]
-        for piece in state_dict.values():
-            if piece['id'] not in ids:
-                self.add_sprite(piece)
-
-        # kill or update sprites
+        ids = []
         for sprite in self.all_sprites_list:
-            self.handle_sprite(sprite, state_dict)
+            # track ids of existing sprites so we can add mising ones
+            ids.append(sprite.id)
+            # kill or update sprites
+            turn_timer(self.handle_sprite, self.turn)(sprite, state_dict)
 
+        # add new sprites
+        turn_timer(self.add_sprites, self.turn)(state_dict, ids)

@@ -2,7 +2,7 @@ import random
 import os
 import time
 import csv
-import threading
+from concurrent.futures import ThreadPoolExecutor, TimeoutError
 
 from engine.plant import Plant
 from engine.slime import Slime
@@ -10,6 +10,18 @@ from engine.rock import Rock
 from engine.map import Map
 from engine.sprite_man import Sprite_man
 from models.commands import Commands
+
+def run_with_timeout(func, timeout, *args):
+    """ Execute a function with a timeout """
+    # NOTE: this abandones the thread, so it will continue to run to completion, we just ignore the result
+    with ThreadPoolExecutor() as thread:
+        future = thread.submit(func, *args)
+        
+        try:
+            return future.result(timeout = timeout)
+        except TimeoutError as e:
+            print(f"player timed out")
+            return None
 
 class Engine():
     """ Main application class. """
@@ -140,7 +152,7 @@ class Engine():
     def execute_round(self, slime, player):
         # provide player with read-only copy of state so they can't cheat
         state = self.map.dump_state()
-        command = player.command_slime(state, state[slime.x][slime.y], self.turn)
+        command = run_with_timeout(player.command_slime, self.conf['engine'].getfloat('round_max_time'), state, state[slime.x][slime.y], self.turn)
 
         # allow player to take no action
         if command is None:
@@ -183,7 +195,7 @@ class Engine():
                 gamepiece = self.map.get(x, y)
                 if type(gamepiece) is Slime:
                     slimes.append(gamepiece)
-        return slimes  
+        return slimes
 
     def run_turn(self):
         """ Movement and game logic """
@@ -209,9 +221,9 @@ class Engine():
 
         # get current state of the world
         slimes = self.get_slimes()
-        completed_ids = []
         while len(slimes) > 0:
             slime = slimes.pop(0)
+<<<<<<< HEAD
             completed_ids.append(slime.id)
             if slime.player == 1:
                 if __name__ == 'engine.engine':
@@ -229,6 +241,16 @@ class Engine():
                 self.player_two_slime_count += 1
             # find all un-run slimes based on the newly updated state
             slimes = [slime for slime in self.get_slimes() if slime.id not in completed_ids]
+=======
+            # do not run for dead slimes
+            if (slime.current_hp > 0):
+                if slime.player == 1:
+                    self.execute_round(slime, self.player_one)
+                    self.player_one_slime_count += 1
+                if slime.player == 2:
+                    self.execute_round(slime, self.player_two)
+                    self.player_two_slime_count += 1
+>>>>>>> d21d292341f7f6e2ac96a73d52b24975dfff4768
 
         # track state for later visualization
         return self.map.dump_state()
