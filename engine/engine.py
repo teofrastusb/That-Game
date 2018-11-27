@@ -9,6 +9,7 @@ from engine.slime import Slime
 from engine.rock import Rock
 from engine.map import Map
 from engine.sprite_man import Sprite_man
+from engine.game_recorder import GameRecorder
 from models.commands import Commands
 
 def run_with_timeout(func, timeout, *args):
@@ -37,6 +38,7 @@ class Engine():
         self.turn = 0
         self.player_one = player_one
         self.player_two = player_two
+        self.game_recorder = GameRecorder(config, player_one.name, player_two.name)
         # start at one so we don't immediately end TODO: track this in a better way
         self.player_one_slime_count = 1
         self.player_two_slime_count = 1
@@ -233,7 +235,9 @@ class Engine():
                     self.player_two_slime_count += 1
 
         # track state for later visualization
-        return self.map.dump_state()
+        state = self.map.dump_state()
+        self.game_recorder.write_state_to_file(state)
+        return state
 
     def is_game_over(self):
         # Check for end of game conditions

@@ -2,7 +2,7 @@ import uuid
 
 class Slime():
     def __init__(self, config, player):
-        self.id = uuid.uuid4()
+        self.id = str(uuid.uuid4())
         self.player = player
         self.x = None
         self.y = None

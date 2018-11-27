@@ -3,7 +3,7 @@ import uuid
 
 class Plant():
     def __init__(self, config):
-        self.id = uuid.uuid4()
+        self.id = str(uuid.uuid4())
         self.x = None
         self.y = None
         self.conf = config
