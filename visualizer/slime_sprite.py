@@ -8,8 +8,8 @@ class SlimeSprite(arcade.Sprite):
         self.id = piece['id']
         im = Image.open(config['Slime'].get('player_one_basic'))
         width, height = im.size
-        scale_adj = (config['screen'].getfloat('width')/config['screen'].getfloat('columns'))/(width)*1.2
-        super().__init__(self.filename, scale_adj)
+        self.scale_adj = (config['screen'].getfloat('width')/config['screen'].getfloat('columns'))/(width)*1.2
+        super().__init__(self.filename, self.scale_adj)
 
     def choose_texture(self, piece):
         if piece['player'] == 1:
@@ -30,4 +30,4 @@ class SlimeSprite(arcade.Sprite):
         # only load texture on changes
         if self.filename != filename:
             self.filename = filename
-            self.texture = arcade.draw_commands.load_texture(filename, scale = scale_adj)
+            self.texture = arcade.draw_commands.load_texture(filename, scale = self.scale_adj)

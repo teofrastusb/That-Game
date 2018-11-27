@@ -5,7 +5,7 @@ import time
 
 class Player(PlayerBase):
     def __init__(self, id):
-        super().__init__(id, "bite or move randomly, limited split")
+        super().__init__(id, "bite or move randomly")
         self.friends = []
         self.enemies =[]
         self.plants =[]
