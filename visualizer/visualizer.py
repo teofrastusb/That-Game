@@ -91,13 +91,13 @@ class Visualizer(arcade.Window):
         arcade.start_render()
         arcade.set_background_color(arcade.color.AMAZON)
         self.draw_grid()
-        turn_timer(self.all_sprites_list.draw, self.turn)()
+        self.all_sprites_list.draw()
 
         # Put the text on the screen.
         elapsed = time.perf_counter() - self.start
         self.start = time.perf_counter()
         output = f"turn: {self.turn} seconds since last turn: {elapsed}"
-        print(f"timer,{self.turn},full_turn,{elapsed}")
+        #print(f"timer,{self.turn},full_turn,{elapsed}")
         arcade.draw_text(output, 10, 20, arcade.color.BLACK, 14)
 
         # Delay to slow game down        
@@ -129,7 +129,7 @@ class Visualizer(arcade.Window):
 
     def update(self, delta_time):
         """ Movement and game logic """
-        state = turn_timer(self.get_state, self.turn)()
+        state = self.get_state()
         # stop visualizing when there's no more state to render
         if state is False:
             arcade.window_commands.close_window()
@@ -138,14 +138,14 @@ class Visualizer(arcade.Window):
         # Turn counter
         self.turn += 1
 
-        state_dict = turn_timer(self.hashify_state, self.turn)(state)
+        state_dict = self.hashify_state(state)
 
         ids = []
         for sprite in self.all_sprites_list:
             # track ids of existing sprites so we can add mising ones
             ids.append(sprite.id)
             # kill or update sprites
-            turn_timer(self.handle_sprite, self.turn)(sprite, state_dict)
+            self.handle_sprite(sprite, state_dict)
 
         # add new sprites
-        turn_timer(self.add_sprites, self.turn)(state_dict, ids)
+        self.add_sprites(state_dict, ids)
