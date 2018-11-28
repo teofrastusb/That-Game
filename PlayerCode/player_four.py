@@ -58,7 +58,7 @@ class Player(PlayerBase):
                     if state[dx[i]][dy[i]]['player'] != slime['player']:
                         return bite_option[i]
 
-        if len(self.friends) < 6:
+        if len(self.friends) < 3:
             if slime['level'] >= 4:
                 return Commands.SPLIT
 

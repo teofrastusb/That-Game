@@ -93,11 +93,23 @@ class Visualizer(arcade.Window):
         self.draw_grid()
         self.all_sprites_list.draw()
 
+        plant_number = 0
+        rock_number = 0
+        slime_number = 0
+
+        for sprite in self.all_sprites_list:
+            if type(sprite) is PlantSprite:
+                plant_number += 1
+            if type(sprite) is RockSprite:
+                rock_number += 1
+            if type(sprite) is SlimeSprite:
+                slime_number += 1
+
         # Put the text on the screen.
         elapsed = time.perf_counter() - self.start
         self.start = time.perf_counter()
         output = f"turn: {self.turn} seconds since last turn: {elapsed}"
-        #print(f"timer,{self.turn},full_turn,{elapsed}")
+        print(f"full_turn,{self.turn},timer,{round(elapsed,5)}, Number of plants,{plant_number}, rocks,{rock_number}, slimes,{slime_number},")
         arcade.draw_text(output, 10, 20, arcade.color.BLACK, 14)
 
         # Delay to slow game down        

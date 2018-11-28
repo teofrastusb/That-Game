@@ -32,10 +32,14 @@ class Player(PlayerBase):
     def command_slime(self, state, slime, turn):
         self.find_stuff(state)
 
-        num_thing= random.randint(1,3)
-        num_thing = num_thing/100
-        print('slime is trying to wait', num_thing)
-        time.sleep(num_thing)
+        # num_thing= random.randint(1,3)
+        # num_thing = num_thing/100
+        # print('slime is trying to wait', num_thing)
+        # time.sleep(num_thing)
+
+        # split only up to 6 total slimes
+        if len(self.friends) <= 9 and slime['level'] >= 4:
+            return Commands.SPLIT
 
         # bite nearby plants or enemies
         bite_option = [Commands.BITELEFT, Commands.BITERIGHT, Commands.BITEUP, Commands.BITEDOWN]
@@ -46,10 +50,6 @@ class Player(PlayerBase):
                 neighbor = state[dx[i]][dy[i]]
                 if neighbor in self.plants or neighbor in self.enemies:
                     return bite_option[i]
-
-        # split only up to 6 total slimes
-        if len(self.friends) <= 5 and slime['level'] >= 4:
-            return Commands.SPLIT
 
         # Move randomly
         move_options = [Commands.LEFT,Commands.RIGHT,Commands.UP,Commands.DOWN]

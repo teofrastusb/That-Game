@@ -241,4 +241,4 @@ class Engine():
 
     def is_game_over(self):
         # Check for end of game conditions
-        return self.turn > self.max_turns or self.player_one_slime_count == 0 or self.player_two_slime_count == 0
+        return self.turn >= self.max_turns or self.player_one_slime_count == 0 or self.player_two_slime_count == 0

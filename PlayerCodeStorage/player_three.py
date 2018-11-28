@@ -1,10 +1,11 @@
 from models.player_base import PlayerBase
 from models.commands import Commands
 import random
+import time
 
 class Player(PlayerBase):
     def __init__(self, id):
-        super().__init__(id, "bite or move randomly, limited split")
+        super().__init__(id, "bite or move randomly")
         self.friends = []
         self.enemies =[]
         self.plants =[]
@@ -31,6 +32,15 @@ class Player(PlayerBase):
     def command_slime(self, state, slime, turn):
         self.find_stuff(state)
 
+        # num_thing= random.randint(1,3)
+        # num_thing = num_thing/100
+        # print('slime is trying to wait', num_thing)
+        # time.sleep(num_thing)
+
+        # split only up to 6 total slimes
+        if len(self.friends) <= 9 and slime['level'] >= 4:
+            return Commands.SPLIT
+
         # bite nearby plants or enemies
         bite_option = [Commands.BITELEFT, Commands.BITERIGHT, Commands.BITEUP, Commands.BITEDOWN]
         dx = [slime['x']-1, slime['x']+1, slime['x'], slime['x']]
@@ -40,10 +50,6 @@ class Player(PlayerBase):
                 neighbor = state[dx[i]][dy[i]]
                 if neighbor in self.plants or neighbor in self.enemies:
                     return bite_option[i]
-
-        # split only up to 6 total slimes
-        if len(self.friends) <= 5 and slime['level'] >= 4:
-            return Commands.SPLIT
 
         # Move randomly
         move_options = [Commands.LEFT,Commands.RIGHT,Commands.UP,Commands.DOWN]
