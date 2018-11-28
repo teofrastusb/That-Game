@@ -4,7 +4,7 @@ from os import listdir
 
 from runners.runner_base import RunnerBase
 from visualizer.visualizer import Visualizer
-
+from timer.timer import timed
 class Runner(RunnerBase): 
     def __init__(self, player_dir, filename):
         super().__init__("visualize_recording", player_dir)
@@ -21,4 +21,4 @@ class Runner(RunnerBase):
 
     def run(self):
         visualizer = Visualizer(self.config, self.next_state(), self.next_state)
-        arcade.window_commands.run()
+        timed(arcade.window_commands.run)()
