@@ -109,21 +109,16 @@ class Visualizer(arcade.Window):
         elapsed = time.perf_counter() - self.start
         self.start = time.perf_counter()
         output = f"turn: {self.turn} seconds since last turn: {elapsed}"
-        print(f"full_turn,{self.turn},timer,{round(elapsed,5)}, Number of plants,{plant_number}, rocks,{rock_number}, slimes,{slime_number},")
+        #print(f"full_turn,{self.turn},timer,{round(elapsed,5)}, Number of plants,{plant_number}, rocks,{rock_number}, slimes,{slime_number},")
         arcade.draw_text(output, 10, 20, arcade.color.BLACK, 14)
 
         # Delay to slow game down        
         time.sleep(self.conf['visualizer'].getfloat('sleep'))
 
-    def handle_sprite(self, sprite, state_dict):
-        """ Removes, moves, and updates textures of a sprite based on state"""
+    def update_texture_and_position(self, sprite, state_dict):
+        """Moves and updates textures of a sprite based on state"""
         # rocks never change
         if type(sprite) is RockSprite:
-            return
-
-        # check for death
-        if sprite.id not in state_dict:
-            sprite.kill()
             return
 
         piece = state_dict[sprite.id]
@@ -152,12 +147,17 @@ class Visualizer(arcade.Window):
 
         state_dict = self.hashify_state(state)
 
-        ids = []
-        for sprite in self.all_sprites_list:
-            # track ids of existing sprites so we can add mising ones
-            ids.append(sprite.id)
-            # kill or update sprites
-            self.handle_sprite(sprite, state_dict)
+        # add sprites for new pieces
+        ids = [sprite.id for sprite in self.all_sprites_list]
+        to_add = [piece for piece in state_dict.values() if piece['id'] not in ids]
+        for piece in to_add:
+            self.add_sprite(piece)
 
-        # add new sprites
-        self.add_sprites(state_dict, ids)
+        # kill sprites for missing pieces
+        to_kill = [sprite for sprite in self.all_sprites_list if sprite.id not in state_dict]
+        for sprite in to_kill:
+            sprite.kill()
+
+        # move and handle texture updates
+        for sprite in self.all_sprites_list:
+            self.update_texture_and_position(sprite, state_dict)
