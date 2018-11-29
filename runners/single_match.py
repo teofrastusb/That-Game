@@ -32,4 +32,6 @@ class Runner(RunnerBase):
         else:
             while not engine.is_game_over():
                 engine.run_turn()
-        engine.end_game()
+
+        results = engine.end_game()
+        self.record_results(results)

@@ -21,4 +21,4 @@ class Runner(RunnerBase):
 
     def run(self):
         visualizer = Visualizer(self.config, self.next_state(), self.next_state)
-        timed(arcade.window_commands.run)()
+        arcade.window_commands.run()

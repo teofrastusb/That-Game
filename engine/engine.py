@@ -1,7 +1,5 @@
 import random
-import os
 import time
-import csv
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 
 from engine.plant import Plant
@@ -105,7 +103,7 @@ class Engine():
             self.map.move_gamepiece(new_slime, x, y)
 
     def end_game(self):
-        """ Print winner, generate report """
+        """ Return results of the match """
         results = {}
         results['player one team name'] = self.player_one.name
         results['player one score'] = 0
@@ -138,18 +136,7 @@ class Engine():
             results['winner'] = self.player_one.name
         elif results['player one score'] < results['player two score']:
             results['winner'] = self.player_two.name
-
-        print('GAME OVER')
-        for k, v in results.items():
-            print(k, v)
-        
-        existing_file = os.path.isfile('results.csv')
-
-        with open('results.csv', 'a', newline = '') as f:
-            writer = csv.DictWriter(f, fieldnames = results.keys())
-            if not existing_file:
-                writer.writeheader()
-            writer.writerow(results)
+        return results
 
     def execute_round(self, slime, player):
         # provide player with read-only copy of state so they can't cheat
