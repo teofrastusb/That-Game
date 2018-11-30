@@ -10,16 +10,22 @@ Pull player_base.py_
 Pull folder of example AI, and example Images
 pull in replay.py
 
--Folder Structure-
+![this shows if it can't load](images/slime_blue.png "This shows on hover")
 
--Running SlimeMind.exe-
+# Folder Structure
 
--Running replay.py-
+# Running SlimeMind.exe
 
--Use player_base.py-
+# Running replay.py
 
--Game mechanics-
-    Game explination
-    Objects
-    Victory conditions
-    Commands
+# Use player_base.py
+
+# Game mechanics
+
+### Game explination
+
+### Objects
+
+### Victory conditions
+
+### Commands
