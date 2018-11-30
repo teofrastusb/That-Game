@@ -1,25 +1,39 @@
 # Slime Mind
 
+![this shows if it can't load](images/slime_blue.png "This shows on hover")
+
+# Introduction
+  We made this game structure
+  
+# Setup
+### Suggested IDE
+https://code.visualstudio.com/
 install Visual Studio Code
+
+### Installing python
+https://code.visualstudio.com/docs/languages/python
+
+
+### Installing libraries
 ```
 pip3 install PyObjC arcade
 ```
+# Custom Programs
+### Where to Get
+### List of Programs
+SlimeMind.exe
+replay.py
+player_base.py
+### Folder Structure
+### Running a Match
+### Replaing a Match
 
-pull in SlimeMind.exe
-Pull player_base.py_
-Pull folder of example AI, and example Images
-pull in replay.py
+# Game mechanics
+### Game explination
+### Objects
+### Victory conditions
+### Commands
 
--Folder Structure-
+# Writing a Custom AI
+### Use player_base.py
 
--Running SlimeMind.exe-
-
--Running replay.py-
-
--Use player_base.py-
-
--Game mechanics-
-    Game explination
-    Objects
-    Victory conditions
-    Commands
