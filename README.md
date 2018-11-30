@@ -12,20 +12,29 @@ pull in replay.py
 
 ![this shows if it can't load](images/slime_blue.png "This shows on hover")
 
-# Folder Structure
+# Introduction
+  We made this game structure
+  
+# Setup
+### Installing python
+### Installing libraries
+### Suggested IDE
 
-# Running SlimeMind.exe
-
-# Running replay.py
-
-# Use player_base.py
+# Custom Programs
+### List of Programs
+SlimeMind.exe
+replay.py
+player_base.py
+### Folder Structure
+### Running a Match
+### Replaing a Match
 
 # Game mechanics
-
 ### Game explination
-
 ### Objects
-
 ### Victory conditions
-
 ### Commands
+
+# Writing a Custom AI
+### Use player_base.py
+
