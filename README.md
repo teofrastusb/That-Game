@@ -1,26 +1,25 @@
 # Slime Mind
 
-install Visual Studio Code
-```
-pip3 install PyObjC arcade
-```
-
-pull in SlimeMind.exe
-Pull player_base.py_
-Pull folder of example AI, and example Images
-pull in replay.py
-
 ![this shows if it can't load](images/slime_blue.png "This shows on hover")
 
 # Introduction
   We made this game structure
   
 # Setup
-### Installing python
-### Installing libraries
 ### Suggested IDE
+https://code.visualstudio.com/
+install Visual Studio Code
 
+### Installing python
+https://code.visualstudio.com/docs/languages/python
+
+
+### Installing libraries
+```
+pip3 install PyObjC arcade
+```
 # Custom Programs
+### Where to Get
 ### List of Programs
 SlimeMind.exe
 replay.py
