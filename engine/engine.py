@@ -163,7 +163,8 @@ class Engine():
                 slime.xp += 1
                 hit -= 1
                 if hit:
-                    slime.current_hp += slime.hp_base
+                    if slime.current_hp < slime.max_hp:
+                        slime.current_hp += 1
 
         if command is Commands.SPLIT:
             self.split(slime)

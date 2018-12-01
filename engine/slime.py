@@ -13,6 +13,7 @@ class Slime():
 
         self.hp_exponent = config.getfloat('hp_exponent')
         self.hp_base = config.getint('hp_base')
+        self.max_hp = self.hp_base
         self.current_hp =config.getint('hp_base')
 
         self.attack_exponent = config.getfloat('attack_exponent')
@@ -28,8 +29,8 @@ class Slime():
     def split(self):
         self.xp = self.xp // 4
 
-    def max_hp(self):
-        return (self.level**self.hp_exponent) + self.hp_base
+    def max_hp_check(self, level):
+        return (level**self.hp_exponent) + self.hp_base
 
     def level_check(self):
         # Save current level
@@ -47,11 +48,14 @@ class Slime():
 
         # Add hp on level up
         if starting_level < self.level:
-            if self.max_hp() > (starting_level**self.hp_exponent + self.hp_base):
-                self.current_hp += (self.max_hp() - (starting_level**self.hp_exponent + self.hp_base))
+            # Update max_hp
+            self.max_hp = self.max_hp_check(self.level)
+
+            if self.max_hp > self.max_hp_check(starting_level):
+                self.current_hp += (self.max_hp - self.max_hp_check(starting_level))
                 # make sure current hp isn't above max hp
-                if self.current_hp >= self.max_hp():
-                    self.current_hp = self.max_hp()
+                if self.current_hp >= self.max_hp:
+                    self.current_hp = self.max_hp
 
     def __dict__(self):
         return {
@@ -63,7 +67,7 @@ class Slime():
             'level': self.level,
             'xp': self.xp,
             'current_hp': self.current_hp,
-            'max_hp': self.max_hp(),
+            'max_hp': self.max_hp_check(self.level),
             'attack': self.attack,
             'ready_to_merge': self.ready_to_merge
         }

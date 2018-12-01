@@ -50,13 +50,19 @@ class Player(PlayerBase):
         dx = [slime['x']-1, slime['x']+1, slime['x'], slime['x']]
         dy = [slime['y'], slime['y'], slime['y']+1, slime['y']-1]
         
+        # check for enemy slimes
+        for i in range(4):
+            if self.valid_coord(state, dx[i], dy[i]) and state[dx[i]][dy[i]] is not None:
+                if state[dx[i]][dy[i]]['type'] == 'SLIME':
+                    if state[dx[i]][dy[i]]['player'] != slime['player']:
+                        return bite_option[i]
+
+        # check for plants
         for i in range(4):
             if self.valid_coord(state, dx[i], dy[i]) and state[dx[i]][dy[i]] is not None:
                 if state[dx[i]][dy[i]]['type'] == 'PLANT':
                     return bite_option[i]
-                elif state[dx[i]][dy[i]]['type'] == 'SLIME':
-                    if state[dx[i]][dy[i]]['player'] != slime['player']:
-                        return bite_option[i]
+
 
         if len(self.friends) < 6:
             if slime['level'] >= 4:
