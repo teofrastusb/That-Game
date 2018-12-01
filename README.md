@@ -90,16 +90,77 @@ Plants will go next and run on a defined AI described in the Game Pieces section
 Slimes will then go alternating between each team until all slimes have gone.
 Then the map will update and the turn will be completed.
 
-### Game Pieces
-There are three types of game piece in this game.
+# Game Pieces
+There are three types of game piece in this game. All of them are given the following attributes:
+```
+x - This is the column index of the game piece (starting from 0)
+y - This is the row index of the game piece (starting from 0)
+```
 
-Rocks - Are placed at the beginning of the game and cannot be moved or destroyed.
+### Rocks
+Rocks are only meant to get in the way. They are placed at the beginning of the game and cannot be moved or destroyed.
 
-Plants - Are placed at the beginning of the game at level 1 with a set amount of health. Every round the plant has a % chance to level up determined by a random number generation. If the plant does level up it will gain health and maximum health based on its level. Once a plant reaches its maximum level it will gain the ability to spread seeds. Every round a max level plant has a % chance to spread a seed to one of the 8 squares surrounding it. If a plant succeeds in seeding another plant at level 1 will be placed in the target square.
-Plants at maximum level will change color in the visulizer.
+### Plants
+Plants are the food source for the slimes. All plants have the following attributes:
+```
+max_level - This is the highest level a plant can reach.
+level - Used to calculate the maximum health of the plant. 
+max_hp - This is the most health a plant can have.
+current_hp - This is the current health of a plant.
+```
+Plants are placed at the beginning of the game at level 1 with a set amount of health. Every round the plant has a % chance to level up determined by a random number generation. If the plant does level up it will gain health and maximum health based on its level. Once a plant reaches its maximum level it will gain the ability to spread seeds. Every round a max level plant has a % chance to spread a seed to one of the 8 squares surrounding it. If a plant succeeds in seeding another plant at level 1 will be placed in the target square. Plants at maximum level will change color in the visulizer. 
 
-### Victory conditions
-### Commands
+### Slimes
+Slimes are the gamepieces controlled by the submitted AI code and will be used to determine which code wins a game. Each slime has the following attributes:
+```
+xp - Used to calculate the level of a slime.
+max_level - This is the highest level a slime can reach.
+level - Used to calculate the attack and maximum health of the slime. 
+maximum_hp - This is the most health a slime can have.
+current_hp - This is the current health of a slime.
+attack -  This is the amount of health a slime or plant will lose when this slime bites it.
+```
+Slimes are placed at the beginning of the game at level 1. Each round a given slime will update based on its xp to adjust to its correct level. Next the slime will call it's team's submitted AI code and wait a a maximum of a set amount of time to recive one of the approved commands discussed in the next section. If no command is returned in that amount of time the round is skipped and the next slime is called. If a valid command is returned then the slime will attempt to prefrom whatever command has been submitted. Finally at the end of every slimes round the game code will check for any slimes or plants that have had their current_hp dropped to or below 0 and remove them from the game.
+
+# Commands
+There are only 10 acceptable commands that a slime can accept. They are:
+```
+LEFT
+RIGHT
+UP
+DOWN
+BITELEFT
+BITERIGHT
+BITEUP
+BITEDOWN
+SPLIT
+MERGE
+```
+Anything else retuned from an AI code besides these options including changes to the game state (such as setting all slimes to max level) will result in the slime losing its round.
+
+### Move Commands
+The four move commands availble to the slimes are:
+```
+LEFT
+RIGHT
+UP
+DOWN
+```
+When given any of these commands the game code will attempt to move the slime to the square in the corresponding direction (Left moves the slime to the square that has the same y value but an x value of one less ect.). However if the traget square is occupied by another game piece or is past the edge of the map then the slime will do nothing during its round.
+
+### Bite Commands
+The four bite commands availble to the slimes are:
+```
+BITELEFT
+BITERIGHT
+BITEUP
+BITEDOWN
+```
+When given any of these commands the game code will check to see if a valid target is located in the corresponding location (same logic as for the move commands). If there is not a valid target in the location then the slime will do nothing for its round. If there is a slime or plant object in the target location then that slime or plant will have its current_health reduced by the biting slimes attack value. The bitting slime will also have its current_hp inceased by 1 and its xp increased by 1.
+
+
+# Victory conditions
+
 
 # Writing a Custom AI
 ### Use player_base.py
