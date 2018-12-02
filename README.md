@@ -76,16 +76,17 @@ Slimes are placed at the beginning of the game at level 1. A slimes attack and m
 xp	level	attack	max_hp
 1	1	3	11
 2	2	4	13
-6	3	7	17
-15	4	10	22
-33	5	13	28
-62	6	16	35
-106	7	20	43
-169	8	24	52
-254	9	29	62
-368	10	33	73
-513	11	38	84
-695	12	43	97
+6	3	7	18
+15	4	10	23
+33	5	13	31
+62	6	16	40
+106	7	20	50
+169	8	24	61
+254	9	29	75
+368	10	33	89
+513	11	38	105
+695	12	43	122
+
 
 ```
 Every turn each slime is given a round to take a single action determined by the submitted AI. Invalid commands and AI that exceed a set timeout are ignored, skipping that slime's round. Valid commands are applied immediately, before the next slime's round begins. Note that the game state given the AI is immutable, so changes are not reflected in the game engine.
