@@ -38,7 +38,7 @@ class Player(PlayerBase):
         # time.sleep(num_thing)
 
         # split only up to 6 total slimes
-        if len(self.friends) <= 9 and slime['level'] >= 4:
+        if len(self.friends) <= 20 and slime['level'] >= 4:
             return Commands.SPLIT
 
         # bite nearby plants or enemies
