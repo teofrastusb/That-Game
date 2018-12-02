@@ -5,7 +5,7 @@
 # Introduction
 We made this game structure to allow us to write and test AI programs. Writers can use the example code to explore making their own AI. As a writer's code  advances they should submit it to be tested against other AI. Eventually tournaments will be run between all submissions. 
 
-The current game is still being balanced and many of the parameters will likely be changed. Changes will be made in an attempt to balance the system but not destroy certain stratagies. If someone figures out a way to win no matter what through complex AI or an out of the box strategy then good for them.
+The current game is still being balanced and many of the parameters will likely be changed. Changes will be made in an attempt to balance the system but not destroy certain strategies. If someone figures out a way to win no matter what through complex AI or an out of the box strategy then good for them.
 
 Eventually additional game mechanics may be added, and a new game with the same basic structure but additional mechanics may be released.
   
@@ -71,21 +71,22 @@ maximum_hp - This is the most health a slime can have.
 current_hp - This is the current health of a slime.
 attack -  This is the amount of health a slime or plant will lose when this slime bites it.
 ```
-Slimes are placed at the beginning of the game at level 1. A slimes attack and maximum HP increase as they level up. The tabel below shows the minimum XP for a slime to become each level and the other attributes for that level. The full equation can be found in the code.
+Slimes are placed at the beginning of the game at level 1. A slimes attack and maximum HP increase as they level up. The table below shows the minimum XP for a slime to become each level and the other attributes for that level. The full equation can be found in the code.
 ```
 xp	level	attack	max_hp
 1	1	3	11
 2	2	4	13
-6	3	7	17
-15	4	10	22
-33	5	13	28
-62	6	16	35
-106	7	20	43
-169	8	24	52
-254	9	29	62
-368	10	33	73
-513	11	38	84
-695	12	43	97
+6	3	7	18
+15	4	10	23
+33	5	13	31
+62	6	16	40
+106	7	20	50
+169	8	24	61
+254	9	29	75
+368	10	33	89
+513	11	38	105
+695	12	43	122
+
 
 ```
 Every turn each slime is given a round to take a single action determined by the submitted AI. Invalid commands and AI that exceed a set timeout are ignored, skipping that slime's round. Valid commands are applied immediately, before the next slime's round begins. Note that the game state given the AI is immutable, so changes are not reflected in the game engine.
@@ -113,17 +114,17 @@ RIGHT
 UP
 DOWN
 ```
-Move commands attempt to move the slime in the corresponding direction (`LEFT` moves the slime to the square that has the same y value but an x value of one less etc...). If the traget square is occupied by another game piece or is past the edge of the map the move will be ignored.
+Move commands attempt to move the slime in the corresponding direction (`LEFT` moves the slime to the square that has the same y value but an x value of one less etc...). If the target square is occupied by another game piece or is past the edge of the map the move will be ignored.
 
 ### Bite Commands
-The four bite commands availble to slimes are:
+The four bite commands available to slimes are:
 ```
 BITELEFT
 BITERIGHT
 BITEUP
 BITEDOWN
 ```
-Bite commands attempt to attack nearby gamepieces in a particular direction. If there is not a valid target in the location then the slime will do nothing for its round. If there is a slime or plant object in the target location then that slime or plant will have its `current_health` reduced by the biting slimes `attack`. The biting slime will also have its `current_hp` inceased by 1 and its `xp` increased by 1.
+Bite commands attempt to attack nearby gamepieces in a particular direction. If there is not a valid target in the location then the slime will do nothing for its round. If there is a slime or plant object in the target location then that slime or plant will have its `current_health` reduced by the biting slimes `attack`. The biting slime will also have its `current_hp` increased by 1 and its `xp` increased by 1.
 
 ### Split Command
 The only split command available to slimes is:
