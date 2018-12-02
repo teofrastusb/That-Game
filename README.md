@@ -11,31 +11,15 @@ Eventually additional game mechanics may be added, and a new game with the same 
   
 # Setup
 ### Suggested IDE
-There are many programs or tools that can be used to write programs in the python language. 
-One such program is Visual Studio Code (https://code.visualstudio.com/), you will need at least one
-of these programs to install python and create your custom AIs.
+You are free to use whatever editor you want to create your AI. If you don't know where to start, we recommend [visual studio code](https://code.visualstudio.com/)
 
 ### Installing python
-https://code.visualstudio.com/docs/languages/python
-
-You will need to install python using your IDE.
-
+You must install Python 3.6 or later. See this [guide](https://docs.python-guide.org/starting/installation/) for steps.
 
 ### Installing libraries
-Python libraries that must be included to run the game are listed below. You are not limited to only these libraries but if you call any outside of this list in you code please be sure to note that in your submissions.
-```
-arcade
-random
-time
-argparse
-math
-logging
-os
-concurrent.futures
-```
+You must install [arcade](http://arcade.academy/installation.html) to visualize the game.
+
 # Custom Programs
-### Where to Get
-Ian we need to discuss how people will get these programs. I'm cool with them pulling from the github but I worry that too many people with write acess will lead to mistakes that we may have to go in a fix.
 ### List of Main Programs
 ```
 main.py
