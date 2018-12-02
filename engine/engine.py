@@ -211,6 +211,18 @@ class Engine():
 
         # get current state of the world
         slimes = self.get_slimes()
+        slime_list_1 =[]
+        slime_list_2 =[]
+
+        # Get the slimes into an alternating setup
+        for slime_check in slimes:
+            if slime_check.player == 1:
+                slime_list_1.append(slime_check)
+            elif slime_check.player == 2:
+                slime_list_2.append(slime_check)
+        
+        slimes_zip = zip_longest(slime_list_1,slime_list_2)
+
         while len(slimes) > 0:
             slime = slimes.pop(0)
             # do not run for dead slimes
