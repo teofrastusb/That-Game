@@ -120,22 +120,22 @@ maximum_hp - This is the most health a slime can have.
 current_hp - This is the current health of a slime.
 attack -  This is the amount of health a slime or plant will lose when this slime bites it.
 ```
-Slimes are placed at the beginning of the game at level 1. Each round a given slime will update based on its xp to adjust to its correct level.  The tabel below shows the minimum xp for a slime to become each level. The full equation can be found in the code.
+Slimes are placed at the beginning of the game at level 1. Each round a given slime will update based on its xp to adjust to its correct level, and adjust its attack and max_hp based on the slimes level.  The tabel below shows the minimum xp for a slime to become each level and the other attributes for that level. The full equation can be found in the code.
 ```
-xp	level
-0	0
-1	2
-2	2
-6	3
-15	4
-33	5
-62	6
-106	7
-169	8
-254	9
-368	10
-513	11
-695	12
+xp	level	attack	max_hp
+1	1	3	11
+2	2	4	13
+6	3	7	17
+15	4	10	22
+33	5	13	28
+62	6	16	35
+106	7	20	43
+169	8	24	52
+254	9	29	62
+368	10	33	73
+513	11	38	84
+695	12	43	97
+
 ```
 Next the slime will call it's team's submitted AI code and wait a a maximum of a set amount of time to recive one of the approved commands discussed in the next section. If no command is returned in that amount of time the round is skipped and the next slime is called. If a valid command is returned then the slime will attempt to prefrom whatever command has been submitted. Finally at the end of every slimes round the game code will check for any slimes or plants that have had their current_hp dropped to or below 0 and remove them from the game.
 
@@ -210,13 +210,22 @@ level	points
 The team with the most total points at the end of the game wins.
 
 # Writing a Custom AI
+Every writer should use the supplied player_base.py to make there own code. Blah blah compete with people yadda yadda programing.
 ### Use player_base.py
 
 # Sprites
-### Standard sprites
-### Adding Custom sprites
-### Possible future options
+Each team will currently need two sprites to run.
 
+### Standard sprites
+For now the only option is to use the standard sprites provided with the game program.
+
+### Adding Custom sprites
+In the near future the ability to load custom sprites will be added. The sprites will need to be .png and have transparent backgrounds. They should also be square other then that there should be no limit on the images size.
+
+The files will need to be submitted with specific names TBD
+
+### Possible future options
+If there is intrest additional sprites may be added to show each time a slime levels up (or maybe every other time).
 
 
 
