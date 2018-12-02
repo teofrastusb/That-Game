@@ -177,13 +177,13 @@ When given this command the game code will set the slime as ready to merge. The 
 The game will continue until turn 1000 is complete or until no slimes for one team is destroyed. Once the game is completed then the score for each team is calculated using the remaining slimes. This score calculation is detailed in the code and is based soley on the slimes level not on its total xp. The tabel below shows a simplified level to score ratio. The full equation can be found in the code.
 ```
 level	points
-1	    0.2
-2	    0.4
-3	    1.6
-4	    5.2
-5	    13.7
-6	    29.9
-7	    57.7
+1	   0.2
+2	   0.4
+3	   1.6
+4	   5.2
+5	   13.7
+6	   29.9
+7	   57.7
 8	    101.7
 9	    167.0
 10	  259.7
