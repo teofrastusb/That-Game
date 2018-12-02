@@ -120,7 +120,24 @@ maximum_hp - This is the most health a slime can have.
 current_hp - This is the current health of a slime.
 attack -  This is the amount of health a slime or plant will lose when this slime bites it.
 ```
-Slimes are placed at the beginning of the game at level 1. Each round a given slime will update based on its xp to adjust to its correct level. Next the slime will call it's team's submitted AI code and wait a a maximum of a set amount of time to recive one of the approved commands discussed in the next section. If no command is returned in that amount of time the round is skipped and the next slime is called. If a valid command is returned then the slime will attempt to prefrom whatever command has been submitted. Finally at the end of every slimes round the game code will check for any slimes or plants that have had their current_hp dropped to or below 0 and remove them from the game.
+Slimes are placed at the beginning of the game at level 1. Each round a given slime will update based on its xp to adjust to its correct level.  The tabel below shows the minimum xp for a slime to become each level. The full equation can be found in the code.
+```
+xp	level
+0	0
+1	2
+2	2
+6	3
+15	4
+33	5
+62	6
+106	7
+169	8
+254	9
+368	10
+513	11
+695	12
+```
+Next the slime will call it's team's submitted AI code and wait a a maximum of a set amount of time to recive one of the approved commands discussed in the next section. If no command is returned in that amount of time the round is skipped and the next slime is called. If a valid command is returned then the slime will attempt to prefrom whatever command has been submitted. Finally at the end of every slimes round the game code will check for any slimes or plants that have had their current_hp dropped to or below 0 and remove them from the game.
 
 # Commands
 There are only 10 acceptable commands that a slime can accept. They are:
@@ -170,7 +187,7 @@ The only merge command availble to the slimes is:
 ```
 MERGE
 ```
-When given this command the game code will set the slime as ready to merge. The code will then check to see if there are any friendly slimes in adjacent squares that are ready to set as ready to merge. If an adjacent slime is found then it will be destroyed and the destroyed slimes xp will be added to the xp of the initiating slime.
+When given this command the game code will set the slime as ready to merge. The code will then check to see if there are any friendly slimes in adjacent squares that are ready to set as ready to merge. If an adjacent slime is found then it will be destroyed and the destroyed slimes xp will be added to the xp of the initiating slime. At the beginning of its round a slime will have its ready to merge status removed.
 
 
 # Victory conditions
@@ -184,8 +201,8 @@ level	points
 5	   13.7
 6	   29.9
 7	   57.7
-8	    101.7
-9	    167.0
+8	   101.7
+9	   167.0
 10	  259.7
 11	  386.7
 12	  555.3
