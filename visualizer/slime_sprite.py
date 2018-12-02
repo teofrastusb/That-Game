@@ -13,12 +13,12 @@ class SlimeSprite(arcade.Sprite):
 
     def choose_texture(self, piece):
         if piece['player'] == 1:
-            if piece['level'] < self.conf['Slime'].getint('max_level') - 2:
+            if piece['level'] < 10:
                 filename = self.conf['Slime'].get('player_one_basic')
             else:
                 filename = self.conf['Slime'].get('player_one_king')
         else:
-            if piece['level'] < self.conf['Slime'].getint('max_level') - 2:
+            if piece['level'] < 10:
                 filename = self.conf['Slime'].get('player_two_basic')
             else:
                 filename = self.conf['Slime'].get('player_two_king')
