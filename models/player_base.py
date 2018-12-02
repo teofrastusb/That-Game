@@ -3,9 +3,11 @@ from models.commands import Commands
 
 class PlayerBase():
     """ Base class player's must implement """ 
-    def __init__(self, id, name):
+    def __init__(self, id, name, image_1, image_2):
       self.id = id
       self.name = name
+      self.image_1 = image_1
+      self.image_2 = image_2
 
     def command_slime(self, map, slime, turn):
         """

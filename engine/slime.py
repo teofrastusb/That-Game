@@ -3,6 +3,7 @@ import uuid
 class Slime():
     def __init__(self, config, player):
         self.id = str(uuid.uuid4())
+        self.player_id = player.id
         self.player = player
         self.x = None
         self.y = None
@@ -60,8 +61,9 @@ class Slime():
     def __dict__(self):
         return {
             'type': 'SLIME',
+            'image_1': self.player.image_1,
             'id': self.id,
-            'player': self.player,
+            'player_id': self.player_id,
             'x': self.x,
             'y': self.y,
             'level': self.level,

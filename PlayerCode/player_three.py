@@ -5,7 +5,7 @@ import time
 
 class Player(PlayerBase):
     def __init__(self, id):
-        super().__init__(id, "bite or move randomly")
+        super().__init__(id, "bite or move randomly", 'default', 'default')
         self.friends = []
         self.enemies =[]
         self.plants =[]
@@ -19,7 +19,7 @@ class Player(PlayerBase):
                 gamepiece = matrix[x][y]
                 if gamepiece is not None:
                     if gamepiece['type'] == 'SLIME':
-                        if gamepiece['player'] == self.id:
+                        if gamepiece['player_id'] == self.id:
                             self.friends.append(gamepiece)
                         else:
                             self.enemies.append(gamepiece)

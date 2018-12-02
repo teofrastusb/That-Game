@@ -12,16 +12,22 @@ class SlimeSprite(arcade.Sprite):
         super().__init__(self.filename, self.scale_adj)
 
     def choose_texture(self, piece):
-        if piece['player'] == 1:
-            if piece['level'] < 10:
-                filename = self.conf['Slime'].get('player_one_basic')
+        if piece['level'] < 10:
+            if piece['image_1'] == 'default':
+                if piece['player_id'] == 1:
+                    filename = self.conf['Slime'].get('player_one_basic')
+                else:
+                    filename = self.conf['Slime'].get('player_two_basic')
             else:
-                filename = self.conf['Slime'].get('player_one_king')
+                filename = piece['image_1']
         else:
-            if piece['level'] < 10:
-                filename = self.conf['Slime'].get('player_two_basic')
+            if piece['image_1'] == 'default':
+                if piece['player_id'] == 1:
+                    filename = self.conf['Slime'].get('player_one_king')
+                else:
+                    filename = self.conf['Slime'].get('player_two_king')
             else:
-                filename = self.conf['Slime'].get('player_two_king')
+                filename = piece['image_2']
         return filename
 
     def update_texture(self, piece):

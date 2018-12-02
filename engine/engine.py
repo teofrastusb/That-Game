@@ -62,13 +62,13 @@ class Engine():
             y = random.randint(0, self.map.rows - 1)
             if self.map.is_cell_empty(x, y):
                 # left half
-                piece = self.create_piece(piece_type, 1)
+                piece = self.create_piece(piece_type, self.player_one)
                 self.map.move_gamepiece(piece, x, y)
 
                 # mirrored across x and y axis for right half
                 x = (self.map.columns - 1) - x
                 y = (self.map.rows - 1) - y
-                piece = self.create_piece(piece_type, 2)
+                piece = self.create_piece(piece_type, self.player_two)
                 self.map.move_gamepiece(piece, x, y)
 
                 pieces += 2
@@ -121,13 +121,13 @@ class Engine():
             for y in range(self.map.rows):
                 slime = self.map.get(x, y)
                 if type(slime) is Slime:
-                    if slime.player == 1:
+                    if slime.player_id == 1:
                         results['player one slime count'] += 1
                         results['player one score'] += (slime.level**(3.8)-slime.level**3.7+1)/5
                         if results['player one max slime level'] < slime.level:
                             results['player one max slime level'] = slime.level
 
-                    if slime.player == 2:
+                    if slime.player_id == 2:
                         results['player two slime count'] += 1
                         results['player two score'] += (slime.level**(3.8)-slime.level**3.7+1)/5
                         if results['player two max slime level'] < slime.level:
@@ -224,10 +224,10 @@ class Engine():
             slime = slimes.pop(0)
             # do not run for dead slimes
             if (slime.current_hp > 0):
-                if slime.player == 1:
+                if slime.player_id == 1:
                     self.execute_round(slime, self.player_one)
                     self.player_one_slime_count += 1
-                if slime.player == 2:
+                if slime.player_id == 2:
                     self.execute_round(slime, self.player_two)
                     self.player_two_slime_count += 1
 
