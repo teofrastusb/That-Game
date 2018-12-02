@@ -1,6 +1,6 @@
 # Slime Mind
 
-![slime](images/slime_blue.png "Slime Mind")
+![slime](images/slime_default_1.png "Slime Mind")
 
 # Introduction
 We made this game structure to allow us to write and test AI programs. Writers can use the example code to explore making their own AI. As a writer's code  advances they should submit it to be tested against other AI. Eventually tournaments will be run between all submissions. 
