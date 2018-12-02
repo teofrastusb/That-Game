@@ -11,31 +11,15 @@ Eventually additional game mechanics may be added, and a new game with the same 
   
 # Setup
 ### Suggested IDE
-There are many programs or tools that can be used to write programs in the python language. 
-One such program is Visual Studio Code (https://code.visualstudio.com/), you will need at least one
-of these programs to install python and create your custom AIs.
+You are free to use whatever editor you want to create your AI. If you don't know where to start, we recommend [visual studio code](https://code.visualstudio.com/)
 
 ### Installing python
-https://code.visualstudio.com/docs/languages/python
-
-You will need to install python using your IDE.
-
+You must install Python 3.6 or later. See this [guide](https://docs.python-guide.org/starting/installation/) for steps.
 
 ### Installing libraries
-Python libraries that must be included to run the game are listed below. You are not limited to only these libraries but if you call any outside of this list in you code please be sure to note that in your submissions.
-```
-arcade
-random
-time
-argparse
-math
-logging
-os
-concurrent.futures
-```
+You must install [arcade](http://arcade.academy/installation.html) to visualize the game.
+
 # Custom Programs
-### Where to Get
-Ian we need to discuss how people will get these programs. I'm cool with them pulling from the github but I worry that too many people with write acess will lead to mistakes that we may have to go in a fix.
 ### List of Main Programs
 ```
 main.py
@@ -120,7 +104,24 @@ maximum_hp - This is the most health a slime can have.
 current_hp - This is the current health of a slime.
 attack -  This is the amount of health a slime or plant will lose when this slime bites it.
 ```
-Slimes are placed at the beginning of the game at level 1. Each round a given slime will update based on its xp to adjust to its correct level. Next the slime will call it's team's submitted AI code and wait a a maximum of a set amount of time to recive one of the approved commands discussed in the next section. If no command is returned in that amount of time the round is skipped and the next slime is called. If a valid command is returned then the slime will attempt to prefrom whatever command has been submitted. Finally at the end of every slimes round the game code will check for any slimes or plants that have had their current_hp dropped to or below 0 and remove them from the game.
+Slimes are placed at the beginning of the game at level 1. Each round a given slime will update based on its xp to adjust to its correct level, and adjust its attack and max_hp based on the slimes level.  The tabel below shows the minimum xp for a slime to become each level and the other attributes for that level. The full equation can be found in the code.
+```
+xp	level	attack	max_hp
+1	1	3	11
+2	2	4	13
+6	3	7	17
+15	4	10	22
+33	5	13	28
+62	6	16	35
+106	7	20	43
+169	8	24	52
+254	9	29	62
+368	10	33	73
+513	11	38	84
+695	12	43	97
+
+```
+Next the slime will call it's team's submitted AI code and wait a a maximum of a set amount of time to recive one of the approved commands discussed in the next section. If no command is returned in that amount of time the round is skipped and the next slime is called. If a valid command is returned then the slime will attempt to prefrom whatever command has been submitted. Finally at the end of every slimes round the game code will check for any slimes or plants that have had their current_hp dropped to or below 0 and remove them from the game.
 
 # Commands
 There are only 10 acceptable commands that a slime can accept. They are:
@@ -158,18 +159,58 @@ BITEDOWN
 ```
 When given any of these commands the game code will check to see if a valid target is located in the corresponding location (same logic as for the move commands). If there is not a valid target in the location then the slime will do nothing for its round. If there is a slime or plant object in the target location then that slime or plant will have its current_health reduced by the biting slimes attack value. The bitting slime will also have its current_hp inceased by 1 and its xp increased by 1.
 
+### Split Command
+The only split command availble to the slimes is:
+```
+SPLIT
+```
+When given this command the game code will check to see if the slime is at least level 4. The code will then check to see if there is an emptey space adjacent to the slime. If both criteria are met then the slime will have its xp divided by 4 to the nearest integer and another level 1 slime is created in a randome empty adjacent space. 
+
+### Merge Commands
+The only merge command availble to the slimes is:
+```
+MERGE
+```
+When given this command the game code will set the slime as ready to merge. The code will then check to see if there are any friendly slimes in adjacent squares that are ready to set as ready to merge. If an adjacent slime is found then it will be destroyed and the destroyed slimes xp will be added to the xp of the initiating slime. At the beginning of its round a slime will have its ready to merge status removed.
+
 
 # Victory conditions
+The game will continue until turn 1000 is complete or until no slimes for one team is destroyed. Once the game is completed then the score for each team is calculated using the remaining slimes. This score calculation is detailed in the code and is based soley on the slimes level not on its total xp. The tabel below shows a simplified level to score ratio. The full equation can be found in the code.
+```
+level	points
+1	0.2
+2	0.4
+3	1.6
+4	5.2
+5	13.7
+6	29.9
+7	57.7
+8	101.7
+9	167.0
+10	259.7
+11	386.7
+12	555.3
 
+```
+The team with the most total points at the end of the game wins.
 
 # Writing a Custom AI
+Every writer should use the supplied player_base.py to make there own code. Blah blah compete with people yadda yadda programing.
 ### Use player_base.py
 
 # Sprites
-### Standard sprites
-### Adding Custom sprites
-### Possible future options
+Each team will currently need two sprites to run.
 
+### Standard sprites
+For now the only option is to use the standard sprites provided with the game program.
+
+### Adding Custom sprites
+In the near future the ability to load custom sprites will be added. The sprites will need to be .png and have transparent backgrounds. They should also be square other then that there should be no limit on the images size.
+
+The files will need to be submitted with specific names TBD
+
+### Possible future options
+If there is intrest additional sprites may be added to show each time a slime levels up (or maybe every other time).
 
 
 
