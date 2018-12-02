@@ -1,6 +1,7 @@
 import random
 import time
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
+from itertools import zip_longest
 
 from engine.plant import Plant
 from engine.slime import Slime
@@ -179,13 +180,21 @@ class Engine():
 
     def get_slimes(self):
         """ return all slimes on the map """
-        slimes = []
+        # get slimes
+        slime_list_1 = []
+        slime_list_2 = []
         for x in range(self.map.columns):
             for y in range(self.map.rows):
                 gamepiece = self.map.get(x, y)
                 if type(gamepiece) is Slime:
-                    slimes.append(gamepiece)
-        return slimes
+                    if gamepiece.player == 1:
+                        slime_list_1.append(gamepiece)
+                    else:
+                        slime_list_2.append(gamepiece)
+        # alternate between player 1 and player 2 slimes
+        slimes_zip = zip_longest(slime_list_1, slime_list_2)
+        # flatten and remove filler None
+        return [item for subtuple in slimes_zip for item in subtuple if item is not None]
 
     def run_turn(self):
         """ Movement and game logic """
@@ -211,16 +220,6 @@ class Engine():
 
         # get current state of the world
         slimes = self.get_slimes()
-        slime_list_1 =[]
-        slime_list_2 =[]
-
-        # Get the slimes into an alternating setup
-        for slime_check in slimes:
-            if slime_check.player == 1:
-                slime_list_1.append(slime_check)
-            elif slime_check.player == 2:
-                slime_list_2.append(slime_check)
-
         while len(slimes) > 0:
             slime = slimes.pop(0)
             # do not run for dead slimes
