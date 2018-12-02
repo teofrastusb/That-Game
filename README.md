@@ -158,9 +158,39 @@ BITEDOWN
 ```
 When given any of these commands the game code will check to see if a valid target is located in the corresponding location (same logic as for the move commands). If there is not a valid target in the location then the slime will do nothing for its round. If there is a slime or plant object in the target location then that slime or plant will have its current_health reduced by the biting slimes attack value. The bitting slime will also have its current_hp inceased by 1 and its xp increased by 1.
 
+### Split Command
+The only split command availble to the slimes is:
+```
+SPLIT
+```
+When given this command the game code will check to see if the slime is at least level 4. The code will then check to see if there is an emptey space adjacent to the slime. If both criteria are met then the slime will have its xp divided by 4 to the nearest integer and another level 1 slime is created in a randome empty adjacent space. 
+
+### Merge Commands
+The only merge command availble to the slimes is:
+```
+MERGE
+```
+When given this command the game code will set the slime as ready to merge. The code will then check to see if there are any friendly slimes in adjacent squares that are ready to set as ready to merge. If an adjacent slime is found then it will be destroyed and the destroyed slimes xp will be added to the xp of the initiating slime.
+
 
 # Victory conditions
-
+The game will continue until turn 1000 is complete or until no slimes for one team is destroyed. Once the game is completed then the score for each team is calculated using the remaining slimes. This score calculation is detailed in the code and is based soley on the slimes level not on its total xp. The tabel below shows a simplified level to score ratio. The full equation can be found in the code.
+```
+level	points
+1	    0.2
+2	    0.4
+3	    1.6
+4	    5.2
+5	    13.7
+6	    29.9
+7	    57.7
+8	    101.7
+9	    167.0
+10	  259.7
+11	  386.7
+12	  555.3
+```
+The team with the most total points at the end of the game wins.
 
 # Writing a Custom AI
 ### Use player_base.py
