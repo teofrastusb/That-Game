@@ -62,6 +62,7 @@ class Slime():
         return {
             'type': 'SLIME',
             'image_1': self.player.image_1,
+            'image_2': self.player.image_2,
             'id': self.id,
             'player_id': self.player_id,
             'x': self.x,

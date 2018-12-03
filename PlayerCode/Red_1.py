@@ -8,7 +8,7 @@ import random
 # merge at the end of the game
 class Player(PlayerBase):
     def __init__(self, player_id):
-        super().__init__(id, "Red 1: King Maker", 'default', 'default')
+        super().__init__(id, "Red 1: King Maker", 'images/red/red_1.png', 'default')
         self.id = player_id
         self.friends = []
         self.enemies =[]
@@ -31,16 +31,34 @@ class Player(PlayerBase):
                         self.plants.append(gamepiece)
 
     # TODO Retrun the direction to move to the target by evaluating a route of 5 steps
-    def a_star(self, target, slime):
-        if target != 0:
-            if slime['x'] > target['x']:
-                return Commands.LEFT
-            elif slime['x'] < target['x']:
-                return Commands.RIGHT
-            elif slime['y'] > target['y']:
-                return Commands.DOWN
-            elif slime['y'] < target['y']:
-                return Commands.UP
+    def a_star(self, target, slime, matrix, valid_coord):
+        distance = abs(slime['x']-target['x']) + abs(slime['y']-target['y'])
+        move_commands = [Commands.UP, Commands.RIGHT, Commands.DOWN, Commands.LEFT]
+        dx = [0, 1, 0, -1]
+        dy = [1, 0, -1, 0]
+
+        possibe_square_x= []
+        possibe_square_y=[]
+        possible_square_distance=[]
+        possible_square_command=[]
+
+        for i in range(len(dx)):
+            print('test1')
+            if valid_coord(matrix, slime['x']+dx[i], slime['y']+dy[i]):
+                print('test2')
+                if matrix[slime['x']+dx[i]][slime['y']+dy[i]] == None:
+                    print('test3')
+                    possibe_square_x.append(slime['x']+dx[i])
+                    possibe_square_y.append(slime['y']+dy[i])
+                    possible_square_distance.append(abs(slime['x']+dx[i]-target['x']) + abs(slime['y']+dy[i]-target['y']))
+                    possible_square_command.append(move_commands[i])
+
+        if len(possible_square_distance) == 0:
+            return Commands.UP
+        square_index = possible_square_distance.index(min(possible_square_distance))
+
+        return possible_square_command[square_index]
+        
     
     # Determine if the targeted location is a valid location
     def valid_coord(self, state, x, y):
@@ -120,6 +138,6 @@ class Player(PlayerBase):
         else:
             target = nearest_enemy
 
-        command_call = self.a_star(target, slime)
+        command_call = self.a_star(target, slime, state, self.valid_coord)
 
         return command_call
