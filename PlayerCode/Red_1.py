@@ -55,6 +55,7 @@ class Player(PlayerBase):
 
         if len(possible_square_distance) == 0:
             return Commands.UP
+        
         square_index = possible_square_distance.index(min(possible_square_distance))
 
         return possible_square_command[square_index]
