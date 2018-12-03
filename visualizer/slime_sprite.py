@@ -12,7 +12,7 @@ class SlimeSprite(arcade.Sprite):
         super().__init__(self.filename, self.scale_adj)
 
     def choose_texture(self, piece):
-        if piece['level'] < 10:
+        if piece['level'] <8:
             if piece['image_1'] == 'default':
                 if piece['player_id'] == 1:
                     filename = self.conf['Slime'].get('player_one_basic')

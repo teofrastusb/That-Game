@@ -8,7 +8,7 @@ import random
 # merge at the end of the game
 class Player(PlayerBase):
     def __init__(self, player_id):
-        super().__init__(id, "Red 1: King Maker", 'images/Baddie.png', 'images/baddie_king.png')
+        super().__init__(id, "Red 1: King Maker", 'default', 'default')
         self.id = player_id
         self.friends = []
         self.enemies =[]
@@ -111,7 +111,7 @@ class Player(PlayerBase):
         for enemy in self.enemies:
             enemy_power += enemy['level']
 
-        if friend_power > 30:
+        if friend_power > 60:
             target = nearest_enemy
         elif friend_power > enemy_power and nearest_enemy_distance < 10:
             target = nearest_enemy
