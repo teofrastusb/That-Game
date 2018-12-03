@@ -4,7 +4,7 @@ from models.commands import Commands
 class Player(PlayerBase):
     # example player AI
     def __init__(self, player_id):
-        super().__init__(id, "I cheat to remove all other slimes")
+        super().__init__(id, "I cheat to remove all other slimes", 'default', 'default')
         self.id = player_id
         self.direction_x = 1
         self.move_command = Commands.RIGHT

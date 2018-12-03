@@ -32,6 +32,9 @@ class Player(PlayerBase):
 
     # TODO Retrun the direction to move to the target by evaluating a route of 5 steps
     def a_star(self, target, slime, matrix, valid_coord):
+        if target == 0:
+            return Commands.DOWN
+
         distance = abs(slime['x']-target['x']) + abs(slime['y']-target['y'])
         move_commands = [Commands.UP, Commands.RIGHT, Commands.DOWN, Commands.LEFT]
         dx = [0, 1, 0, -1]
@@ -43,11 +46,8 @@ class Player(PlayerBase):
         possible_square_command=[]
 
         for i in range(len(dx)):
-            print('test1')
             if valid_coord(matrix, slime['x']+dx[i], slime['y']+dy[i]):
-                print('test2')
                 if matrix[slime['x']+dx[i]][slime['y']+dy[i]] == None:
-                    print('test3')
                     possibe_square_x.append(slime['x']+dx[i])
                     possibe_square_y.append(slime['y']+dy[i])
                     possible_square_distance.append(abs(slime['x']+dx[i]-target['x']) + abs(slime['y']+dy[i]-target['y']))

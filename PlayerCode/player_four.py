@@ -4,7 +4,7 @@ import random
 
 class Player(PlayerBase):
     def __init__(self, player_id):
-        super().__init__(id, "6 pack attack")
+        super().__init__(id, "6 pack attack", 'default', 'default')
         self.id = player_id
         self.friends = []
         self.enemies =[]
@@ -19,7 +19,7 @@ class Player(PlayerBase):
                 gamepiece = matrix[x][y]
                 if gamepiece is not None:
                     if gamepiece['type'] == 'SLIME':
-                        if gamepiece['player'] == self.id:
+                        if gamepiece['player_id'] == self.id:
                             self.friends.append(gamepiece)
                         else:
                             self.enemies.append(gamepiece)
@@ -55,7 +55,7 @@ class Player(PlayerBase):
                 if state[dx[i]][dy[i]]['type'] == 'PLANT':
                     return bite_option[i]
                 elif state[dx[i]][dy[i]]['type'] == 'SLIME':
-                    if state[dx[i]][dy[i]]['player'] != slime['player']:
+                    if state[dx[i]][dy[i]]['player_id'] != slime['player_id']:
                         return bite_option[i]
 
         if len(self.friends) < 6:

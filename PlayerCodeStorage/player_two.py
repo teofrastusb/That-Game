@@ -5,7 +5,7 @@ import random
 class Player(PlayerBase):
     # example player AI
     def __init__(self, id):
-        super().__init__(id, "bite or move randomly")
+        super().__init__(id, "bite or move randomly", 'default', 'default')
         self.friends = []
         self.enemies =[]
         self.plants =[]
