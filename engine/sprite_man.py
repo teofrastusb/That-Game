@@ -24,7 +24,7 @@ class Sprite_man():
                 if type(gamepiece) is Slime and gamepiece.ready_to_merge:
                     for x, y in self.map.adjacent_cells(gamepiece.x, gamepiece.y):
                         neighbor = self.map.get(x, y)
-                        if neighbor is not None and type(neighbor) is Slime and neighbor.ready_to_merge and gamepiece.player == neighbor.player:
+                        if type(neighbor) is Slime and neighbor.ready_to_merge and gamepiece.player_id == neighbor.player_id:
                             logging.getLogger().info('%s merged with %s', gamepiece.id, neighbor.id)
                             gamepiece.xp = math.floor(1.5 * (gamepiece.xp + neighbor.xp))
                             self.map.clear_cell(neighbor.x, neighbor.y)

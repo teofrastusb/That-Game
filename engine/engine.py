@@ -187,7 +187,7 @@ class Engine():
             for y in range(self.map.rows):
                 gamepiece = self.map.get(x, y)
                 if type(gamepiece) is Slime:
-                    if gamepiece.player == 1:
+                    if gamepiece.player_id == 1:
                         slime_list_1.append(gamepiece)
                     else:
                         slime_list_2.append(gamepiece)
