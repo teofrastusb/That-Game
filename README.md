@@ -163,5 +163,11 @@ The team with the most total points at the end of the game wins.
 # Writing a Custom AI
 Your AI must inherit the `PlayerBase` class and override the `command_slime` method. See the `playerCode` folder for examples.
 
+# Packaging
 
-
+Run the following commands to package this library:
+```
+rm -rf dist build */*.egg-info *.egg-info
+python3 setup.py sdist bdist_wheel
+twine upload dist/*
+```
