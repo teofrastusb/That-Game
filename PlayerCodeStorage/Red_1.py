@@ -35,30 +35,50 @@ class Player(PlayerBase):
         if target == 0:
             return Commands.DOWN
 
-        distance = abs(slime['x']-target['x']) + abs(slime['y']-target['y'])
+        start.distance = abs(slime['x']-target['x']) + abs(slime['y']-target['y'])
+        start.x = slime['x']
+        start.y = slime['y']
         move_commands = [Commands.UP, Commands.RIGHT, Commands.DOWN, Commands.LEFT]
         dx = [0, 1, 0, -1]
         dy = [1, 0, -1, 0]
 
-        possibe_square_x= []
-        possibe_square_y=[]
-        possible_square_distance=[]
-        possible_square_command=[]
-
-        for i in range(len(dx)):
-            if valid_coord(matrix, slime['x']+dx[i], slime['y']+dy[i]):
-                if matrix[slime['x']+dx[i]][slime['y']+dy[i]] == None:
-                    possibe_square_x.append(slime['x']+dx[i])
-                    possibe_square_y.append(slime['y']+dy[i])
-                    possible_square_distance.append(abs(slime['x']+dx[i]-target['x']) + abs(slime['y']+dy[i]-target['y']))
-                    possible_square_command.append(move_commands[i])
-
-        if len(possible_square_distance) == 0:
-            return Commands.UP
+        possible_squares = []
+        possible_squares[0] = start
+        checked_squares = []
+        num_checked=0
+        max_steps = 5
         
-        square_index = possible_square_distance.index(min(possible_square_distance))
+        for current_square in possible_squares:
+            checked = False
+            for past_square in checked_squares:
+                if past_square.x == current_square.x and past_square.y == current_square.y:
+                    checked = True
+            if not checked:
+                for i in range(len(dx)):
+                    if valid_coord(matrix, current_square.x+dx[i], current_square.y+dy[i]):
+                        if matrix[current_square.x+dx[i]][current_square.y+dy[i]] == None:
+                            square.x = current_square.x+dx[i]
+                            square.y = current_square.y+dy[i]
+                            square.parent = current_square
+                            square.distance = abs(current_square.x-target['x']) + abs(current_square.y-target['y'])
+                            square.command = move_commands[i]
+                            possible_squares.append(current_square)
+                            if square.distance <= start.distance - max_steps:
+                                break
+            checked_squares.append(current_square)
+            if num_checked >= 100:
+                break
+        
+        min_distance = 1000
+        for square in checked_squares:
+            if square.distance < min_distance:
+                min_distance = square.distance
+                current_square = square
+        
+        while current_square.distance < distance - 1:
+            current_square = current_square.parent
 
-        return possible_square_command[square_index]
+        return current_square.command
         
     
     # Determine if the targeted location is a valid location
