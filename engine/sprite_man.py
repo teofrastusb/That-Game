@@ -27,7 +27,9 @@ class Sprite_man():
                         if type(neighbor) is Slime and neighbor.ready_to_merge and gamepiece.player_id == neighbor.player_id:
                             logging.getLogger().info('%s merged with %s', gamepiece.id, neighbor.id)
                             gamepiece.xp = math.floor(1.5 * (gamepiece.xp + neighbor.xp))
+                            # kill the merged neighbor
                             self.map.clear_cell(neighbor.x, neighbor.y)
+                            neighbor.current_hp = 0
 
     def spread_seeds(self):
         for x in range(self.map.columns):
