@@ -8,7 +8,7 @@ import random
 # merge at the end of the game
 class Player(PlayerBase):
     def __init__(self, player_id):
-        super().__init__(id, "Red 1: King Maker", 'images/red/red_1.png', 'default')
+        super().__init__(id, "Red 1: King Maker", 'default', 'default')
         self.id = player_id
         self.friends = []
         self.nearest_friend = 0
@@ -123,7 +123,7 @@ class Player(PlayerBase):
                 while current_square.command is not Commands.SPLIT:
                     command_return = current_square
                     current_square = current_square.parent
-                return command_return.command
+                return command_return
             
             # If the cost of the current square is over the max_steps exit
             if current_square.cost > max_steps:
@@ -179,6 +179,8 @@ class Player(PlayerBase):
 
     # All AI must have this line
     def command_slime(self, state, slime, turn):
+
+        print(slime['player_id'])
         
         # Find a list of plants, friends, and enemies. Also find the nearest of each
         self.find_stuff(state, slime)
@@ -239,15 +241,12 @@ class Player(PlayerBase):
         # Determine target
         if self.merge_time and slime['level'] < 12:
             target = self.nearest_friend
-        elif self.merge_time and slime['level'] >= 12:
-            target = nearest_enemy
-        elif not self.merge_time and slime['level'] >= 12:
-            target = nearest_enemy
-        elif len(self.plants) <= 2:
-            self.merge_time = True
+        elif slime['level'] >= 12:
             target = self.nearest_enemy
-        else:
+        elif len(self.plants) >= 2:
             target = self.nearest_plant
+        else:
+            target = self.nearest_friend
 
         command_call = self.a_star(target, slime, state, self.valid_coord)
 
