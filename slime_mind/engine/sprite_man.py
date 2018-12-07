@@ -29,7 +29,6 @@ class Sprite_man():
                             gamepiece.xp = math.floor(1.5 * (gamepiece.xp + neighbor.xp))
                             # kill the merged neighbor
                             self.map.clear_cell(neighbor.x, neighbor.y)
-                            neighbor.current_hp = 0
 
     def spread_seeds(self):
         for x in range(self.map.columns):
