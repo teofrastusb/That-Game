@@ -16,20 +16,20 @@ class SlimeSprite(arcade.Sprite):
         if piece['level'] <10:
             if piece['image_1'] == 'default':
                 if piece['player_id'] == 1:
-                    filename = self.conf['Slime'].get('player_one_basic')
+                    filename = resource_filename('slime_mind', self.conf['Slime'].get('player_one_basic'))
                 else:
-                    filename = self.conf['Slime'].get('player_two_basic')
+                    filename = resource_filename('slime_mind', self.conf['Slime'].get('player_two_basic'))
             else:
                 filename = piece['image_1']
         else:
-            if piece['image_1'] == 'default':
+            if piece['image_2'] == 'default':
                 if piece['player_id'] == 1:
-                    filename = self.conf['Slime'].get('player_one_king')
+                    filename = resource_filename('slime_mind', self.conf['Slime'].get('player_one_king'))
                 else:
-                    filename = self.conf['Slime'].get('player_two_king')
+                    filename = resource_filename('slime_mind', self.conf['Slime'].get('player_two_king'))
             else:
                 filename = piece['image_2']
-        return resource_filename('slime_mind', filename) 
+        return filename
 
     def update_texture(self, piece):
         """Update the slimes sprites based on player and level."""
