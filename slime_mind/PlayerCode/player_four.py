@@ -4,8 +4,7 @@ import random
 
 class Player(PlayerBase):
     def __init__(self, player_id):
-        super().__init__(id, "6 pack attack", 'default', 'default')
-        self.id = player_id
+        super().__init__(player_id, "6 pack attack")
         self.friends = []
         self.enemies =[]
         self.plants =[]
