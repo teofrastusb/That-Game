@@ -223,7 +223,7 @@ class Engine():
         while len(slimes) > 0:
             slime = slimes.pop(0)
             # do not run for dead slimes
-            if (slime.current_hp > 0):
+            if not self.map.is_cell_empty(slime.x, slime.y):
                 if slime.player_id == 1:
                     self.execute_round(slime, self.player_one)
                     self.player_one_slime_count += 1
