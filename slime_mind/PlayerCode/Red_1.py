@@ -8,7 +8,7 @@ import random
 # merge at the end of the game
 class Player(PlayerBase):
     def __init__(self, player_id):
-        super().__init__(player_id, "Red 1: King Maker", 'default')
+        super().__init__(player_id, "Red 1: King Maker", 'images/red_1.png')
         self.friends = []
         self.nearest_friend = 0
         self.enemies =[]
@@ -93,8 +93,8 @@ class Player(PlayerBase):
         possible_squares.append(start)
 
         # Tweak these to limit calculation time
-        max_iterations=10
-        max_steps = 5
+        max_iterations=12
+        max_steps = 6
         iterations = 0
 
         # While there are still squares to check
@@ -230,15 +230,16 @@ class Player(PlayerBase):
                     return bite_option[i]
         
         # Decide if its time to split
-        if len(self.friends) < 6 and not self.merge_time and slime['level'] < 10:
-            if slime['level'] >= 4:
+        if len(self.friends) <= 6 and slime['level'] < 7:
+            if slime['level'] >= 5:
                 return Commands.SPLIT
+
         # Determine target
         if self.merge_time and slime['level'] < 12:
             target = self.nearest_friend
         elif slime['level'] >= 12:
             target = self.nearest_enemy
-        elif len(self.plants) >= 10:
+        elif len(self.plants) >= 20:
             target = self.nearest_plant
         elif len(self.enemies) > 0:
             target = self.nearest_enemy
