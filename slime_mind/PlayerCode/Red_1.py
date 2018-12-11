@@ -43,7 +43,7 @@ class Player(PlayerBase):
                                 self.nearest_friend = gamepiece
                                 nearest_friend_distance = distance
 
-                        else:
+                        elif gamepiece['id'] != slime['id']:
                             self.enemies.append(gamepiece)
                             distance = abs(slime['x']-gamepiece['x']) + abs(slime['y']-gamepiece['y'])
                             if distance < nearest_enemy_distance:
@@ -230,17 +230,18 @@ class Player(PlayerBase):
                     return bite_option[i]
         
         # Decide if its time to split
-        if len(self.friends) < 6 and not self.merge_time:
+        if len(self.friends) < 6 and not self.merge_time and slime['level'] < 10:
             if slime['level'] >= 4:
                 return Commands.SPLIT
-
         # Determine target
         if self.merge_time and slime['level'] < 12:
             target = self.nearest_friend
         elif slime['level'] >= 12:
             target = self.nearest_enemy
-        elif len(self.plants) >= 2:
+        elif len(self.plants) >= 10:
             target = self.nearest_plant
+        elif len(self.enemies) > 0:
+            target = self.nearest_enemy
         else:
             target = self.nearest_friend
 

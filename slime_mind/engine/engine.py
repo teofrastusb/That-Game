@@ -144,8 +144,9 @@ class Engine():
         state = self.map.dump_state()
         command = run_with_timeout(player.command_slime, self.conf['engine'].getfloat('round_max_time'), state, state[slime.x][slime.y], self.turn)
 
-        # allow player to take no action
-        if command is None:
+        # for any Enum member
+        if not isinstance(command, Commands):
+            print('Player', player.id, 'tried to command a slime to', command, '. This is an invalid command!')
             return
 
         # Check for move commands
