@@ -8,7 +8,8 @@ import random
 # merge at the end of the game
 class Player(PlayerBase):
     def __init__(self, player_id):
-        super().__init__(player_id, "Red 1: King Maker", 'images/red_1.png')
+        super().__init__(player_id, "King Maker")
+        # 'images/red_1.png'
         self.friends = []
         self.nearest_friend = 0
         self.enemies =[]
