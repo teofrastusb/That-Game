@@ -6,7 +6,7 @@ from slime_mind.runners.replay import Runner as Replay
 
 def parse_arguments():
     parser = ArgumentParser()
-    parser.add_argument("-r", "--runner", default="single_match", help="Name of runner to use, e.g. single_match, replay, multi_match")
+    parser.add_argument("-r", "--runner", default="single_match", help="Name of runner to use, e.g. single_match, replay, multi_match", choices=['single_match', 'multi_match','replay'])
     # multi_match arguments
     parser.add_argument('-m', '--matches', default=4, help='Only valid with -r multi_match. Number of matches to run.', type=int)
     parser.add_argument('-1', '--ai_one_filename', default=None, help='Only valid with -r single_match or -r multi_match. Filename of first AI')
