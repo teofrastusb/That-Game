@@ -9,8 +9,8 @@ def parse_argments():
     parser.add_argument("-r", "--runner", default="single_match", help="Name of runner to use, e.g. single_match, replay, multi_match")
     # multi_match arguments
     parser.add_argument('-m', '--matches', default=4, help='Only valid with -r multi_match. Number of matches to run.', type=int)
-    parser.add_argument('-1', '--ai_one_filename', default=4, help='Only valid with -r multi_match. Filename of first AI')
-    parser.add_argument('-2', '--ai_two_filename', default=4, help='Only valid with -r multi_match. Filename of second AI.')
+    parser.add_argument('-1', '--ai_one_filename', default=None, help='Only valid with -r single_match or -r multi_match. Filename of first AI')
+    parser.add_argument('-2', '--ai_two_filename', default=None, help='Only valid with -r single_match or -r multi_match. Filename of second AI.')
     # replay arguments
     parser.add_argument('--recording', default='2018-11-26_21h11m30s__6-pack-attack__vs__bite-or-move-randomly.txt', help="Recording file to replay. Only valid with -r replay")
     return parser.parse_args()
@@ -18,7 +18,7 @@ def parse_argments():
 def main():
     args = parse_argments()
     if args.runner == 'single_match':
-        runner = SingleMatch('PlayerCode')
+        runner = SingleMatch('PlayerCode', args.ai_one_filename, args.ai_two_filename)
     elif args.runner == 'multi_match':
         runner = MultiMatch('PlayerCode', args.matches, args.ai_one_filename, args.ai_two_filename)
     elif args.runner == 'replay':

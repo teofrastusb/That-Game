@@ -1,5 +1,5 @@
 import arcade
-from random import sample
+from random import choice
 from os import listdir
 
 from slime_mind.runners.runner_base import RunnerBase
@@ -7,22 +7,26 @@ from slime_mind.engine.engine import Engine
 from slime_mind.visualizer.visualizer import Visualizer
 
 class Runner(RunnerBase): 
-    def __init__(self, player_dir):
+    def __init__(self, player_dir, ai_one_filename=None, ai_two_filename=None):
         super().__init__("single_match", player_dir)
+        self.ai_one_filename = ai_one_filename
+        self.ai_two_filename = ai_two_filename
 
-    def choose_players(self):
-        """ randomly choose two unique players """
+    def choose_player(self):
+        """ randomly choose a player """
         players = [f for f in listdir(self.player_dir) if '.py' in f]
-        file_one, file_two = sample(players, 2)
-        print(file_one, "vs", file_two)
+        return choice(players)
 
-        player_one = self.create_player(file_one, 1)
-        player_two = self.create_player(file_two, 2)
-
-        return (player_one, player_two)
+        
 
     def run(self):
-        player_one, player_two = self.choose_players()
+        if self.ai_one_filename is None:
+            self.ai_one_filename = self.choose_player()
+        player_one = self.create_player(self.ai_one_filename, 1)
+        
+        if self.ai_two_filename is None:
+            self.ai_two_filename = self.choose_player()
+        player_two = self.create_player(self.ai_two_filename, 2)
 
         engine = Engine(self.config, player_one, player_two)
 
