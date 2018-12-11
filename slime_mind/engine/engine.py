@@ -27,6 +27,7 @@ class Engine():
     """ Main application class. """
 
     def __init__(self, config, player_one, player_two):
+        print(f"{player_one.name} vs {player_two.name}")
         # config
         self.conf = config
         self.max_turns = config['screen'].getint('max_turns')

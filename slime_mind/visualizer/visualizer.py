@@ -13,7 +13,7 @@ from slime_mind.timer.timer import turn_timer
 class Visualizer(arcade.Window):
     """ Main application class. """
 
-    def __init__(self, config, initial_state, get_state,player_1,player_2):
+    def __init__(self, config, initial_state, get_state, player_1_name, player_2_name):
         super().__init__(config['screen'].getint('width'),
                          config['screen'].getint('height'),
                          "SlimeMind")
@@ -26,8 +26,8 @@ class Visualizer(arcade.Window):
         self.step_x = self.width // self.columns
         self.step_y = self.height // self.rows
         self.do_draw_grid = config['screen'].getboolean('draw_grid')
-        self.player_1 = player_1
-        self.player_2 = player_2
+        self.player_1_name = player_1_name
+        self.player_2_name = player_2_name
 
         # initial game state
         self.all_sprites_list = arcade.SpriteList(use_spatial_hash=False)
@@ -115,8 +115,8 @@ class Visualizer(arcade.Window):
         arcade.draw_text(output, 10, 20, arcade.color.BLACK, 14)
 
         # Put code team names on the screens
-        arcade.draw_text(self.player_1.name, 10, self.height - 20, arcade.color.BLACK, 14)
-        arcade.draw_text(self.player_2.name, self.width - 200, self.height - 20, arcade.color.BLACK, 14)
+        arcade.draw_text(self.player_1_name, 10, self.height - 20, arcade.color.BLACK, 14)
+        arcade.draw_text(self.player_2_name, self.width - 200, self.height - 20, arcade.color.BLACK, 14)
 
         # Delay to slow game down        
         time.sleep(self.conf['visualizer'].getfloat('sleep'))

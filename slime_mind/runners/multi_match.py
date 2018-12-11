@@ -48,9 +48,8 @@ class Runner(RunnerBase):
                 player_two = self.create_player(self.ai_one_filename, 2)
 
             engine = Engine(self.config, player_one, player_two)
-            # visualize or just run the match
             while not engine.is_game_over():
                 engine.run_turn()
-                
+
             results.append(engine.end_game())
         self.record_results(results)

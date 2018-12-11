@@ -17,8 +17,6 @@ class Runner(RunnerBase):
         players = [f for f in listdir(self.player_dir) if '.py' in f]
         return choice(players)
 
-        
-
     def run(self):
         if self.ai_one_filename is None:
             self.ai_one_filename = self.choose_player()
@@ -32,7 +30,7 @@ class Runner(RunnerBase):
 
         # visualize or just run the match
         if self.config['visualizer'].getboolean('render'):
-            visualizer = Visualizer(self.config, engine.map.dump_state(), engine.run_turn, player_one, player_two)
+            visualizer = Visualizer(self.config, engine.map.dump_state(), engine.run_turn, player_one.name, player_two.name)
             arcade.window_commands.run()
         else:
             while not engine.is_game_over():
