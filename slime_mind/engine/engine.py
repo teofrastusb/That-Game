@@ -1,5 +1,6 @@
 import random
 import time
+import sys
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 from itertools import zip_longest
 
@@ -13,7 +14,7 @@ from slime_mind.models.commands import Commands
 
 def run_with_timeout(func, timeout, *args):
     """ Execute a function with a timeout """
-    # NOTE: this abandones the thread, so it will continue to run to completion, we just ignore the result
+    # NOTE: this abandons the thread, so it will continue to run to completion, we just ignore the result
     with ThreadPoolExecutor() as thread:
         future = thread.submit(func, *args)
         
@@ -21,6 +22,9 @@ def run_with_timeout(func, timeout, *args):
             return future.result(timeout = timeout)
         except TimeoutError as e:
             print(f"player timed out")
+            return None
+        except:
+            print("player errorred out:", sys.exc_info()[0])
             return None
 
 class Engine():
