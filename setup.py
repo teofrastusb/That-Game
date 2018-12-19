@@ -5,7 +5,7 @@ with open("README.md", "r") as readme:
 
 setuptools.setup(
     name="slime_mind",
-    version="1.0.5",
+    version="2.0.0",
     author="Alex Havermann, Ian Kottman",
     description="AI competition game",
     long_description=long_description,
