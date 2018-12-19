@@ -1,6 +1,7 @@
 import random
 import time
 import sys
+import traceback
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 from itertools import zip_longest
 
@@ -24,7 +25,8 @@ def run_with_timeout(func, timeout, *args):
             print(f"player timed out")
             return None
         except:
-            print("player errorred out:", sys.exc_info()[0])
+            print("player errorred out")
+            traceback.print_exc()
             return None
 
 class Engine():
@@ -79,7 +81,7 @@ class Engine():
                 pieces += 2
 
     def bite_thing(self, command, x, y, attack):
-        # Slime tries to bite a target, then if succesful this method awards 1 xp
+        # Slime tries to bite a target, then if successful this method awards 1 xp
         (x, y) = command.update_coord(x, y)
         if not self.map.valid_coord(x, y):
             return 0
@@ -148,6 +150,10 @@ class Engine():
         # provide player with read-only copy of state so they can't cheat
         state = self.map.dump_state()
         command = run_with_timeout(player.command_slime, self.conf['engine'].getfloat('round_max_time'), state, state[slime.x][slime.y], self.turn)
+
+        # if they error, timeout, or just want to do nothing
+        if command is None:
+            return
 
         # for any Enum member
         if not isinstance(command, Commands):
